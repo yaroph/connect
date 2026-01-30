@@ -1,0 +1,446 @@
+/* Admin Search Tab Styles */
+
+.searchRoot {
+  padding: 24px;
+}
+
+.searchHeader {
+  margin-bottom: 32px;
+}
+
+.searchHeaderRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.searchHeaderActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.searchTitle {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.searchFiltersSection,
+.searchResultsSection {
+  margin-bottom: 32px;
+}
+
+.searchSectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text);
+}
+
+.btnSmall {
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+.searchEmptyState {
+  padding: 40px 20px;
+  text-align: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.searchFiltersList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.searchFilterRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+}
+
+.searchFilterRow:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.searchFilterInputs {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Autocomplete wrapper */
+.searchAutocompleteWrapper {
+  flex: 1;
+  position: relative;
+}
+
+.searchFilterInput {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.searchFilterInput:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.searchFilterInput:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.searchFilterInput::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+/* Selected filter display */
+.searchFilterSelected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.searchFilterSelectedText {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
+  flex: 1;
+}
+
+.searchFilterClear {
+  padding: 4px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+}
+
+.searchFilterClear:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+
+/* Suggestions dropdown */
+.searchSuggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: rgba(20, 20, 20, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.searchSuggestionItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.searchSuggestionItem:last-child {
+  border-bottom: none;
+}
+
+.searchSuggestionItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.searchSuggestionName {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.searchSuggestionType {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.searchFilterSelect {
+  flex: 1;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.searchFilterSelect:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.searchFilterSelect:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.searchFilterSelect:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.searchFilterSelect option {
+  background: #1a1a1a;
+  color: var(--text);
+  padding: 8px;
+}
+
+.searchFilterEquals {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 16px;
+  user-select: none;
+}
+
+.searchFilterRemove {
+  padding: 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchFilterRemove:hover {
+  background: rgba(255, 0, 0, 0.1);
+  border-color: rgba(255, 0, 0, 0.3);
+  color: #ff6b6b;
+}
+
+.searchActionsRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Results Section */
+
+.searchResultsHeader {
+  margin-bottom: 16px;
+}
+
+.searchResultsCount {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.searchUsersList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.searchUserCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.searchUserCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.searchUserLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.searchUserAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.searchUserAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.searchUserAvatarPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  color: white;
+}
+
+.searchUserInfo {
+  flex: 1;
+}
+
+.searchUserName {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.searchUserMeta {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.searchUserMeta span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.searchUserRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.searchUserMatch {
+  text-align: right;
+}
+
+.searchMatchPercentage {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.searchMatchLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .searchRoot {
+    padding: 16px;
+  }
+
+  .searchTitle {
+    font-size: 20px;
+  }
+
+  .searchSectionTitle {
+    font-size: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .searchFilterRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchFilterInputs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchFilterEquals {
+    display: none;
+  }
+
+  .searchFilterRemove {
+    align-self: flex-end;
+  }
+
+  .searchUserCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .searchUserRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .searchMatchPercentage {
+    font-size: 24px;
+  }
+}

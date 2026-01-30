@@ -1,0 +1,37 @@
+.tagTools{
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow:none;
+}
+.tagSearch{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.14);
+  padding: 10px 12px;
+}
+.tagSearchInput{
+  flex:1;
+  border:0;
+  outline:none;
+  background: transparent;
+  color: rgba(255,255,255,0.92);
+  font-size: 14px;
+}
+.tagFilterButtons{
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.tagFilterButtons .btn{
+  font-size: 13px;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+}
+.tagFilterButtons .btn.activeBtn{
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.3);
+}

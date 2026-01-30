@@ -1,0 +1,524 @@
+.adminHeaderRow{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.adminTitle{ font-size: 18px; font-weight: 900; }
+.adminSub{ color: rgba(255,255,255,0.65); font-size: 13px; margin-top: 4px; }
+
+.cardList{ display:flex; flex-direction:column; gap: 8px; }
+
+.adminCard{
+  border-radius: 18px;
+  padding: 10px 12px;
+}
+
+.adminCardTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+}
+
+.adminCardTitle{ 
+  font-weight: 900; 
+  font-size: 16px;
+  flex: 1;
+  min-width: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.adminCardMeta{ color: rgba(255,255,255,0.62); font-size: 12px; margin-top: 4px; }
+
+.adminCardTopRight {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.adminRightPills{
+  display:flex;
+  gap: 8px;
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.statusOn{ 
+  background: rgba(34,197,94,0.22); 
+  border-color: rgba(34,197,94,0.35); 
+  color: rgba(255,255,255,0.92); 
+}
+
+.statusOff{ 
+  background: rgba(255,255,255,0.06); 
+}
+
+.statusUnreleased{ 
+  background: rgba(255, 165, 0, 0.18); 
+  border-color: rgba(255, 165, 0, 0.35); 
+  color: rgba(255, 200, 100, 0.95);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 11px;
+}
+
+.moneyPill{ 
+  background: rgba(34,197,94,0.22); 
+  border-color: rgba(34,197,94,0.35); 
+  color: rgba(255,255,255,0.92); 
+}
+
+/* Bouton pour sortir un questionnaire unreleased */
+.btnRelease {
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 13px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: rgba(255, 120, 120, 0.95);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btnRelease:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: rgba(255, 140, 140, 1);
+  transform: translateY(-1px);
+}
+
+.btnRelease:active {
+  transform: translateY(0);
+}
+
+/* Warning unreleased dans le modal */
+.unreleasedWarning {
+  padding: 16px;
+  background: rgba(255, 165, 0, 0.12);
+  border: 1px solid rgba(255, 165, 0, 0.25);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.unreleasedWarningTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(255, 200, 100, 0.95);
+  margin-bottom: 8px;
+}
+
+.unreleasedWarningText {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.unreleasedWarning .btnRelease {
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.adminCardBottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top: 8px;
+  gap: 8px;
+}
+.adminIconRow{ display:flex; gap: 8px; }
+
+.adminToggleWrap{ transform: scale(0.95); }
+
+/* Bouton pour sortir le questionnaire */
+.btnRelease {
+  padding: 8px 16px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: rgba(255, 100, 100, 0.95);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnRelease:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.45);
+  color: rgba(255, 120, 120, 1);
+  transform: translateY(-1px);
+}
+
+.adminCardDanger{
+  margin-top: 8px;
+  display:flex;
+  justify-content:flex-end;
+}
+.btn.danger{
+  border-color: rgba(255,110,110,0.22);
+  background: rgba(255,110,110,0.08);
+}
+.btn.danger:hover{
+  border-color: rgba(255,110,110,0.35);
+  background: rgba(255,110,110,0.12);
+}
+
+.sideHint{
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: none;
+}
+.hintList{
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: rgba(255,255,255,0.70);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.hintList b{ color: rgba(255,255,255,0.92); }
+
+/* Two columns layout for questionnaire editor */
+.editorFormTwoCols {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  height: calc(80vh - 120px);
+  min-height: 500px;
+  max-height: 700px;
+}
+
+.editorLeftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  /* Pas de overflow pour permettre au contenu de s'afficher normalement */
+}
+
+.editorRightCol {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 24px;
+  /* overflow: hidden pour forcer le scroll sur la liste uniquement */
+  overflow: hidden;
+}
+
+.editorForm .miniCard{
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: none;
+  background: rgba(0,0,0,0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.editorForm .miniCard .field {
+  margin-top: 14px;
+}
+
+.editorForm .miniCard .field:first-child {
+  margin-top: 0;
+}
+
+.editorForm .miniCard .sep {
+  margin: 16px 0;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Warning pour questionnaire unreleased */
+.unreleasedWarning {
+  padding: 16px;
+  background: rgba(255, 150, 50, 0.15);
+  border: 2px solid rgba(255, 150, 50, 0.4);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.unreleasedWarningTitle {
+  font-weight: 800;
+  font-size: 14px;
+  color: rgba(255, 200, 100, 0.95);
+  margin-bottom: 8px;
+}
+
+.unreleasedWarningText {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.btnRelease {
+  width: 100%;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%);
+  border: 2px solid rgba(255, 107, 107, 0.5);
+  border-radius: 10px;
+  color: white;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.btnRelease:hover {
+  background: linear-gradient(135deg, #ff5252 0%, #ff6b6b 100%);
+  border-color: rgba(255, 82, 82, 0.6);
+  box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+  transform: translateY(-2px);
+}
+
+.btnRelease:active {
+  transform: translateY(0px);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.questionsBlock{ 
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.questionsHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.qInlineList{ 
+  display:flex; 
+  flex-direction:column; 
+  gap: 8px; 
+}
+
+.qInlineListScrollable {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-right: -8px;
+}
+
+.qInlineListScrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.qInlineListScrollable::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+}
+
+.qInlineListScrollable::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+.qInlineListScrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.qInline{
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow:none;
+}
+
+/* Header avec titre, pills et image sur une ligne */
+.qInlineHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.qInlineTitle{ 
+  font-weight: 800;
+  font-size: 15px;
+  flex: 1;
+  min-width: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.qInlineHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.qInlineMeta{
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Image preview - petit carré à droite des pills */
+.qInlineImagePreview {
+  border-radius: 6px;
+  overflow: hidden;
+  height: 40px;
+  width: 40px;
+  background: rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.qInlineImagePreview img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Choices preview - maintenant sans l'image à côté */
+.qInlineChoicesPreview {
+  margin: 8px 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.qInlineChoicesTitle {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.qInlineChoicesList {
+  display: grid;
+  gap: 4px;
+}
+
+/* Dynamic grid based on number of choices */
+.qInlineChoicesList[data-count="1"],
+.qInlineChoicesList[data-count="2"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.qInlineChoicesList[data-count="3"],
+.qInlineChoicesList[data-count="4"],
+.qInlineChoicesList[data-count="5"],
+.qInlineChoicesList[data-count="6"] {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.qInlineChoicesList[data-count="7"],
+.qInlineChoicesList[data-count="8"],
+.qInlineChoicesList[data-count="9"],
+.qInlineChoicesList[data-count="10"],
+.qInlineChoicesList[data-count="11"],
+.qInlineChoicesList[data-count="12"] {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.qInlineChoice {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  font-size: 10px;
+  transition: background 0.2s ease;
+}
+
+.qInlineChoice:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.qInlineChoiceBullet {
+  display: none;
+}
+
+.qInlineChoiceText {
+  flex: 1;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.qInlineChoiceCorrect {
+  color: #22c55e;
+  font-weight: 700;
+  font-size: 8px;
+  background: rgba(34, 197, 94, 0.15);
+  padding: 2px 3px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.qInlineActions{ 
+  display:flex; 
+  gap: 8px; 
+  justify-content:flex-end; 
+  flex-wrap:wrap; 
+  margin-top: 10px;
+}
+
+.tagPill{
+  background: rgba(255,255,255,0.08);
+}
+
+
+/* Compact action buttons inside admin cards */
+.adminCard .iconBtn{
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+}
+.adminCard .iconBtn svg{ display:block; }
+.adminCardTitle{
+  line-height: 1.15;
+}
+.adminCardMeta{
+  line-height: 1.2;
+}
+
+/* Responsive for two columns */
+@media (max-width: 1200px) {
+  .editorFormTwoCols {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: none;
+  }
+  
+  .editorRightCol {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-left: 0;
+    padding-top: 24px;
+    max-height: 400px;
+  }
+  
+  .qInlineListScrollable {
+    max-height: 300px;
+  }
+}
