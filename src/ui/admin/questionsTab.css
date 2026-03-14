@@ -1,0 +1,153 @@
+.qToolsRow{
+  border-radius: 18px;
+  padding: 12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  box-shadow:none;
+}
+.qSearch{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.18);
+  padding: 10px 12px;
+}
+.qSearchInput{
+  flex:1;
+  border:0;
+  outline:none;
+  background: transparent;
+  color: rgba(255,255,255,0.92);
+  font-size: 14px;
+}
+
+.qFilterWrap{
+  display:flex;
+  gap: 10px;
+  flex-wrap:wrap;
+}
+
+.lockIcon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin-right: 8px;
+  opacity: 0.9;
+}
+
+.autoHint{
+  font-size: 11px;
+  text-align:right;
+  margin-top: 2px;
+}
+
+.qFilterSelect{ display:flex; gap: 10px; }
+.disabledBtn{ opacity:.45; cursor:not-allowed; }
+.qnPill{ max-width: 360px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Image preview in question card (individual questions) - in header */
+.questionImagePreview {
+  border-radius: 6px;
+  overflow: hidden;
+  height: 45px;
+  width: 45px;
+  background: rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.questionImagePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Choices preview in question card (individual questions) - horizontal grid */
+.questionChoicesPreview {
+  margin: 10px 0;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.questionChoicesTitle {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.questionChoicesList {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(4, 1fr); /* Par défaut: 4 colonnes */
+}
+
+/* Dynamic grid based on number of choices */
+.questionChoicesList[data-count="1"],
+.questionChoicesList[data-count="2"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.questionChoicesList[data-count="3"],
+.questionChoicesList[data-count="4"],
+.questionChoicesList[data-count="5"],
+.questionChoicesList[data-count="6"] {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* 7 choix et plus : toujours 4 colonnes (pas de limite supérieure) */
+
+.questionChoice {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  font-size: 11px;
+  transition: background 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.questionChoice:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.questionChoiceBullet {
+  display: none;
+}
+
+.questionChoiceText {
+  flex: 1;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.questionChoiceCorrect {
+  color: #22c55e;
+  font-weight: 700;
+  font-size: 9px;
+  background: rgba(34, 197, 94, 0.15);
+  padding: 3px 5px;
+  border-radius: 5px;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+  line-height: 1;
+}

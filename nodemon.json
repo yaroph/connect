@@ -1,0 +1,14 @@
+{
+  "watch": ["server"],
+  "ext": "js,json",
+  "ignore": [
+    "data/*.json",
+    "data/*.tmp",
+    "data/**/*.json",
+    "data/**/*.tmp",
+    "src/**",
+    "build/**",
+    "node_modules/**"
+  ],
+  "exec": "node server/index.js"
+}

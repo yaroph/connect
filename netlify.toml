@@ -1,0 +1,27 @@
+[build]
+  command = "CI= npm run build"
+  publish = "build"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[functions]
+  node_bundler = "esbuild"
+  # Ensure runtime deps are packaged correctly for the Function
+  external_node_modules = ["express", "serverless-http", "@netlify/blobs"]
+
+[[redirects]]
+  from = "/api/*"
+  # NOTE: our Express app registers routes under the "/api" prefix
+  # (ex: GET /api/db). When Netlify forwards to a Function, the
+  # "/.netlify/functions/<name>" prefix is stripped before routing.
+  # Therefore we must keep the "/api" segment in the forwarded path.
+  to = "/.netlify/functions/api/api/:splat"
+  status = 200
+
+# SPA fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

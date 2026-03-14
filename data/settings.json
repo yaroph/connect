@@ -1,0 +1,9 @@
+{
+  "randomQuestionsPerDay": 10,
+  "randomQuestionsPerWeek": 50,
+  "minimumWithdrawalAmount": 50,
+  "earningsPerRandomQuestion": 0.1,
+  "earningsPerQuestionnaire": 1,
+  "randomQuestionCooldown": 14,
+  "maxWithdrawalsPerMonth": 5
+}
