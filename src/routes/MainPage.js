@@ -1,6 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import {
+  Menu,
+  X,
+  CheckCircle2,
+  AlertTriangle,
+  RotateCw,
+  Trophy,
+  Inbox,
+} from "lucide-react";
 import "../styles/main.css";
 import {
   loadDBProgressive,
@@ -1836,57 +1844,77 @@ export default function MainPage({ authUser, authPending }) {
 
             {mode === "RANDOM" && quotaExceeded === "daily" ? (
               <div className="errorCard successCard">
-                <div className="errorEmoji successEmoji">:D</div>
-                <div className="errorTitle">Bravo !</div>
+                <div className="cyberEmptyIconWrap success">
+                  <Trophy size={36} />
+                </div>
+                <div className="cyberHudBadge success">
+                  <CheckCircle2 size={13} /> QUOTA DU JOUR ATTEINT
+                </div>
+                <div className="errorTitle">Objectif du jour validé !</div>
                 <div className="errorMessage">
                   Vous avez répondu à toutes vos questions aujourd'hui.
                 </div>
                 <div className="errorHint">
-                  Revenez demain ou répondez aux questionnaires disponibles
+                  Revenez demain ou répondez aux questionnaires disponibles à gauche pour continuer à gagner de l'argent.
                 </div>
               </div>
             ) : mode === "RANDOM" && quotaExceeded === "weekly" ? (
               <div className="errorCard successCard">
-                <div className="errorEmoji successEmoji">:D</div>
-                <div className="errorTitle">Bravo !</div>
+                <div className="cyberEmptyIconWrap success">
+                  <Trophy size={36} />
+                </div>
+                <div className="cyberHudBadge success">
+                  <CheckCircle2 size={13} /> QUOTA DE LA SEMAINE ATTEINT
+                </div>
+                <div className="errorTitle">Objectif hebdomadaire validé !</div>
                 <div className="errorMessage">
                   Vous avez répondu à toutes vos questions cette semaine.
                 </div>
                 <div className="errorHint">
-                  Revenez la semaine prochaine ou répondez aux questionnaires
-                  disponibles
+                  Revenez la semaine prochaine ou répondez aux questionnaires disponibles à gauche !
                 </div>
               </div>
             ) : mode === "RANDOM" && noQuestionsAvailable ? (
-              <div className="errorCard">
-                <div className="errorEmoji">:(</div>
+              <div className="errorCard cyberEmptyCard">
+                <div className="cyberEmptyIconWrap">
+                  <Inbox size={38} />
+                </div>
+                <div className="cyberHudBadge">[FLUX ALÉATOIRE : EN ATTENTE]</div>
                 <div className="errorTitle">Plus de questions disponibles</div>
                 <div className="errorMessage">
-                  Il n'y a plus de questions aléatoires disponibles pour le
-                  moment.
+                  Il n'y a plus de questions aléatoires disponibles pour le moment.
                   <br />
-                  Nos équipes travaillent à en ajouter de nouvelles !
+                  Nos équipes travaillent à en ajouter de nouvelles en continu !
                 </div>
                 <div className="errorHint">
-                  Vous pouvez répondre aux questionnaires disponibles en
-                  attendant.
+                  Vous pouvez répondre aux questionnaires disponibles dans le menu de gauche en attendant.
                 </div>
+                <button
+                  type="button"
+                  className="btn btnPrimary"
+                  style={{ marginTop: 14 }}
+                  onClick={() => advanceRandom(false)}
+                >
+                  <RotateCw size={15} /> Actualiser le flux
+                </button>
               </div>
             ) : mode === "RANDOM" && !currentRandomQuestion ? (
               <div className="errorCard loadingCard" aria-live="polite">
                 <div className="loadingSpinnerBig" aria-hidden="true" />
                 <div className="errorTitle">
-                  Chargement des questions aléatoires…
+                  Synchronisation du flux BNI…
                 </div>
                 <div className="errorMessage">
-                  On prépare déjà vos prochaines questions.
+                  Chargement de vos prochaines questions sécurisées.
                 </div>
                 <div className="errorHint">Merci de patienter un instant.</div>
               </div>
             ) : mode === "QUESTIONNAIRE" && !currentQuestion ? (
               qnFinalizeError && !validatingQuestionnaire ? (
-                <div className="errorCard" aria-live="polite">
-                  <div className="errorEmoji">:(</div>
+                <div className="errorCard errorDangerCard" aria-live="polite">
+                  <div className="cyberEmptyIconWrap danger">
+                    <AlertTriangle size={36} />
+                  </div>
                   <div className="errorTitle">Validation impossible</div>
                   <div className="errorMessage">{qnFinalizeError}</div>
                   <div
