@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import { Eye, Pencil, UserRound, Trash2, Plus, AlertTriangle, Send, Check } from "lucide-react";
+import { Eye, Pencil, UserRound, Trash2, Plus, AlertTriangle, Send, Check, Tag, HelpCircle, FileText } from "lucide-react";
 import Modal from "../Modal";
 import Toggle from "../Toggle";
 import IconButton from "../IconButton";
@@ -48,6 +48,30 @@ export default function AdminQuestionnaire({ db, onDBChange }) {
   const [editingId, setEditingId] = useState(null);
   const [responsesQnId, setResponsesQnId] = useState(null);
   const [previewQnId, setPreviewQnId] = useState(null);
+  const [createQuestionOpen, setCreateQuestionOpen] = useState(false);
+  const [createTagOpen, setCreateTagOpen] = useState(false);
+  const [newTagName, setNewTagName] = useState("");
+
+  const onSaveTag = (name) => {
+    if (!name || !name.trim()) return;
+    onDBChange((draft) => {
+      draft.tags = draft.tags || [];
+      const exists = draft.tags.some(
+        (t) => t.name.toLowerCase() === name.trim().toLowerCase(),
+      );
+      if (!exists) {
+        draft.tags.unshift({
+          id: newId(),
+          name: name.trim(),
+          createdAt: new Date().toISOString(),
+        });
+      }
+      return draft;
+    });
+    setCreateTagOpen(false);
+    setNewTagName("");
+    notifySuccess(`Tag "${name.trim()}" créé avec succès`);
+  };
 
   const questionnaires = useMemo(() => {
     return [...(db.questionnaires || [])].sort(
@@ -203,13 +227,46 @@ export default function AdminQuestionnaire({ db, onDBChange }) {
           <div>
             <div className="adminTitle">Questionnaires</div>
             <div className="adminSub">
-              Créer, éditer, et consulter les réponses.
+              Créer, éditer, et consulter les questionnaires, questions et tags.
             </div>
           </div>
-          <button className="btn btnPrimary" onClick={openCreate} type="button">
-            <Plus size={16} style={{ marginRight: 10 }} />
-            Créer
-          </button>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
+            <button
+              className="btn btnGhost"
+              style={{ padding: "8px 14px", fontSize: 13, gap: 6 }}
+              onClick={() => {
+                setNewTagName("");
+                setCreateTagOpen(true);
+              }}
+              type="button"
+            >
+              <Plus size={14} />
+              <Tag size={13} />
+              <span>Créer un tag</span>
+            </button>
+
+            <button
+              className="btn btnGhost"
+              style={{ padding: "8px 14px", fontSize: 13, gap: 6 }}
+              onClick={() => setCreateQuestionOpen(true)}
+              type="button"
+            >
+              <Plus size={14} />
+              <HelpCircle size={13} />
+              <span>Créer une question</span>
+            </button>
+
+            <button
+              className="btn btnPrimary"
+              style={{ padding: "8px 16px", fontSize: 13, gap: 6 }}
+              onClick={openCreate}
+              type="button"
+            >
+              <Plus size={14} />
+              <FileText size={13} />
+              <span>Créer un questionnaire</span>
+            </button>
+          </div>
         </div>
 
         <div className="cardList">
@@ -229,7 +286,7 @@ export default function AdminQuestionnaire({ db, onDBChange }) {
                     <span className="pill statusOff">INACTIF</span>
                   )}
                   <span className="pill moneyPill">
-                    € {Number(qn.reward || 0).toFixed(2)}
+                    $ {Number(qn.reward || 0).toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -339,6 +396,59 @@ export default function AdminQuestionnaire({ db, onDBChange }) {
             />
           );
         })()}
+
+      {createQuestionOpen ? (
+        <QuestionEditorModal
+          question={null}
+          db={db}
+          onClose={() => setCreateQuestionOpen(false)}
+          onSave={(newQ) => {
+            onDBChange((draft) => {
+              const now = new Date().toISOString();
+              draft.questions = draft.questions || [];
+              draft.questions.unshift({ ...newQ, createdAt: now, updatedAt: now });
+              return draft;
+            });
+            setCreateQuestionOpen(false);
+            notifySuccess("Question créée avec succès");
+          }}
+        />
+      ) : null}
+
+      {createTagOpen ? (
+        <Modal title="Créer un nouveau tag" onClose={() => setCreateTagOpen(false)}>
+          <div className="authModalHint">
+            Les tags permettent de catégoriser les questions et de cibler les sondages.
+          </div>
+          <div className="authField" style={{ marginTop: 12 }}>
+            <label className="authLabel">Nom du tag</label>
+            <input
+              className="authInput"
+              value={newTagName}
+              onChange={(e) => setNewTagName(e.target.value)}
+              placeholder="Ex: Véhicule, Emploi, Santé, Entreprise..."
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && newTagName.trim()) onSaveTag(newTagName);
+              }}
+            />
+          </div>
+
+          <div className="rowBtns" style={{ marginTop: 22 }}>
+            <button className="btn btnGhost" type="button" onClick={() => setCreateTagOpen(false)}>
+              Annuler
+            </button>
+            <button
+              className="btn btnPrimary"
+              type="button"
+              onClick={() => onSaveTag(newTagName)}
+              disabled={!newTagName.trim()}
+            >
+              Créer le tag
+            </button>
+          </div>
+        </Modal>
+      ) : null}
     </div>
   );
 }

@@ -104,14 +104,32 @@
 }
 
 .tabBadge {
-  background: #fbbf24;
-  color: #030712;
+  background: #ffd600;
+  color: #000;
   font-weight: 900;
-  font-size: 11px;
-  padding: 1px 7px;
+  font-size: 11.5px;
+  padding: 2px 8px;
   border-radius: 99px;
-  box-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
-  animation: pendingPulse 1.6s ease-in-out infinite;
+  box-shadow: 0 0 12px #ffd600, 0 0 20px rgba(255, 214, 0, 0.5);
+  animation: tabBadgePulse 1.5s ease-in-out infinite;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  letter-spacing: 0;
+  font-family: var(--fontFamilyMono, monospace);
+}
+
+@keyframes tabBadgePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 12px #ffd600, 0 0 18px rgba(255, 214, 0, 0.4);
+  }
+  50% {
+    transform: scale(1.12);
+    box-shadow: 0 0 22px #ffd600, 0 0 32px rgba(255, 214, 0, 0.8);
+  }
 }
 
 /* Icon Button Cyber HUD */

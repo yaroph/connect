@@ -326,6 +326,53 @@
   gap: 12px;
 }
 
+.cyberDossierWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dossierSectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #00f0ff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.adminTagChipsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.adminTagChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  font-size: 12px;
+}
+
+.adminTagChipKey {
+  color: #38bdf8;
+  font-weight: 800;
+}
+
+.adminTagChipVal {
+  color: #f8fafc;
+  font-weight: 600;
+}
+
 .adminBox {
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.08);

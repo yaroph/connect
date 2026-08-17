@@ -7,6 +7,11 @@ import {
   Download,
   Trash2,
   AlertTriangle,
+  User,
+  CreditCard,
+  Tag,
+  Save,
+  X,
 } from "lucide-react";
 import {
   adminListUsers,
@@ -342,33 +347,112 @@ export default function AdminUsers() {
             {u.id === selectedId && selected ? (
               <div className="adminUserDetails">
                 {!editMode ? (
-                  <div className="adminBox">
-                    <div className="adminTwoCols" style={{ marginTop: 6 }}>
+                  <div className="adminBox cyberDossierWrap">
+                    {/* Section 1: Identité & Coordonnées */}
+                    <div className="dossierSectionTitle">
+                      <CreditCard size={15} />
+                      <span>Identité & Compte BNI</span>
+                    </div>
+                    <div className="adminTwoCols">
+                      <ReadOnlyText
+                        label="Prénom & Nom"
+                        value={`${selected.prenom || ""} ${selected.nom || ""}`}
+                      />
+                      <ReadOnlyText
+                        label="Numéro de citoyen"
+                        value={selected.numeroCitoyen || ""}
+                        right={<CopyBtn value={selected.numeroCitoyen} />}
+                      />
+                      <ReadOnlyText
+                        label="Numéro de compte BNI"
+                        value={selected.compteBancaire}
+                        right={<CopyBtn value={selected.compteBancaire} />}
+                      />
                       <ReadOnlyText
                         label="Téléphone"
                         value={selected.telephone}
                         right={<CopyBtn value={selected.telephone} />}
                       />
                       <ReadOnlyText
-                        label="Numéro de compte"
-                        value={selected.compteBancaire}
-                        right={<CopyBtn value={selected.compteBancaire} />}
-                      />
-                      <ReadOnlyText
                         label="Date de naissance"
                         value={selected.dateNaissance}
                       />
                       <ReadOnlyText
-                        label="Numéro de citoyen"
-                        value={selected.numeroCitoyen || ""}
+                        label="Mot de passe"
+                        value={selected.motDePasse || "—"}
+                        right={<CopyBtn value={selected.motDePasse} />}
                       />
+                    </div>
+
+                    {/* Section 2: Caractéristiques RP */}
+                    <div className="dossierSectionTitle" style={{ marginTop: 16 }}>
+                      <User size={15} />
+                      <span>Caractéristiques & Profil RP</span>
+                    </div>
+                    <div className="adminTwoCols">
+                      <ReadOnlyText label="Sexe" value={selected.sexe} />
+                      <ReadOnlyText label="Couleur de peau" value={selected.couleurPeau} />
+                      <ReadOnlyText label="Couleur de cheveux" value={selected.couleurCheveux} />
+                      <ReadOnlyText label="Longueur de cheveux" value={selected.longueurCheveux} />
+                      <ReadOnlyText label="Style vestimentaire" value={selected.styleVestimentaire} />
+                      <ReadOnlyText label="Métier" value={selected.metier} />
+                    </div>
+
+                    {/* Section 3: Réponses Sensibles & Tags */}
+                    <div className="dossierSectionTitle" style={{ marginTop: 16 }}>
+                      <Tag size={15} />
+                      <span>Données Sensibles & Tags Profilés</span>
+                    </div>
+                    {(selected.sensibleAnswersTagged || []).length === 0 ? (
+                      <div className="muted" style={{ fontSize: 13, padding: "4px 0" }}>
+                        Aucune réponse sensible taguée
+                      </div>
+                    ) : (
+                      <div className="adminTagChipsGrid">
+                        {(selected.sensibleAnswersTagged || []).map((a, i) => (
+                          <div key={i} className="adminTagChip">
+                            <span className="adminTagChipKey">{a.tag} :</span>
+                            <span className="adminTagChipVal">{String(a.answer || "")}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Action Bar */}
+                    <div className="adminSaveRow" style={{ marginTop: 20 }}>
+                      <button
+                        className="btn btnGhost"
+                        type="button"
+                        onClick={exportUser}
+                      >
+                        <Download size={15} />
+                        <span>Exporter en TXT</span>
+                      </button>
+                      <button
+                        className="btn btnGhost"
+                        type="button"
+                        onClick={() => setDeleteConfirmModal(true)}
+                        style={{ color: "#f87171", borderColor: "rgba(239, 68, 68, 0.4)" }}
+                      >
+                        <Trash2 size={15} />
+                        <span>Supprimer</span>
+                      </button>
+                      <button
+                        className="btn btnPrimary"
+                        type="button"
+                        style={{ marginLeft: "auto" }}
+                        onClick={() => setEditMode(true)}
+                      >
+                        <Pencil size={15} />
+                        <span>Modifier le citoyen</span>
+                      </button>
                     </div>
                   </div>
                 ) : (
                   <>
                     <div className="adminBox">
-                      <div style={{ fontWeight: 700, marginBottom: 12 }}>
-                        Compte
+                      <div style={{ fontWeight: 800, fontSize: 14, color: "#00f0ff", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 14 }}>
+                        Édition du Compte Citoyen
                       </div>
 
                       <div className="adminTwoCols">
@@ -445,15 +529,15 @@ export default function AdminUsers() {
                     </div>
 
                     <div className="adminBox">
-                      <div style={{ fontWeight: 700, marginBottom: 12 }}>
-                        Paramètres administratifs
+                      <div style={{ fontWeight: 800, fontSize: 13, color: "#ffd600", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 10 }}>
+                        Droits d'administration
                       </div>
                       <div
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          gap: 8,
-                          padding: "8px 0",
+                          gap: 10,
+                          padding: "6px 0",
                         }}
                       >
                         <input
@@ -463,27 +547,20 @@ export default function AdminUsers() {
                           onChange={(e) =>
                             updateSelected({ is_admin: e.target.checked })
                           }
-                          style={{ width: 18, height: 18, cursor: "pointer" }}
+                          style={{ width: 18, height: 18, cursor: "pointer", accentColor: "#00f0ff" }}
                         />
                         <label
                           htmlFor="isAdminCheckbox"
-                          style={{ cursor: "pointer", fontWeight: 500 }}
+                          style={{ cursor: "pointer", fontWeight: 700, color: "#f8fafc" }}
                         >
-                          Compte administrateur
+                          Compte Administrateur (Accès complet au Panel Admin)
                         </label>
-                      </div>
-                      <div
-                        className="muted"
-                        style={{ fontSize: 13, marginTop: 4 }}
-                      >
-                        Les administrateurs ont accès au panel admin et peuvent
-                        gérer tous les utilisateurs et contenus.
                       </div>
                     </div>
 
                     <div className="adminBox">
-                      <div style={{ fontWeight: 700, marginBottom: 12 }}>
-                        Infos
+                      <div style={{ fontWeight: 800, fontSize: 13, color: "#00f0ff", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 12 }}>
+                        Caractéristiques & Profil RP
                       </div>
                       <div className="adminTwoCols">
                         <Field
@@ -526,11 +603,11 @@ export default function AdminUsers() {
                     </div>
 
                     <div className="adminBox">
-                      <div style={{ fontWeight: 700, marginBottom: 12 }}>
+                      <div style={{ fontWeight: 800, fontSize: 13, color: "#00f0ff", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 12 }}>
                         Réponses sensibles (avec tag)
                       </div>
                       {(selected.sensibleAnswersTagged || []).length === 0 ? (
-                        <div className="muted">Aucune</div>
+                        <div className="muted" style={{ fontSize: 13 }}>Aucune</div>
                       ) : (
                         <div className="adminTwoCols">
                           {(selected.sensibleAnswersTagged || []).map(
@@ -554,7 +631,7 @@ export default function AdminUsers() {
                         </div>
                       )}
 
-                      <div className="adminAddTagRow">
+                      <div className="adminAddTagRow" style={{ marginTop: 12 }}>
                         <input
                           className="adminFieldInput"
                           list="bniTagList"
@@ -604,48 +681,18 @@ export default function AdminUsers() {
                       </div>
                     </div>
 
-                    <div className="adminBox">
-                      <div style={{ fontWeight: 700, marginBottom: 12 }}>
-                        Réponses sensibles (sans tag)
-                      </div>
-                      {(selected.sensibleAnswersUntagged || []).length === 0 ? (
-                        <div className="muted">Aucune</div>
-                      ) : (
-                        <div className="adminTagList">
-                          {selected.sensibleAnswersUntagged.map((a, i) => (
-                            <div key={i} className="adminTagRow">
-                              <div className="adminTagKey">
-                                {a.questionTitle || "Question"}
-                              </div>
-                              <div className="adminTagVal">
-                                {String(a.answer)}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
                     <div className="adminSaveRow">
-                      <button
-                        className="btn btnGhost"
-                        type="button"
-                        onClick={exportUser}
-                      >
-                        <Download size={16} style={{ marginRight: 8 }} />
-                        Exporter en TXT
-                      </button>
                       <button
                         className="btn btnGhost"
                         type="button"
                         onClick={() => setDeleteConfirmModal(true)}
                         style={{
-                          color: "#ff4444",
-                          borderColor: "#ff4444",
+                          color: "#f87171",
+                          borderColor: "rgba(239, 68, 68, 0.4)",
                         }}
                       >
-                        <Trash2 size={16} style={{ marginRight: 8 }} />
-                        Supprimer le profil
+                        <Trash2 size={15} />
+                        <span>Supprimer le profil</span>
                       </button>
                       <div
                         style={{ marginLeft: "auto", display: "flex", gap: 10 }}
@@ -656,7 +703,8 @@ export default function AdminUsers() {
                           disabled={saving}
                           onClick={() => setEditMode(false)}
                         >
-                          Retour
+                          <X size={14} />
+                          <span>Annuler</span>
                         </button>
                         <button
                           className="btn btnPrimary"
@@ -664,7 +712,8 @@ export default function AdminUsers() {
                           disabled={saving}
                           onClick={save}
                         >
-                          {saving ? "Sauvegarde…" : "Sauvegarder"}
+                          <Save size={14} />
+                          <span>{saving ? "Sauvegarde…" : "Enregistrer"}</span>
                         </button>
                       </div>
                     </div>

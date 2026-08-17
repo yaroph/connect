@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { notifyError } from "../notify";
-import { adminGetStatistics } from "../../data/storage";
+import { adminGetStatistics, adminListUsers, loadDB } from "../../data/storage";
 import {
   Users,
   DollarSign,
@@ -9,11 +9,23 @@ import {
   CheckCircle2,
   UserPlus,
   LogIn,
+  Trophy,
+  TrendingUp,
+  Award,
+  Layers,
 } from "lucide-react";
 import "./adminStatistics.css";
 
+function initials(u) {
+  const a = (u?.prenom || "")[0] || "?";
+  const b = (u?.nom || "")[0] || "";
+  return `${String(a).toUpperCase()}${String(b).toUpperCase()}`;
+}
+
 export default function AdminStatistics() {
   const [stats, setStats] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [dbData, setDbData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedMetric, setSelectedMetric] = useState("randomAnswers");
   const lineChartRef = useRef(null);
@@ -47,11 +59,17 @@ export default function AdminStatistics() {
 
   useEffect(() => {
     let cancelled = false;
-    const loadStats = async () => {
+    const loadAll = async () => {
       try {
-        const data = await adminGetStatistics();
+        const [statsRes, usersRes, dbRes] = await Promise.all([
+          adminGetStatistics(),
+          adminListUsers().catch(() => ({ users: [] })),
+          loadDB().catch(() => null),
+        ]);
         if (!cancelled) {
-          setStats(data.statistics);
+          setStats(statsRes.statistics);
+          setUsers(usersRes.users || []);
+          setDbData(dbRes);
           setLoading(false);
         }
       } catch (e) {
@@ -62,25 +80,52 @@ export default function AdminStatistics() {
         }
       }
     };
-    loadStats();
+    loadAll();
     return () => {
       cancelled = true;
     };
   }, []);
 
-  // Créer la courbe d'évolution
+  // Extra computed insights
+  const extraStats = useMemo(() => {
+    if (!users || users.length === 0) return null;
+
+    const totalEarned = users.reduce((acc, u) => acc + Number(u.gagneSurBNI || 0), 0);
+    const totalPending = users.reduce((acc, u) => acc + Number(u.pending || 0), 0);
+    const avgEarned = totalEarned / (users.length || 1);
+
+    const sortedByEarned = [...users].sort(
+      (a, b) => Number(b.gagneSurBNI || 0) - Number(a.gagneSurBNI || 0),
+    );
+
+    const top5Earners = sortedByEarned.slice(0, 5);
+    const maxEarned = Number(sortedByEarned[0]?.gagneSurBNI || 0);
+
+    const totalQuestions = (dbData?.questions || []).length;
+    const totalQuestionnaires = (dbData?.questionnaires || []).length;
+    const totalTags = (dbData?.tags || []).length;
+
+    return {
+      totalEarned,
+      totalPending,
+      avgEarned,
+      maxEarned,
+      top5Earners,
+      totalQuestions,
+      totalQuestionnaires,
+      totalTags,
+    };
+  }, [users, dbData]);
+
+  // Chart.js line chart for 7-day evolution
   useEffect(() => {
     if (!stats || !stats.last7Days) return;
 
-    // Charger Chart.js dynamiquement
     const loadChartJS = async () => {
       if (window.Chart) return;
-
       const script = document.createElement("script");
-      script.src =
-        "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js";
+      script.src = "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js";
       script.async = true;
-
       return new Promise((resolve, reject) => {
         script.onload = resolve;
         script.onerror = reject;
@@ -90,7 +135,6 @@ export default function AdminStatistics() {
 
     loadChartJS()
       .then(() => {
-        // Détruire le graphique existant
         if (lineChartInstance.current) {
           lineChartInstance.current.destroy();
         }
@@ -100,40 +144,37 @@ export default function AdminStatistics() {
 
         const ctx = canvas.getContext("2d");
 
-        // Données selon la métrique sélectionnée
         const metricData = {
           randomAnswers: {
             label: "Réponses aléatoires",
             data: stats.last7Days.randomAnswers,
-            color: "rgba(255, 99, 132, 1)",
-            bgColor: "rgba(255, 99, 132, 0.2)",
+            color: "#00f0ff",
+            bgColor: "rgba(0, 240, 255, 0.15)",
           },
           questionnairesCompleted: {
             label: "Questionnaires complétés",
             data: stats.last7Days.questionnairesCompleted,
-            color: "rgba(54, 162, 235, 1)",
-            bgColor: "rgba(54, 162, 235, 0.2)",
+            color: "#10b981",
+            bgColor: "rgba(16, 185, 129, 0.15)",
           },
           inscriptions: {
             label: "Inscriptions",
             data: stats.last7Days.inscriptions,
-            color: "rgba(75, 192, 192, 1)",
-            bgColor: "rgba(75, 192, 192, 0.2)",
+            color: "#ffd600",
+            bgColor: "rgba(255, 214, 0, 0.15)",
           },
           connexions: {
             label: "Connexions",
             data: stats.last7Days.connexions,
-            color: "rgba(153, 102, 255, 1)",
-            bgColor: "rgba(153, 102, 255, 0.2)",
+            color: "#a855f7",
+            bgColor: "rgba(168, 85, 247, 0.15)",
           },
         };
 
         const selectedData = metricData[selectedMetric];
-
-        // Formater les dates
         const labels = stats.last7Days.dates.map((dateStr) => {
-          const [, month, day] = dateStr.split("-");
-          return `${day}/${month}`;
+          const parts = dateStr.split("-");
+          return parts.length >= 3 ? `${parts[2]}/${parts[1]}` : dateStr;
         });
 
         lineChartInstance.current = new window.Chart(ctx, {
@@ -147,13 +188,11 @@ export default function AdminStatistics() {
                 borderColor: selectedData.color,
                 backgroundColor: selectedData.bgColor,
                 borderWidth: 3,
-                tension: 0.4,
+                tension: 0.35,
                 fill: true,
-                pointRadius: 5,
-                pointHoverRadius: 7,
                 pointBackgroundColor: selectedData.color,
                 pointBorderColor: "#fff",
-                pointBorderWidth: 2,
+                pointHoverRadius: 6,
               },
             ],
           },
@@ -162,55 +201,21 @@ export default function AdminStatistics() {
             maintainAspectRatio: false,
             plugins: {
               legend: {
-                display: true,
-                position: "top",
                 labels: {
-                  color: "#fff",
-                  font: {
-                    size: 14,
-                    weight: "bold",
-                  },
-                  padding: 20,
-                },
-              },
-              title: {
-                display: true,
-                text: "Évolution sur les 7 derniers jours",
-                color: "#fff",
-                font: {
-                  size: 18,
-                  weight: "bold",
-                },
-                padding: {
-                  top: 10,
-                  bottom: 20,
+                  color: "#f8fafc",
+                  font: { weight: "bold", size: 12 },
                 },
               },
             },
             scales: {
               y: {
                 beginAtZero: true,
-                ticks: {
-                  color: "#fff",
-                  font: {
-                    size: 12,
-                  },
-                  stepSize: 1,
-                },
-                grid: {
-                  color: "rgba(255, 255, 255, 0.1)",
-                },
+                ticks: { color: "#94a3b8" },
+                grid: { color: "rgba(255, 255, 255, 0.06)" },
               },
               x: {
-                ticks: {
-                  color: "#fff",
-                  font: {
-                    size: 12,
-                  },
-                },
-                grid: {
-                  color: "rgba(255, 255, 255, 0.1)",
-                },
+                ticks: { color: "#94a3b8" },
+                grid: { color: "rgba(255, 255, 255, 0.06)" },
               },
             },
           },
@@ -218,29 +223,22 @@ export default function AdminStatistics() {
       })
       .catch((err) => {
         console.error("Erreur lors du chargement de Chart.js:", err);
-        notifyError("Impossible de charger les graphiques");
       });
 
     return () => {
-      if (lineChartInstance.current) {
-        lineChartInstance.current.destroy();
-      }
+      if (lineChartInstance.current) lineChartInstance.current.destroy();
     };
   }, [stats, selectedMetric]);
 
-  // Créer les graphiques démographiques
+  // Demographic Charts
   useEffect(() => {
     if (!stats || !stats.userStats) return;
 
-    // Charger Chart.js dynamiquement
     const loadChartJS = async () => {
       if (window.Chart) return;
-
       const script = document.createElement("script");
-      script.src =
-        "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js";
+      script.src = "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js";
       script.async = true;
-
       return new Promise((resolve, reject) => {
         script.onload = resolve;
         script.onerror = reject;
@@ -250,27 +248,20 @@ export default function AdminStatistics() {
 
     loadChartJS()
       .then(() => {
-        // Détruire les graphiques existants
         Object.values(chartInstances.current).forEach((chart) => {
           if (chart) chart.destroy();
         });
         chartInstances.current = {};
 
-        // Palette de couleurs
         const colors = [
-          "rgba(255, 99, 132, 0.8)",
-          "rgba(54, 162, 235, 0.8)",
-          "rgba(255, 206, 86, 0.8)",
-          "rgba(75, 192, 192, 0.8)",
-          "rgba(153, 102, 255, 0.8)",
-          "rgba(255, 159, 64, 0.8)",
-          "rgba(199, 199, 199, 0.8)",
-          "rgba(83, 102, 255, 0.8)",
-          "rgba(255, 99, 255, 0.8)",
-          "rgba(99, 255, 132, 0.8)",
+          "rgba(0, 240, 255, 0.8)",
+          "rgba(16, 185, 129, 0.8)",
+          "rgba(255, 214, 0, 0.8)",
+          "rgba(168, 85, 247, 0.8)",
+          "rgba(239, 68, 68, 0.8)",
+          "rgba(56, 189, 248, 0.8)",
         ];
 
-        // Créer un graphique pour chaque catégorie
         Object.keys(chartRefs).forEach((category, index) => {
           const canvas = chartRefs[category].current;
           if (!canvas) return;
@@ -291,54 +282,36 @@ export default function AdminStatistics() {
                   label: category,
                   data: values,
                   backgroundColor: colors.slice(0, labels.length),
-                  borderColor: colors
-                    .slice(0, labels.length)
-                    .map((c) => c.replace("0.8", "1")),
                   borderWidth: 1,
+                  borderColor: "rgba(255, 255, 255, 0.15)",
                 },
               ],
             },
             options: {
               responsive: true,
-              maintainAspectRatio: true,
+              maintainAspectRatio: false,
               plugins: {
                 legend: {
                   position: "bottom",
-                  labels: {
-                    color: "#fff",
-                    font: {
-                      size: 12,
-                    },
-                  },
+                  labels: { color: "#94a3b8", font: { size: 11 } },
                 },
                 title: {
                   display: true,
                   text: category.charAt(0).toUpperCase() + category.slice(1),
-                  color: "#fff",
-                  font: {
-                    size: 16,
-                    weight: "bold",
-                  },
+                  color: "#f8fafc",
+                  font: { size: 14, weight: "bold" },
                 },
               },
               ...(index % 2 !== 0 && {
                 scales: {
                   y: {
                     beginAtZero: true,
-                    ticks: {
-                      color: "#fff",
-                    },
-                    grid: {
-                      color: "rgba(255, 255, 255, 0.1)",
-                    },
+                    ticks: { color: "#94a3b8" },
+                    grid: { color: "rgba(255, 255, 255, 0.06)" },
                   },
                   x: {
-                    ticks: {
-                      color: "#fff",
-                    },
-                    grid: {
-                      color: "rgba(255, 255, 255, 0.1)",
-                    },
+                    ticks: { color: "#94a3b8" },
+                    grid: { color: "rgba(255, 255, 255, 0.06)" },
                   },
                 },
               }),
@@ -359,71 +332,132 @@ export default function AdminStatistics() {
 
   if (loading) {
     return (
-      <div className="adminStatsContainer">
-        <div className="adminStatsLoading">
-          <div className="spinner"></div>
-          <p>Chargement des statistiques...</p>
-        </div>
+      <div className="adminStatsLoading">
+        <div className="spinner"></div>
+        <p>Chargement du centre d'analyses statistiques…</p>
       </div>
     );
   }
 
   if (!stats) {
     return (
-      <div className="adminStatsContainer">
-        <div className="adminStatsError">
-          <p>Impossible de charger les statistiques</p>
-        </div>
+      <div className="adminStatsError">
+        <p>Impossible de charger les statistiques</p>
       </div>
     );
   }
 
   return (
     <div className="adminStatsContainer">
-      <h2 className="adminStatsTitle">Statistiques du site</h2>
+      <div className="adminHeaderRow">
+        <div>
+          <div className="adminTitle">Statistiques & Métriques Globales</div>
+          <div className="adminSub">
+            Analyses financières, démographiques et activité en temps réel du serveur
+          </div>
+        </div>
+      </div>
 
-      {/* Cartes principales - 3 sur la première ligne */}
+      {/* Cartes Principales Économie & Population */}
       <div className="statsMainCardsGrid">
         <div className="statsMainCard">
-          <div className="statsCardIcon"><Users size={24} /></div>
+          <div className="statsCardIcon cyan"><Users size={24} /></div>
           <div className="statsCardContent">
-            <div className="statsCardLabel">Total utilisateurs</div>
-            <div className="statsCardValue">{stats.totalUsers || 0}</div>
+            <div className="statsCardLabel">Total Citoyens Inscrits</div>
+            <div className="statsCardValue">{stats.totalUsers || users.length || 0}</div>
           </div>
         </div>
 
         <div className="statsMainCard">
-          <div className="statsCardIcon"><Wallet size={24} /></div>
+          <div className="statsCardIcon emerald"><DollarSign size={24} /></div>
           <div className="statsCardContent">
-            <div className="statsCardLabel">Total cagnottes</div>
-            <div className="statsCardValue">
-              $ {Number(stats.totalCagnotte || 0).toFixed(2)}
+            <div className="statsCardLabel">Total Distribué aux Joueurs</div>
+            <div className="statsCardValue emerald">
+              $ {Number(extraStats?.totalEarned || stats.totalGagneSurBNI || 0).toFixed(2)}
             </div>
           </div>
         </div>
 
         <div className="statsMainCard">
-          <div className="statsCardIcon"><DollarSign size={24} /></div>
+          <div className="statsCardIcon gold"><Wallet size={24} /></div>
           <div className="statsCardContent">
-            <div className="statsCardLabel">Gagné sur BNI</div>
+            <div className="statsCardLabel">Total en Attente / Cagnottes</div>
+            <div className="statsCardValue gold">
+              $ {Number(extraStats?.totalPending || stats.totalCagnotte || 0).toFixed(2)}
+            </div>
+          </div>
+        </div>
+
+        <div className="statsMainCard">
+          <div className="statsCardIcon purple"><TrendingUp size={24} /></div>
+          <div className="statsCardContent">
+            <div className="statsCardLabel">Gain Moyen / Citoyen</div>
             <div className="statsCardValue">
-              $ {Number(stats.totalGagneSurBNI || 0).toFixed(2)}
+              $ {Number(extraStats?.avgEarned || 0).toFixed(2)}
+            </div>
+          </div>
+        </div>
+
+        <div className="statsMainCard">
+          <div className="statsCardIcon amber"><Trophy size={24} /></div>
+          <div className="statsCardContent">
+            <div className="statsCardLabel">Record Gain Citoyen</div>
+            <div className="statsCardValue amber">
+              $ {Number(extraStats?.maxEarned || 0).toFixed(2)}
+            </div>
+          </div>
+        </div>
+
+        <div className="statsMainCard">
+          <div className="statsCardIcon blue"><Layers size={24} /></div>
+          <div className="statsCardContent">
+            <div className="statsCardLabel">Contenus Indexés</div>
+            <div className="statsCardValue">
+              {extraStats?.totalQuestions || 0} Qs • {extraStats?.totalQuestionnaires || 0} Qns
             </div>
           </div>
         </div>
       </div>
 
-      {/* Section Aujourd'hui */}
-      <h3 className="adminStatsSubtitle">Aujourd'hui</h3>
+      {/* Section Leaderboard Top Citoyens */}
+      {extraStats?.top5Earners && extraStats.top5Earners.length > 0 ? (
+        <div className="statsLeaderboardSection">
+          <div className="statsLeaderboardHeader">
+            <Award size={18} className="leaderboardIcon" />
+            <div className="statsLeaderboardTitle">Classement Top 5 des Citoyens Rémunérés</div>
+          </div>
+          <div className="statsLeaderboardGrid">
+            {extraStats.top5Earners.map((u, i) => (
+              <div key={u.id} className={`leaderboardCard rank${i + 1}`}>
+                <div className="leaderboardRankBadge">
+                  {i === 0 ? "🥇 #1" : i === 1 ? "🥈 #2" : i === 2 ? "🥉 #3" : `#${i + 1}`}
+                </div>
+                <div className="leaderboardAvatar">
+                  {u.photoProfil ? <img alt="" src={u.photoProfil} /> : initials(u)}
+                </div>
+                <div className="leaderboardInfo">
+                  <div className="leaderboardName">{u.prenom} {u.nom}</div>
+                  <div className="leaderboardEarnings">
+                    $ {Number(u.gagneSurBNI || 0).toFixed(2)} gagnés
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {/* Section Aujourd'hui - Cartes cliquables */}
+      <h3 className="adminStatsSubtitle">Activité Aujourd'hui & Évolution sur 7 jours</h3>
       <div className="statsTodayCardsGrid">
         <div
           className={`statsTodayCard ${selectedMetric === "randomAnswers" ? "active" : ""}`}
           onClick={() => setSelectedMetric("randomAnswers")}
         >
-          <div className="statsCardIcon"><HelpCircle size={20} /></div>
+          <div className="statsCardIcon cyan"><HelpCircle size={20} /></div>
           <div className="statsCardContent">
-            <div className="statsCardLabel">Réponses aléatoires</div>
-            <div className="statsCardValue">{stats.today.randomAnswers}</div>
+            <div className="statsCardLabel">Réponses Aléatoires</div>
+            <div className="statsCardValue">{stats.today?.randomAnswers || 0}</div>
           </div>
         </div>
 
@@ -431,12 +465,10 @@ export default function AdminStatistics() {
           className={`statsTodayCard ${selectedMetric === "questionnairesCompleted" ? "active" : ""}`}
           onClick={() => setSelectedMetric("questionnairesCompleted")}
         >
-          <div className="statsCardIcon"><CheckCircle2 size={20} /></div>
+          <div className="statsCardIcon emerald"><CheckCircle2 size={20} /></div>
           <div className="statsCardContent">
-            <div className="statsCardLabel">Questionnaires complétés</div>
-            <div className="statsCardValue">
-              {stats.today.questionnairesCompleted}
-            </div>
+            <div className="statsCardLabel">Questionnaires Complétés</div>
+            <div className="statsCardValue">{stats.today?.questionnairesCompleted || 0}</div>
           </div>
         </div>
 
@@ -444,10 +476,10 @@ export default function AdminStatistics() {
           className={`statsTodayCard ${selectedMetric === "inscriptions" ? "active" : ""}`}
           onClick={() => setSelectedMetric("inscriptions")}
         >
-          <div className="statsCardIcon"><UserPlus size={20} /></div>
+          <div className="statsCardIcon gold"><UserPlus size={20} /></div>
           <div className="statsCardContent">
-            <div className="statsCardLabel">Inscriptions</div>
-            <div className="statsCardValue">{stats.today.inscriptions}</div>
+            <div className="statsCardLabel">Nouvelles Inscriptions</div>
+            <div className="statsCardValue">{stats.today?.inscriptions || 0}</div>
           </div>
         </div>
 
@@ -455,10 +487,10 @@ export default function AdminStatistics() {
           className={`statsTodayCard ${selectedMetric === "connexions" ? "active" : ""}`}
           onClick={() => setSelectedMetric("connexions")}
         >
-          <div className="statsCardIcon"><LogIn size={20} /></div>
+          <div className="statsCardIcon purple"><LogIn size={20} /></div>
           <div className="statsCardContent">
-            <div className="statsCardLabel">Connexions</div>
-            <div className="statsCardValue">{stats.today.connexions}</div>
+            <div className="statsCardLabel">Connexions Citoyens</div>
+            <div className="statsCardValue">{stats.today?.connexions || 0}</div>
           </div>
         </div>
       </div>
@@ -468,18 +500,18 @@ export default function AdminStatistics() {
         <canvas ref={lineChartRef} />
       </div>
 
-      {/* Graphiques des données utilisateurs */}
-      <h3 className="adminStatsSubtitle">
-        Données démographiques des utilisateurs
-      </h3>
+      {/* Graphiques Démographiques */}
+      <h3 className="adminStatsSubtitle">Profils & Démographie des Citoyens</h3>
       <div className="chartsGrid">
         {Object.keys(chartRefs).map((category) => {
-          const data = stats.userStats[category];
+          const data = stats.userStats?.[category];
           if (!data || Object.keys(data).length === 0) return null;
 
           return (
             <div key={category} className="chartCard">
-              <canvas ref={chartRefs[category]} />
+              <div className="chartCardInner">
+                <canvas ref={chartRefs[category]} />
+              </div>
             </div>
           );
         })}
