@@ -181,53 +181,63 @@
 }
 
 /* Modal Cyber */
+.modalOverlay,
 .modalBackdrop {
   position: fixed;
   inset: 0;
-  background: rgba(4, 7, 15, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(3, 7, 18, 0.85);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  z-index: 1000;
-  animation: modalFade 0.2s ease-out;
+  padding: 20px;
+  z-index: 999999;
+  animation: modalFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.modalCard,
 .modalContent {
-  width: min(680px, 95vw);
-  border-radius: var(--radiusXL);
-  border: 1px solid var(--stroke2);
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(8, 14, 28, 0.98));
-  box-shadow: var(--shadowLg);
+  width: min(650px, 94vw);
+  max-height: 90vh;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  background: linear-gradient(135deg, rgba(14, 28, 56, 0.96) 0%, rgba(6, 12, 26, 0.98) 100%);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 240, 255, 0.15);
   padding: 24px 28px;
   position: relative;
-  max-height: 90vh;
   overflow-y: auto;
-  animation: modalScale 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+  animation: modalScale 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.modalCard.wide,
+.modalContent.wide {
+  width: min(1200px, 96vw);
+  max-height: 94vh;
 }
 
 .modalHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--stroke);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding-bottom: 14px;
   margin-bottom: 18px;
+  gap: 12px;
 }
 
 .modalTitle {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 900;
   color: #f8fafc;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.2px;
 }
 
 .modalCloseBtn {
-  background: transparent;
-  border: none;
-  color: var(--muted);
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: #94a3b8;
   cursor: pointer;
   padding: 6px;
   border-radius: 8px;
@@ -238,8 +248,10 @@
 }
 
 .modalCloseBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: rgba(30, 41, 59, 0.9);
+  border-color: #00f0ff;
+  color: #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
 }
 
 @keyframes modalFade {
@@ -254,7 +266,7 @@
 @keyframes modalScale {
   from {
     opacity: 0;
-    transform: scale(0.95) translateY(8px);
+    transform: scale(0.96) translateY(8px);
   }
   to {
     opacity: 1;

@@ -33,16 +33,16 @@
 
 .adminCard {
   border-radius: 16px;
-  padding: 12px 16px;
-  background: rgba(15, 23, 42, 0.65);
+  padding: 14px 18px;
+  background: rgba(15, 23, 42, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.15s ease;
 }
 
 .adminCard:hover {
-  border-color: rgba(0, 240, 255, 0.3);
-  background: rgba(15, 23, 42, 0.85);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border-color: rgba(0, 240, 255, 0.35);
+  background: rgba(15, 23, 42, 0.9);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .adminCardTop {
@@ -154,8 +154,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10px;
-  padding-top: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   gap: 8px;
 }
@@ -184,18 +184,21 @@
   color: #f8fafc;
 }
 
-/* Two columns layout for questionnaire editor */
+/* ==========================================
+   QUESTIONNAIRE EDITOR 2-COLUMNS HUD LAYOUT
+   ========================================== */
 .editorFormTwoCols {
   display: grid;
-  grid-template-columns: 380px 1fr;
-  gap: 20px;
-  height: calc(82vh - 100px);
-  min-height: 500px;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+  min-height: 520px;
+  max-height: calc(88vh - 120px);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .editorFormTwoCols {
     grid-template-columns: 1fr;
+    max-height: none;
     height: auto;
   }
 }
@@ -203,22 +206,130 @@
 .editorLeftCol {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
+  overflow-y: auto;
+  padding-right: 8px;
 }
 
 .editorRightCol {
   display: flex;
   flex-direction: column;
   border-left: 1px solid rgba(255, 255, 255, 0.08);
-  padding-left: 20px;
+  padding-left: 24px;
   overflow: hidden;
+  min-height: 0;
 }
 
-.editorForm .miniCard {
+.editorLeftCol .miniCard {
   padding: 16px;
   border-radius: 14px;
   background: rgba(15, 23, 42, 0.7);
   border: 1px solid rgba(56, 189, 248, 0.2);
-  box-sizing: border-box;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.questionsBlock {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.questionsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.qInlineList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.qInlineListScrollable {
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 6px;
+  min-height: 200px;
+}
+
+.qInline {
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+
+.qInline:hover {
+  border-color: rgba(0, 240, 255, 0.4);
+  background: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.qInlineHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.qInlineTitle {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #f8fafc;
+  flex: 1;
+}
+
+.qInlineHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qInlineMeta {
+  display: flex;
+  gap: 6px;
+}
+
+.qInlineActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.unreleasedWarning {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.unreleasedWarningTitle {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fbbf24;
+  display: flex;
+  align-items: center;
+}
+
+.unreleasedWarningText {
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.4;
 }
