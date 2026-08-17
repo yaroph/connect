@@ -2,15 +2,7 @@ import React, { useEffect, useMemo, useState, useRef } from "react";
 import { Download, BarChart3, PieChart, Trash2 } from "lucide-react";
 import Modal from "../Modal";
 import "./responses.css";
-import { adminDeleteAnswer } from "../../data/storage";
-
-async function fetchJSON(url) {
-  const res = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
-  });
-  if (!res.ok) throw new Error(String(res.status));
-  return res.json();
-}
+import { adminDeleteAnswer, adminListUsers } from "../../data/storage";
 
 function fmtDate(d) {
   if (!d) return "";
@@ -182,7 +174,7 @@ export default function ResponsesModal({
     let cancelled = false;
     const run = async () => {
       try {
-        const list = await fetchJSON("/api/admin/users");
+        const list = await adminListUsers();
         const map = {};
         for (const u of list.users || list || []) {
           const id = String(u.id || "");

@@ -1,15 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { notifyError } from "../notify";
+import { adminGetStatistics } from "../../data/storage";
 import "./adminStatistics.css";
-
-// Fonction pour récupérer les statistiques depuis l'API
-async function fetchStatistics() {
-  const res = await fetch("/api/admin/statistics");
-  if (!res.ok) {
-    throw new Error(`Erreur ${res.status}: ${res.statusText}`);
-  }
-  return res.json();
-}
 
 export default function AdminStatistics() {
   const [stats, setStats] = useState(null);
@@ -48,7 +40,7 @@ export default function AdminStatistics() {
     let cancelled = false;
     const loadStats = async () => {
       try {
-        const data = await fetchStatistics();
+        const data = await adminGetStatistics();
         if (!cancelled) {
           setStats(data.statistics);
           setLoading(false);
@@ -387,7 +379,7 @@ export default function AdminStatistics() {
           <div className="statsCardIcon">👨‍👩‍👧‍👦</div>
           <div className="statsCardContent">
             <div className="statsCardLabel">Total utilisateurs</div>
-            <div className="statsCardValue">{stats.totalUsers}</div>
+            <div className="statsCardValue">{stats.totalUsers || 0}</div>
           </div>
         </div>
 
@@ -396,7 +388,7 @@ export default function AdminStatistics() {
           <div className="statsCardContent">
             <div className="statsCardLabel">Total cagnottes</div>
             <div className="statsCardValue">
-              {stats.totalCagnotte.toFixed(2)} €
+              $ {Number(stats.totalCagnotte || 0).toFixed(2)}
             </div>
           </div>
         </div>
@@ -406,7 +398,7 @@ export default function AdminStatistics() {
           <div className="statsCardContent">
             <div className="statsCardLabel">Gagné sur BNI</div>
             <div className="statsCardValue">
-              {stats.totalGagneSurBNI.toFixed(2)} €
+              $ {Number(stats.totalGagneSurBNI || 0).toFixed(2)}
             </div>
           </div>
         </div>
