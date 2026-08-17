@@ -1,5 +1,13 @@
 import React, { useMemo, useState } from "react";
-import { Upload, CheckCircle2, XCircle, FileJson2, ImagePlus, KeyRound } from "lucide-react";
+import {
+  Upload,
+  CheckCircle2,
+  XCircle,
+  FileJson2,
+  ImagePlus,
+  KeyRound,
+} from "lucide-react";
+import { getAuthToken } from "../data/storage";
 import "./dataImportPage.css";
 
 const ALLOWED = [
@@ -15,9 +23,13 @@ const ALLOWED = [
 ];
 
 async function postJSON(url, body) {
+  const token = getAuthToken();
   const res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify(body),
   });
   const text = await res.text();
@@ -105,7 +117,7 @@ export default function DataImportPage() {
             status: rr.ok ? "OK" : "ERR",
             message: rr.ok ? "Importé" : rr.error || "Erreur",
           };
-        })
+        }),
       );
       setDone(true);
     } catch (e) {
@@ -147,7 +159,9 @@ export default function DataImportPage() {
         throw new Error("JSON invalide");
       }
       if (!Array.isArray(data)) {
-        throw new Error("Le fichier doit contenir un tableau (array) d'utilisateurs");
+        throw new Error(
+          "Le fichier doit contenir un tableau (array) d'utilisateurs",
+        );
       }
       const r = await postJSON("/api/admin/reset-passwords", { entries: data });
       setPwdResult(r);
@@ -169,7 +183,8 @@ export default function DataImportPage() {
         </div>
 
         <div className="dataImportHint">
-          Cette page permet de charger vos fichiers <b>.json</b> dans le stockage persistant Netlify Blobs.
+          Cette page permet de charger vos fichiers <b>.json</b> dans le
+          stockage persistant Netlify Blobs.
           <br />
           Noms acceptés : <span className="mono">{ALLOWED.join(", ")}</span>
         </div>
@@ -187,7 +202,12 @@ export default function DataImportPage() {
             Choisir des fichiers
           </label>
 
-          <button className="btn" type="button" onClick={importNow} disabled={busy || files.length === 0}>
+          <button
+            className="btn"
+            type="button"
+            onClick={importNow}
+            disabled={busy || files.length === 0}
+          >
             {busy ? "Import..." : "Importer"}
           </button>
         </div>
@@ -212,7 +232,15 @@ export default function DataImportPage() {
                   ) : (
                     <span className="pill">Prêt</span>
                   )}
-                  <span className={it.status === "OK" ? "ok" : it.status === "ERR" || it.status === "BLOCKED" ? "err" : ""}>
+                  <span
+                    className={
+                      it.status === "OK"
+                        ? "ok"
+                        : it.status === "ERR" || it.status === "BLOCKED"
+                          ? "err"
+                          : ""
+                    }
+                  >
                     {it.message}
                   </span>
                 </div>
@@ -222,7 +250,8 @@ export default function DataImportPage() {
         </div>
 
         <div className="dataImportFooter muted">
-          Astuce : après import, rechargez la page principale pour utiliser les nouvelles données.
+          Astuce : après import, rechargez la page principale pour utiliser les
+          nouvelles données.
         </div>
       </div>
 
@@ -236,10 +265,12 @@ export default function DataImportPage() {
         </div>
 
         <div className="dataImportHint">
-          Uploadez votre fichier <b>motdepasse_defaut.json</b> (liste d'utilisateurs + motDePasse) et le site remettra
-          les mots de passe dans <code>utilisateur.json</code>.
+          Uploadez votre fichier <b>motdepasse_defaut.json</b> (liste
+          d'utilisateurs + motDePasse) et le site remettra les mots de passe
+          dans <code>utilisateur.json</code>.
           <br />
-          Correspondance par <b>fullName</b> (ou prenom+nom). Les entrées non trouvées sont ignorées.
+          Correspondance par <b>fullName</b> (ou prenom+nom). Les entrées non
+          trouvées sont ignorées.
         </div>
 
         <div className="dataImportActions">
@@ -254,26 +285,42 @@ export default function DataImportPage() {
             Choisir motdepasse_defaut
           </label>
 
-          <button className="btn" type="button" onClick={resetPasswords} disabled={pwdBusy || !pwdFile}>
+          <button
+            className="btn"
+            type="button"
+            onClick={resetPasswords}
+            disabled={pwdBusy || !pwdFile}
+          >
             {pwdBusy ? "Reset…" : "Remettre les mots de passe"}
           </button>
 
-          {pwdFile ? <span className="muted">{pwdFile.name}</span> : <span className="muted">Aucun fichier</span>}
+          {pwdFile ? (
+            <span className="muted">{pwdFile.name}</span>
+          ) : (
+            <span className="muted">Aucun fichier</span>
+          )}
         </div>
 
         {pwdError ? <div className="dataImportError">{pwdError}</div> : null}
 
         {pwdResult ? (
           <div className="dataImportOk">
-            <div><b>Terminé.</b></div>
+            <div>
+              <b>Terminé.</b>
+            </div>
             <div style={{ marginTop: 8 }}>
               ✓ {pwdResult.updated || 0} mot(s) de passe modifié(s)
-              {typeof pwdResult.invalid === "number" ? ` — ${pwdResult.invalid} entrée(s) invalide(s)` : ""}
-              {typeof pwdResult.notFoundCount === "number" ? ` — ${pwdResult.notFoundCount} non trouvé(s)` : ""}
+              {typeof pwdResult.invalid === "number"
+                ? ` — ${pwdResult.invalid} entrée(s) invalide(s)`
+                : ""}
+              {typeof pwdResult.notFoundCount === "number"
+                ? ` — ${pwdResult.notFoundCount} non trouvé(s)`
+                : ""}
             </div>
             {(pwdResult.notFoundSample || []).length ? (
               <div style={{ marginTop: 8 }} className="muted">
-                Exemples non trouvés: {(pwdResult.notFoundSample || []).slice(0, 8).join(", ")}
+                Exemples non trouvés:{" "}
+                {(pwdResult.notFoundSample || []).slice(0, 8).join(", ")}
               </div>
             ) : null}
           </div>
@@ -290,23 +337,29 @@ export default function DataImportPage() {
         </div>
 
         <div className="dataImportHint">
-          Cette fonctionnalité convertit les images encodées en base64 dans les fichiers JSON en fichiers image séparés.
+          Cette fonctionnalité convertit les images encodées en base64 dans les
+          fichiers JSON en fichiers image séparés.
           <br />
-          Cela réduit considérablement la taille des payloads et résout les erreurs "Exceeded maximum allowed payload size".
+          Cela réduit considérablement la taille des payloads et résout les
+          erreurs "Exceeded maximum allowed payload size".
           <br />
           <br />
-          <strong>Concerné :</strong> 
+          <strong>Concerné :</strong>
           <ul style={{ marginTop: 8, paddingLeft: 20 }}>
-            <li>Images des questions (champ <code>imageUrl</code>)</li>
-            <li>Photos de profil des utilisateurs (champ <code>photoProfil</code>)</li>
+            <li>
+              Images des questions (champ <code>imageUrl</code>)
+            </li>
+            <li>
+              Photos de profil des utilisateurs (champ <code>photoProfil</code>)
+            </li>
           </ul>
         </div>
 
         <div className="dataImportActions">
-          <button 
-            className="btn" 
-            type="button" 
-            onClick={migrateImages} 
+          <button
+            className="btn"
+            type="button"
+            onClick={migrateImages}
             disabled={migrating}
           >
             {migrating ? "Migration en cours..." : "Lancer la migration"}
@@ -323,20 +376,30 @@ export default function DataImportPage() {
           <div className="dataImportOk">
             <strong>Migration réussie !</strong>
             <div style={{ marginTop: 12 }}>
-              <div>✓ Questions : {migrationResult.results?.questions || 0} image(s) migrée(s)</div>
-              <div>✓ Utilisateurs : {migrationResult.results?.users || 0} photo(s) migrée(s)</div>
+              <div>
+                ✓ Questions : {migrationResult.results?.questions || 0} image(s)
+                migrée(s)
+              </div>
+              <div>
+                ✓ Utilisateurs : {migrationResult.results?.users || 0} photo(s)
+                migrée(s)
+              </div>
               <div style={{ marginTop: 8 }}>
-                <strong>Total : {migrationResult.results?.total || 0} image(s) migrée(s)</strong>
+                <strong>
+                  Total : {migrationResult.results?.total || 0} image(s)
+                  migrée(s)
+                </strong>
               </div>
             </div>
-            <div style={{ marginTop: 12, fontSize: '0.9em', opacity: 0.8 }}>
+            <div style={{ marginTop: 12, fontSize: "0.9em", opacity: 0.8 }}>
               {migrationResult.message}
             </div>
           </div>
         ) : null}
 
         <div className="dataImportFooter muted">
-          Note : Cette opération est idempotente. Vous pouvez la relancer sans problème si de nouvelles données avec des images base64 sont ajoutées.
+          Note : Cette opération est idempotente. Vous pouvez la relancer sans
+          problème si de nouvelles données avec des images base64 sont ajoutées.
         </div>
       </div>
     </div>

@@ -1,6 +1,12 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import MainPage from "./MainPage";
 
@@ -36,15 +42,19 @@ jest.mock("../data/storage", () => ({
   adminUpdateUser: (...args) => mockAdminUpdateUser(...args),
   authMe: (...args) => mockAuthMe(...args),
   loadSettings: (...args) => mockLoadSettings(...args),
-  getAnsweredQuestionsInQuestionnaire: (...args) => mockGetAnsweredQuestionsInQuestionnaire(...args),
-  getUserQuestionnairesProgress: (...args) => mockGetUserQuestionnairesProgress(...args),
+  getAnsweredQuestionsInQuestionnaire: (...args) =>
+    mockGetAnsweredQuestionsInQuestionnaire(...args),
+  getUserQuestionnairesProgress: (...args) =>
+    mockGetUserQuestionnairesProgress(...args),
   validateQuestionnaire: (...args) => mockValidateQuestionnaire(...args),
-  markQuestionnaireCompleted: (...args) => mockMarkQuestionnaireCompleted(...args),
+  markQuestionnaireCompleted: (...args) =>
+    mockMarkQuestionnaireCompleted(...args),
   syncQuestionnaireAnswers: (...args) => mockSyncQuestionnaireAnswers(...args),
   resizeImage: jest.fn(async (value) => value),
   clearDBCache: (...args) => mockClearDBCache(...args),
   verifyPaymentStatus: (...args) => mockVerifyPaymentStatus(...args),
-  isQuestionnaireActive: (qn) => Boolean(qn && qn.visible !== false && !qn.isPrivate),
+  isQuestionnaireActive: (qn) =>
+    Boolean(qn && qn.visible !== false && !qn.isPrivate),
 }));
 
 jest.mock("../ui/notify", () => ({
@@ -125,7 +135,10 @@ describe("MainPage questionnaire flow", () => {
       earningsPerQuestionnaire: 1,
       maxWithdrawalsPerMonth: 5,
     });
-    mockGetUserQuestionnairesProgress.mockResolvedValue({ ok: true, progress: {} });
+    mockGetUserQuestionnairesProgress.mockResolvedValue({
+      ok: true,
+      progress: {},
+    });
     mockGetAnsweredQuestionsInQuestionnaire.mockResolvedValue({
       ok: true,
       answeredQuestionIds: [],
@@ -189,7 +202,7 @@ describe("MainPage questionnaire flow", () => {
     render(
       <MemoryRouter>
         <MainPage authUser={user} authPending={0} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await screen.findByText("Question 1");
@@ -203,36 +216,44 @@ describe("MainPage questionnaire flow", () => {
       });
       fireEvent.click(screen.getByRole("button", { name: "Valider" }));
 
-      await waitFor(() => expect(mockAppendAnswer).toHaveBeenCalledTimes(index + 1));
+      await waitFor(() =>
+        expect(mockAppendAnswer).toHaveBeenCalledTimes(index + 1),
+      );
       expect(mockAppendAnswer.mock.calls[index][0]).toEqual(
         expect.objectContaining({
           questionnaireId: questionnaire.id,
           questionId: currentQuestion.id,
           answer: `Réponse ${index + 1}`,
-        })
+        }),
       );
 
       if (index < questions.length - 1) {
-        await waitFor(() => expect(screen.getByText(questions[index + 1].title)).toBeInTheDocument());
+        await screen.findByText(questions[index + 1].title);
         await act(async () => {
           jest.advanceTimersByTime(1000);
         });
       }
     }
 
-    await waitFor(() => expect(mockSyncQuestionnaireAnswers.mock.calls.length).toBeGreaterThanOrEqual(questions.length));
-    await waitFor(() => expect(mockMarkQuestionnaireCompleted).toHaveBeenCalledWith(questionnaire.id, user.id));
+    await waitFor(() =>
+      expect(
+        mockSyncQuestionnaireAnswers.mock.calls.length,
+      ).toBeGreaterThanOrEqual(questions.length),
+    );
+    await waitFor(() =>
+      expect(mockMarkQuestionnaireCompleted).toHaveBeenCalledWith(
+        questionnaire.id,
+        user.id,
+      ),
+    );
     expect(mockValidateQuestionnaire).not.toHaveBeenCalled();
-    expect(mockAppendAnswer.mock.calls.map((call) => call[0].questionId)).toEqual([
-      "q1",
-      "q2",
-      "q3",
-      "q4",
-      "q5",
-      "q6",
-    ]);
     expect(
-      mockSyncQuestionnaireAnswers.mock.calls.slice(0, questions.length).map((call) => call[2].length)
+      mockAppendAnswer.mock.calls.map((call) => call[0].questionId),
+    ).toEqual(["q1", "q2", "q3", "q4", "q5", "q6"]);
+    expect(
+      mockSyncQuestionnaireAnswers.mock.calls
+        .slice(0, questions.length)
+        .map((call) => call[2].length),
     ).toEqual([1, 2, 3, 4, 5, 6]);
   });
 });

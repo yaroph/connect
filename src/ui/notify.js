@@ -9,7 +9,7 @@ export function notify(message, type = "info") {
           type,
           message: String(message || ""),
         },
-      })
+      }),
     );
   } catch (e) {
     // no-op
@@ -30,7 +30,7 @@ export function confirmAction(message, onConfirm, onCancel) {
           onConfirm,
           onCancel,
         },
-      })
+      }),
     );
   } catch (e) {
     // fallback to browser confirm

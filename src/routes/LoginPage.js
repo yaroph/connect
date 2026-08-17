@@ -2,12 +2,21 @@ import React, { useEffect, useState } from "react";
 import "../styles/auth.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Modal from "../ui/Modal";
-import { authLogin, authMe, getAuthToken, setAuthToken, saveCredentials, passwordResetVerify, passwordResetSet } from "../data/storage";
+import {
+  authLogin,
+  authMe,
+  getAuthToken,
+  setAuthToken,
+  saveCredentials,
+  passwordResetVerify,
+  passwordResetSet,
+} from "../data/storage";
 
 export default function LoginPage() {
   const [prenom, setPrenom] = useState("");
   const [nom, setNom] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -49,7 +58,6 @@ export default function LoginPage() {
       const r = await authLogin({ prenom, nom, motDePasse });
       if (r && r.ok) {
         setAuthToken(r.token);
-        // Remember account to restore session after a page reload
         saveCredentials({ prenom, nom, motDePasse });
         nav(from, { replace: true });
       } else {
@@ -144,33 +152,66 @@ export default function LoginPage() {
     <div className="authRoot">
       <div className="authCard">
         <div className="authLogo">
-          <img src="/bniconnect.png" alt="BNI" style={{ width: 120, height: "auto" }} />
+          <img
+            src="/bniconnect.png"
+            alt="BNI Connect"
+            style={{ width: 130, height: "auto" }}
+          />
         </div>
         <div className="authTitle">Connexion</div>
-        <div className="authSub">Entrez votre nom, prénom et mot de passe</div>
+        <div className="authSub">Entrez vos identifiants de citoyen pour continuer</div>
+
+        <div className="rpDisclaimer">
+          <span className="rpBadge">RP ONLY</span>
+          Application dédiée au jeu de rôle. N'entrez <strong>aucune information réelle</strong> (vrai mot de passe ou compte bancaire).
+        </div>
 
         <form onSubmit={onSubmit}>
           <div className="authField">
             <div className="authLabel">Prénom(s)</div>
-            <input className="authInput" value={prenom} onChange={(e) => setPrenom(e.target.value)} required />
+            <input
+              className="authInput"
+              value={prenom}
+              onChange={(e) => setPrenom(e.target.value)}
+              placeholder="Ex: John"
+              required
+              autoFocus
+            />
           </div>
           <div className="authField">
             <div className="authLabel">Nom de famille</div>
-            <input className="authInput" value={nom} onChange={(e) => setNom(e.target.value)} required />
-          </div>
-          <div className="authField">
-            <div className="authLabel">Mot de passe</div>
             <input
               className="authInput"
-              type="password"
-              value={motDePasse}
-              onChange={(e) => setMotDePasse(e.target.value)}
+              value={nom}
+              onChange={(e) => setNom(e.target.value)}
+              placeholder="Ex: Doe"
               required
             />
           </div>
+          <div className="authField">
+            <div className="authLabel">Mot de passe (Jeu)</div>
+            <div className="passwordInputWrapper">
+              <input
+                className="authInput"
+                type={showPassword ? "text" : "password"}
+                value={motDePasse}
+                onChange={(e) => setMotDePasse(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+              <button
+                type="button"
+                className="passwordToggleBtn"
+                onClick={() => setShowPassword(!showPassword)}
+                title={showPassword ? "Masquer" : "Afficher"}
+              >
+                {showPassword ? "👁️" : "🙈"}
+              </button>
+            </div>
+          </div>
 
           <button className="authBtn" disabled={loading} type="submit">
-            Se connecter
+            {loading ? "Connexion en cours…" : "Se connecter"}
           </button>
 
           {error ? <div className="authError">{error}</div> : null}
@@ -178,15 +219,13 @@ export default function LoginPage() {
 
         <div className="authBottom">
           Pas encore de compte ?
-          <Link className="authLink" to="/signup">S'inscrire</Link>
+          <Link className="authLink" to="/signup">
+            S'inscrire
+          </Link>
         </div>
 
         <div className="authForgotWrap">
-          <button
-            type="button"
-            className="authForgotLink"
-            onClick={openForgot}
-          >
+          <button type="button" className="authForgotLink" onClick={openForgot}>
             Mot de passe oublié ?
           </button>
         </div>
@@ -199,32 +238,62 @@ export default function LoginPage() {
           {fpStep === 1 ? (
             <>
               <div className="muted" style={{ marginBottom: 12 }}>
-                Renseignez les informations du compte.
+                Renseignez les informations de votre citoyen.
               </div>
               <div className="authField">
                 <div className="authLabel">Prénom(s)</div>
-                <input className="authInput" value={fpPrenom} onChange={(e) => setFpPrenom(e.target.value)} />
+                <input
+                  className="authInput"
+                  value={fpPrenom}
+                  onChange={(e) => setFpPrenom(e.target.value)}
+                />
               </div>
               <div className="authField">
                 <div className="authLabel">Nom</div>
-                <input className="authInput" value={fpNom} onChange={(e) => setFpNom(e.target.value)} />
+                <input
+                  className="authInput"
+                  value={fpNom}
+                  onChange={(e) => setFpNom(e.target.value)}
+                />
               </div>
               <div className="authField">
                 <div className="authLabel">Date de naissance</div>
-                <input className="authInput" type="date" value={fpDateNaissance} onChange={(e) => setFpDateNaissance(e.target.value)} />
+                <input
+                  className="authInput"
+                  type="date"
+                  value={fpDateNaissance}
+                  onChange={(e) => setFpDateNaissance(e.target.value)}
+                />
               </div>
               <div className="authField">
-                <div className="authLabel">Numéro de compte en banque</div>
-                <input className="authInput" value={fpCompte} onChange={(e) => setFpCompte(e.target.value)} inputMode="numeric" />
+                <div className="authLabel">
+                  Numéro de compte en banque (RP)
+                </div>
+                <input
+                  className="authInput"
+                  value={fpCompte}
+                  onChange={(e) => setFpCompte(e.target.value)}
+                  inputMode="numeric"
+                />
               </div>
 
               {fpError ? <div className="authError">{fpError}</div> : null}
 
-              <div className="rowBtns" style={{ marginTop: 14 }}>
-                <button className="btn btnGhost" type="button" onClick={closeForgot} disabled={fpLoading}>
+              <div className="rowBtns" style={{ marginTop: 16 }}>
+                <button
+                  className="btn btnGhost"
+                  type="button"
+                  onClick={closeForgot}
+                  disabled={fpLoading}
+                >
                   Fermer
                 </button>
-                <button className="btn btnPrimary" type="button" onClick={onVerifyForgot} disabled={fpLoading}>
+                <button
+                  className="btn btnPrimary"
+                  type="button"
+                  onClick={onVerifyForgot}
+                  disabled={fpLoading}
+                >
                   {fpLoading ? "Vérification…" : "Vérifier"}
                 </button>
               </div>
@@ -236,20 +305,42 @@ export default function LoginPage() {
               </div>
               <div className="authField">
                 <div className="authLabel">Nouveau mot de passe</div>
-                <input className="authInput" type="password" value={fpNew1} onChange={(e) => setFpNew1(e.target.value)} />
+                <input
+                  className="authInput"
+                  type="password"
+                  value={fpNew1}
+                  onChange={(e) => setFpNew1(e.target.value)}
+                />
               </div>
               <div className="authField">
-                <div className="authLabel">Confirmer le nouveau mot de passe</div>
-                <input className="authInput" type="password" value={fpNew2} onChange={(e) => setFpNew2(e.target.value)} />
+                <div className="authLabel">
+                  Confirmer le nouveau mot de passe
+                </div>
+                <input
+                  className="authInput"
+                  type="password"
+                  value={fpNew2}
+                  onChange={(e) => setFpNew2(e.target.value)}
+                />
               </div>
 
               {fpError ? <div className="authError">{fpError}</div> : null}
 
-              <div className="rowBtns" style={{ marginTop: 14 }}>
-                <button className="btn btnGhost" type="button" onClick={() => setFpStep(1)} disabled={fpLoading}>
+              <div className="rowBtns" style={{ marginTop: 16 }}>
+                <button
+                  className="btn btnGhost"
+                  type="button"
+                  onClick={() => setFpStep(1)}
+                  disabled={fpLoading}
+                >
                   Retour
                 </button>
-                <button className="btn btnPrimary" type="button" onClick={onSetForgot} disabled={fpLoading}>
+                <button
+                  className="btn btnPrimary"
+                  type="button"
+                  onClick={onSetForgot}
+                  disabled={fpLoading}
+                >
                   {fpLoading ? "Modification…" : "Changer"}
                 </button>
               </div>

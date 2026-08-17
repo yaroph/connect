@@ -5,10 +5,13 @@ import IconButton from "../IconButton";
 import ResponsesModal from "./ResponsesModal";
 import { newId, adminListUsers } from "../../data/storage";
 import { getAnswersForTag } from "../../data/selectors";
-import { isUserVariableTag, getUserFieldForTagName, USER_VARIABLE_TAGS } from "../../data/userVariableTags";
+import {
+  isUserVariableTag,
+  getUserFieldForTagName,
+  USER_VARIABLE_TAGS,
+} from "../../data/userVariableTags";
 import "./adminShared.css";
 import "./tagsTab.css";
-
 
 export default function AdminTags({ db, onDBChange }) {
   const [search, setSearch] = useState("");
@@ -18,10 +21,10 @@ export default function AdminTags({ db, onDBChange }) {
 
   const tags = useMemo(() => {
     const q = (search || "").trim().toLowerCase();
-    
+
     // Filtrer les tags classiques pour exclure les variable.user (qui ne devraient pas être dans db.tags)
     const classicTags = (db.tags || []).filter((t) => !isUserVariableTag(t));
-    
+
     // Appliquer le filtre de mode
     let filtered = [];
     if (filterMode === "ALL") {
@@ -31,7 +34,7 @@ export default function AdminTags({ db, onDBChange }) {
     } else if (filterMode === "USER_VARIABLE") {
       filtered = USER_VARIABLE_TAGS;
     }
-    
+
     // Trier et filtrer par recherche
     const sorted = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
     if (!q) return sorted;
@@ -51,14 +54,21 @@ export default function AdminTags({ db, onDBChange }) {
 
     onDBChange((draft) => {
       draft.tags = draft.tags || [];
-      const existing = draft.tags.find((t) => t.name.toLowerCase() === name.toLowerCase() && t.id !== editor.id);
+      const existing = draft.tags.find(
+        (t) =>
+          t.name.toLowerCase() === name.toLowerCase() && t.id !== editor.id,
+      );
       if (existing) return draft;
 
       if (editor.id) {
         const idx = draft.tags.findIndex((t) => t.id === editor.id);
         if (idx >= 0) draft.tags[idx].name = name;
       } else {
-        draft.tags.unshift({ id: newId("t"), name, createdAt: new Date().toISOString() });
+        draft.tags.unshift({
+          id: newId("t"),
+          name,
+          createdAt: new Date().toISOString(),
+        });
       }
       return draft;
     });
@@ -71,7 +81,9 @@ export default function AdminTags({ db, onDBChange }) {
     // No browser confirm/popups: delete immediately
     onDBChange((draft) => {
       draft.tags = (draft.tags || []).filter((t) => t.id !== id);
-      draft.questions = (draft.questions || []).map((q) => (q.tagId === id ? { ...q, tagId: null } : q));
+      draft.questions = (draft.questions || []).map((q) =>
+        q.tagId === id ? { ...q, tagId: null } : q,
+      );
       return draft;
     });
   };
@@ -81,9 +93,13 @@ export default function AdminTags({ db, onDBChange }) {
       <div className="adminHeaderRow">
         <div>
           <div className="adminTitle">Tags</div>
-          <div className="adminSub">Organisation / filtrage & consultation des réponses par tag.</div>
+          <div className="adminSub">
+            Organisation / filtrage & consultation des réponses par tag.
+          </div>
         </div>
-        <button className="btn btnPrimary" onClick={openCreate} type="button">Créer un tag</button>
+        <button className="btn btnPrimary" onClick={openCreate} type="button">
+          Créer un tag
+        </button>
       </div>
 
       <div className="tagTools glass">
@@ -97,21 +113,21 @@ export default function AdminTags({ db, onDBChange }) {
           />
         </div>
         <div className="tagFilterButtons">
-          <button 
+          <button
             className={`btn btnGhost ${filterMode === "ALL" ? "activeBtn" : ""}`}
             onClick={() => setFilterMode("ALL")}
             type="button"
           >
             Tous
           </button>
-          <button 
+          <button
             className={`btn btnGhost ${filterMode === "CLASSIC" ? "activeBtn" : ""}`}
             onClick={() => setFilterMode("CLASSIC")}
             type="button"
           >
             Tags classiques
           </button>
-          <button 
+          <button
             className={`btn btnGhost ${filterMode === "USER_VARIABLE" ? "activeBtn" : ""}`}
             onClick={() => setFilterMode("USER_VARIABLE")}
             type="button"
@@ -127,14 +143,17 @@ export default function AdminTags({ db, onDBChange }) {
           return (
             <div key={t.id} className="adminCard glassCard">
               <div className="adminCardTop">
-                <div className="adminCardTitle">
-                  {t.name}
-</div>
+                <div className="adminCardTitle">{t.name}</div>
                 <div className="adminIconRow">
                   {!locked ? (
                     <>
-                      <IconButton title="Modifier" onClick={() => openEdit(t)}><Pencil size={18} /></IconButton>
-                      <IconButton title="Supprimer" onClick={() => remove(t.id)}>
+                      <IconButton title="Modifier" onClick={() => openEdit(t)}>
+                        <Pencil size={18} />
+                      </IconButton>
+                      <IconButton
+                        title="Supprimer"
+                        onClick={() => remove(t.id)}
+                      >
                         <Trash2 size={18} />
                       </IconButton>
                     </>
@@ -157,64 +176,92 @@ export default function AdminTags({ db, onDBChange }) {
                             .map((u) => ({
                               id: `vu_${t.id}_${u.id}`,
                               userId: u.id,
-                              userName: u.fullName || `${u.prenom || ""} ${u.nom || ""}`.trim(),
+                              userName:
+                                u.fullName ||
+                                `${u.prenom || ""} ${u.nom || ""}`.trim(),
                               answer: field ? (u[field] ?? "") : "",
-                              createdAt: u.updatedAt || u.createdAt || new Date().toISOString(),
+                              createdAt:
+                                u.updatedAt ||
+                                u.createdAt ||
+                                new Date().toISOString(),
                             }));
-                          setAnswersModal({ title: `Réponses — ${t.name}`, answers });
+                          setAnswersModal({
+                            title: `Réponses — ${t.name}`,
+                            answers,
+                          });
                         } catch {
-                          setAnswersModal({ title: `Réponses — ${t.name}`, answers: [] });
+                          setAnswersModal({
+                            title: `Réponses — ${t.name}`,
+                            answers: [],
+                          });
                         }
                         return;
                       }
-                      
+
                       // Pour les tags classiques, obtenir les questions associées ET les réponses des profils utilisateurs
                       try {
-                        const tagQuestions = (db.questions || []).filter(q => q.tagId === t.id);
-                        const questionIds = tagQuestions.map(q => q.id);
-                        
+                        const tagQuestions = (db.questions || []).filter(
+                          (q) => q.tagId === t.id,
+                        );
+                        const questionIds = tagQuestions.map((q) => q.id);
+
                         // Récupérer les réponses des questions (db.answers)
                         const questionAnswers = getAnswersForTag(db, t.id);
-                        
+
                         // Récupérer AUSSI les réponses des profils utilisateurs (sensibleAnswersTagged)
                         const r = await adminListUsers();
                         const users = (r && r.users) || [];
-                        
+
                         const tagName = t.name;
                         const userProfileAnswers = [];
-                        
-                        users.forEach(u => {
+
+                        users.forEach((u) => {
                           const tagged = u.sensibleAnswersTagged || [];
-                          tagged.forEach(ans => {
-                            if (String(ans.tag || "").trim() === tagName && ans.answer) {
+                          tagged.forEach((ans) => {
+                            if (
+                              String(ans.tag || "").trim() === tagName &&
+                              ans.answer
+                            ) {
                               userProfileAnswers.push({
                                 id: `profile_${u.id}_${ans.tag}`,
                                 userId: u.id,
-                                userName: u.fullName || `${u.prenom || ""} ${u.nom || ""}`.trim(),
+                                userName:
+                                  u.fullName ||
+                                  `${u.prenom || ""} ${u.nom || ""}`.trim(),
                                 answer: ans.answer,
-                                createdAt: u.updatedAt || u.createdAt || new Date().toISOString(),
+                                createdAt:
+                                  u.updatedAt ||
+                                  u.createdAt ||
+                                  new Date().toISOString(),
                               });
                             }
                           });
                         });
-                        
+
                         // Combiner les deux sources de réponses
-                        const allAnswers = [...questionAnswers, ...userProfileAnswers];
-                        
-                        setAnswersModal({ 
-                          title: "Réponses — Tag", 
+                        const allAnswers = [
+                          ...questionAnswers,
+                          ...userProfileAnswers,
+                        ];
+
+                        setAnswersModal({
+                          title: "Réponses — Tag",
                           answers: allAnswers,
-                          questions: questionIds.length > 0 ? questionIds : null
+                          questions:
+                            questionIds.length > 0 ? questionIds : null,
                         });
                       } catch {
                         // En cas d'erreur, afficher au moins les réponses des questions
-                        const tagQuestions = (db.questions || []).filter(q => q.tagId === t.id);
-                        const questionIds = tagQuestions.map(q => q.id);
-                        
-                        setAnswersModal({ 
-                          title: "Réponses — Tag", 
+                        const tagQuestions = (db.questions || []).filter(
+                          (q) => q.tagId === t.id,
+                        );
+                        const questionIds = tagQuestions.map((q) => q.id);
+
+                        setAnswersModal({
+                          title: "Réponses — Tag",
                           answers: getAnswersForTag(db, t.id),
-                          questions: questionIds.length > 0 ? questionIds : null
+                          questions:
+                            questionIds.length > 0 ? questionIds : null,
                         });
                       }
                     }}
@@ -230,14 +277,29 @@ export default function AdminTags({ db, onDBChange }) {
       </div>
 
       {editor && (
-        <Modal title={editor.id ? "Modifier un tag" : "Créer un tag"} onClose={() => setEditor(null)}>
+        <Modal
+          title={editor.id ? "Modifier un tag" : "Créer un tag"}
+          onClose={() => setEditor(null)}
+        >
           <div className="field">
             <div className="label">Nom du tag</div>
-            <input className="input" value={editor.name} onChange={(e) => setEditor({ ...editor, name: e.target.value })} />
+            <input
+              className="input"
+              value={editor.name}
+              onChange={(e) => setEditor({ ...editor, name: e.target.value })}
+            />
           </div>
           <div className="rowBtns">
-            <button className="btn btnGhost" onClick={() => setEditor(null)} type="button">Annuler</button>
-            <button className="btn btnPrimary" onClick={save} type="button">Enregistrer</button>
+            <button
+              className="btn btnGhost"
+              onClick={() => setEditor(null)}
+              type="button"
+            >
+              Annuler
+            </button>
+            <button className="btn btnPrimary" onClick={save} type="button">
+              Enregistrer
+            </button>
           </div>
         </Modal>
       )}

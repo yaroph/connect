@@ -38,11 +38,15 @@ export default function AdminSearch() {
       try {
         const [usersRes, dbRes] = await Promise.all([
           adminListUsers(),
-          loadDB()
+          loadDB(),
         ]);
         setUsers(usersRes.users || []);
         setDb(dbRes || null);
-        setAllTags((dbRes?.tags || []).map((t) => ({ id: t.id, name: String(t?.name || "").trim() })).filter(t => t.name));
+        setAllTags(
+          (dbRes?.tags || [])
+            .map((t) => ({ id: t.id, name: String(t?.name || "").trim() }))
+            .filter((t) => t.name),
+        );
       } finally {
         setLoading(false);
       }
@@ -53,41 +57,45 @@ export default function AdminSearch() {
   // Combine regular tags + user variable tags for filter selection
   const availableFilters = useMemo(() => {
     // Créer un Set avec les noms des variables utilisateur pour détecter les doublons
-    const userVariableNames = new Set(USER_VARIABLE_TAGS.map(v => v.name.toLowerCase()));
-    
+    const userVariableNames = new Set(
+      USER_VARIABLE_TAGS.map((v) => v.name.toLowerCase()),
+    );
+
     // Filtrer les tags réguliers pour exclure ceux qui sont des variables utilisateur
     const regularTags = allTags
-      .filter(t => !userVariableNames.has(t.name.toLowerCase()))
-      .map(t => ({ type: 'tag', id: t.id, name: t.name }));
-    
+      .filter((t) => !userVariableNames.has(t.name.toLowerCase()))
+      .map((t) => ({ type: "tag", id: t.id, name: t.name }));
+
     // Ajouter les variables utilisateur
-    const variableTags = USER_VARIABLE_TAGS.map(v => ({ 
-      type: 'variable', 
-      id: v.id, 
-      name: v.name, 
-      field: v.field 
+    const variableTags = USER_VARIABLE_TAGS.map((v) => ({
+      type: "variable",
+      id: v.id,
+      name: v.name,
+      field: v.field,
     }));
-    
-    return [...regularTags, ...variableTags].sort((a, b) => a.name.localeCompare(b.name));
+
+    return [...regularTags, ...variableTags].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
   }, [allTags]);
 
   // Get all possible values for a given filter
   const getValuesForFilter = (filter) => {
     const valuesSet = new Set();
-    
-    users.forEach(user => {
-      if (filter.type === 'tag') {
+
+    users.forEach((user) => {
+      if (filter.type === "tag") {
         // For tags, look in sensibleAnswersTagged
         const tagged = user.sensibleAnswersTagged || [];
-        tagged.forEach(ans => {
+        tagged.forEach((ans) => {
           if (String(ans.tag || "").trim() === filter.name && ans.answer) {
             valuesSet.add(String(ans.answer).trim());
           }
         });
-      } else if (filter.type === 'variable') {
+      } else if (filter.type === "variable") {
         // For variables, look in user fields directly
         const value = user[filter.field];
-        if (value !== null && value !== undefined && value !== '') {
+        if (value !== null && value !== undefined && value !== "") {
           const strValue = String(value).trim();
           if (strValue) {
             valuesSet.add(strValue);
@@ -95,7 +103,7 @@ export default function AdminSearch() {
         }
       }
     });
-    
+
     return Array.from(valuesSet).sort();
   };
 
@@ -104,44 +112,46 @@ export default function AdminSearch() {
   };
 
   const removeFilter = (id) => {
-    setFilters(filters.filter(f => f.id !== id));
+    setFilters(filters.filter((f) => f.id !== id));
   };
 
   const updateFilter = (id, field, value) => {
-    setFilters(filters.map(f => {
-      if (f.id === id) {
-        if (field === 'filterId') {
-          // Reset value when changing filter
-          return { ...f, filterId: value, value: null };
+    setFilters(
+      filters.map((f) => {
+        if (f.id === id) {
+          if (field === "filterId") {
+            // Reset value when changing filter
+            return { ...f, filterId: value, value: null };
+          }
+          return { ...f, [field]: value };
         }
-        return { ...f, [field]: value };
-      }
-      return f;
-    }));
+        return f;
+      }),
+    );
   };
 
   const updateFilterInput = (id, text) => {
-    setFilterInputs(prev => ({ ...prev, [id]: text }));
+    setFilterInputs((prev) => ({ ...prev, [id]: text }));
   };
 
   const selectFilterSuggestion = (filterId, suggestionId) => {
-    updateFilter(filterId, 'filterId', suggestionId);
-    setFilterInputs(prev => ({ ...prev, [filterId]: '' }));
+    updateFilter(filterId, "filterId", suggestionId);
+    setFilterInputs((prev) => ({ ...prev, [filterId]: "" }));
   };
 
   const getFilterSuggestions = (filterId) => {
-    const searchText = (filterInputs[filterId] || '').toLowerCase().trim();
+    const searchText = (filterInputs[filterId] || "").toLowerCase().trim();
     if (!searchText) return [];
-    
-    return availableFilters.filter(f => 
-      f.name.toLowerCase().includes(searchText)
-    ).slice(0, 10); // Limiter à 10 suggestions
+
+    return availableFilters
+      .filter((f) => f.name.toLowerCase().includes(searchText))
+      .slice(0, 10); // Limiter à 10 suggestions
   };
 
   const runSearch = () => {
     // Filter out incomplete filters
-    const validFilters = filters.filter(f => f.filterId && f.value);
-    
+    const validFilters = filters.filter((f) => f.filterId && f.value);
+
     if (validFilters.length === 0) {
       setResults([]);
       setHasSearched(true);
@@ -149,38 +159,44 @@ export default function AdminSearch() {
     }
 
     // Calculate match percentage for each user
-    const scoredUsers = users.map(user => {
+    const scoredUsers = users.map((user) => {
       let matchCount = 0;
-      
-      validFilters.forEach(filter => {
-        const selectedFilter = availableFilters.find(af => af.id === filter.filterId);
+
+      validFilters.forEach((filter) => {
+        const selectedFilter = availableFilters.find(
+          (af) => af.id === filter.filterId,
+        );
         if (!selectedFilter) return;
-        
-        if (selectedFilter.type === 'tag') {
+
+        if (selectedFilter.type === "tag") {
           const tagged = user.sensibleAnswersTagged || [];
-          const match = tagged.find(ans => 
-            String(ans.tag || "").trim() === selectedFilter.name && 
-            String(ans.answer || "").trim() === filter.value
+          const match = tagged.find(
+            (ans) =>
+              String(ans.tag || "").trim() === selectedFilter.name &&
+              String(ans.answer || "").trim() === filter.value,
           );
           if (match) matchCount++;
-        } else if (selectedFilter.type === 'variable') {
+        } else if (selectedFilter.type === "variable") {
           const userValue = String(user[selectedFilter.field] || "").trim();
           if (userValue === filter.value) matchCount++;
         }
       });
-      
-      const percentage = validFilters.length > 0 ? Math.round((matchCount / validFilters.length) * 100) : 0;
-      
+
+      const percentage =
+        validFilters.length > 0
+          ? Math.round((matchCount / validFilters.length) * 100)
+          : 0;
+
       return {
         user,
         matchCount,
-        percentage
+        percentage,
       };
     });
 
     // Filter users with at least one match and sort by percentage (descending)
     const filtered = scoredUsers
-      .filter(su => su.matchCount > 0)
+      .filter((su) => su.matchCount > 0)
       .sort((a, b) => b.percentage - a.percentage);
 
     setResults(filtered);
@@ -191,32 +207,42 @@ export default function AdminSearch() {
     let content = `RÉSULTATS DE RECHERCHE\n`;
     content += `======================\n\n`;
     content += `Date : ${new Date().toLocaleString("fr-FR")}\n`;
-    content += `Nombre de filtres : ${filters.filter(f => f.filterId && f.value).length}\n`;
+    content += `Nombre de filtres : ${filters.filter((f) => f.filterId && f.value).length}\n`;
     content += `Nombre de résultats : ${results.length}\n\n`;
 
     content += `FILTRES APPLIQUÉS :\n`;
-    filters.filter(f => f.filterId && f.value).forEach((filter, i) => {
-      const selectedFilter = availableFilters.find(af => af.id === filter.filterId);
-      if (selectedFilter) {
-        content += `${i + 1}. ${selectedFilter.name} = ${filter.value}\n`;
-      }
-    });
+    filters
+      .filter((f) => f.filterId && f.value)
+      .forEach((filter, i) => {
+        const selectedFilter = availableFilters.find(
+          (af) => af.id === filter.filterId,
+        );
+        if (selectedFilter) {
+          content += `${i + 1}. ${selectedFilter.name} = ${filter.value}\n`;
+        }
+      });
     content += `\n`;
 
     content += `RÉSULTATS :\n`;
     content += `-----------\n\n`;
-    
+
     results.forEach((result, i) => {
       const u = result.user;
       content += `${i + 1}. ${u.prenom || ""} ${u.nom || ""} (${result.percentage}%)\n`;
       content += `   ID : ${u.id}\n`;
       content += `   Téléphone : ${u.telephone || "—"}\n`;
       content += `   Email : ${u.email || "—"}\n`;
-      content += `   Correspondance : ${result.matchCount}/${filters.filter(f => f.filterId && f.value).length} filtres\n\n`;
+      content += `   Correspondance : ${result.matchCount}/${filters.filter((f) => f.filterId && f.value).length} filtres\n\n`;
     });
 
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, -5);
-    const filename = `recherche_utilisateurs_${timestamp}.txt`.replace(/\s+/g, "_");
+    const timestamp = new Date()
+      .toISOString()
+      .replace(/[:.]/g, "-")
+      .slice(0, -5);
+    const filename = `recherche_utilisateurs_${timestamp}.txt`.replace(
+      /\s+/g,
+      "_",
+    );
     downloadTextFile(filename, content);
   };
 
@@ -234,7 +260,7 @@ export default function AdminSearch() {
       tags
         .map((t) => ({ id: t?.id, name: String(t?.name || "").trim() }))
         .filter((t) => t.id && t.name)
-        .map((t) => [t.name.toLowerCase(), String(t.id)])
+        .map((t) => [t.name.toLowerCase(), String(t.id)]),
     );
 
     const titlesByTagId = new Map();
@@ -290,7 +316,10 @@ export default function AdminSearch() {
       content += `\n\n`;
     });
 
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, -5);
+    const timestamp = new Date()
+      .toISOString()
+      .replace(/[:.]/g, "-")
+      .slice(0, -5);
     const filename = `utilisateurs_${timestamp}.txt`;
     downloadTextFile(filename, content);
   };
@@ -309,10 +338,17 @@ export default function AdminSearch() {
         <div className="searchHeaderRow">
           <div>
             <div className="searchTitle">Recherche avancée</div>
-            <div className="muted">Filtrez les utilisateurs par tags et variables</div>
+            <div className="muted">
+              Filtrez les utilisateurs par tags et variables
+            </div>
           </div>
           <div className="searchHeaderActions">
-            <button className="btn btnGhost btnSmall" type="button" onClick={exportAllUsers} disabled={users.length === 0}>
+            <button
+              className="btn btnGhost btnSmall"
+              type="button"
+              onClick={exportAllUsers}
+              disabled={users.length === 0}
+            >
               <Download size={16} style={{ marginRight: 6 }} />
               Exporter tous les utilisateurs (TXT)
             </button>
@@ -323,7 +359,11 @@ export default function AdminSearch() {
       <div className="searchFiltersSection">
         <div className="searchSectionTitle">
           Filtres
-          <button className="btn btnGhost btnSmall" type="button" onClick={addFilter}>
+          <button
+            className="btn btnGhost btnSmall"
+            type="button"
+            onClick={addFilter}
+          >
             <Plus size={16} style={{ marginRight: 6 }} />
             Ajouter un filtre
           </button>
@@ -331,13 +371,19 @@ export default function AdminSearch() {
 
         {filters.length === 0 ? (
           <div className="searchEmptyState">
-            <div className="muted">Aucun filtre. Ajoutez un filtre pour commencer votre recherche.</div>
+            <div className="muted">
+              Aucun filtre. Ajoutez un filtre pour commencer votre recherche.
+            </div>
           </div>
         ) : (
           <div className="searchFiltersList">
             {filters.map((filter) => {
-              const selectedFilter = filter.filterId ? availableFilters.find(af => af.id === filter.filterId) : null;
-              const availableValues = selectedFilter ? getValuesForFilter(selectedFilter) : [];
+              const selectedFilter = filter.filterId
+                ? availableFilters.find((af) => af.id === filter.filterId)
+                : null;
+              const availableValues = selectedFilter
+                ? getValuesForFilter(selectedFilter)
+                : [];
               const suggestions = getFilterSuggestions(filter.id);
               const showSuggestions = !selectedFilter && suggestions.length > 0;
 
@@ -347,13 +393,18 @@ export default function AdminSearch() {
                     <div className="searchAutocompleteWrapper">
                       {selectedFilter ? (
                         <div className="searchFilterSelected">
-                          <span className="searchFilterSelectedText">{selectedFilter.name}</span>
+                          <span className="searchFilterSelectedText">
+                            {selectedFilter.name}
+                          </span>
                           <button
                             className="searchFilterClear"
                             type="button"
                             onClick={() => {
-                              updateFilter(filter.id, 'filterId', null);
-                              setFilterInputs(prev => ({ ...prev, [filter.id]: '' }));
+                              updateFilter(filter.id, "filterId", null);
+                              setFilterInputs((prev) => ({
+                                ...prev,
+                                [filter.id]: "",
+                              }));
                             }}
                             title="Changer de filtre"
                           >
@@ -365,22 +416,33 @@ export default function AdminSearch() {
                           <input
                             className="searchFilterInput"
                             type="text"
-                            value={filterInputs[filter.id] || ''}
-                            onChange={(e) => updateFilterInput(filter.id, e.target.value)}
+                            value={filterInputs[filter.id] || ""}
+                            onChange={(e) =>
+                              updateFilterInput(filter.id, e.target.value)
+                            }
                             placeholder="Rechercher un filtre... (ex: cheveux)"
                             autoComplete="off"
                           />
                           {showSuggestions && (
                             <div className="searchSuggestions">
-                              {suggestions.map(suggestion => (
+                              {suggestions.map((suggestion) => (
                                 <div
                                   key={suggestion.id}
                                   className="searchSuggestionItem"
-                                  onClick={() => selectFilterSuggestion(filter.id, suggestion.id)}
+                                  onClick={() =>
+                                    selectFilterSuggestion(
+                                      filter.id,
+                                      suggestion.id,
+                                    )
+                                  }
                                 >
-                                  <span className="searchSuggestionName">{suggestion.name}</span>
+                                  <span className="searchSuggestionName">
+                                    {suggestion.name}
+                                  </span>
                                   <span className="searchSuggestionType">
-                                    {suggestion.type === 'variable' ? 'Variable' : 'Tag'}
+                                    {suggestion.type === "variable"
+                                      ? "Variable"
+                                      : "Tag"}
                                   </span>
                                 </div>
                               ))}
@@ -396,15 +458,17 @@ export default function AdminSearch() {
                         <select
                           className="searchFilterSelect"
                           value={filter.value || ""}
-                          onChange={(e) => updateFilter(filter.id, 'value', e.target.value)}
+                          onChange={(e) =>
+                            updateFilter(filter.id, "value", e.target.value)
+                          }
                           disabled={availableValues.length === 0}
                         >
                           <option value="">
-                            {availableValues.length === 0 
-                              ? "Aucune valeur disponible" 
+                            {availableValues.length === 0
+                              ? "Aucune valeur disponible"
                               : "Sélectionner une valeur..."}
                           </option>
-                          {availableValues.map(val => (
+                          {availableValues.map((val) => (
                             <option key={val} value={val}>
                               {val}
                             </option>
@@ -433,7 +497,7 @@ export default function AdminSearch() {
             className="btn btnPrimary"
             type="button"
             onClick={runSearch}
-            disabled={filters.filter(f => f.filterId && f.value).length === 0}
+            disabled={filters.filter((f) => f.filterId && f.value).length === 0}
           >
             <SearchIcon size={16} style={{ marginRight: 8 }} />
             Lancer la recherche
@@ -459,7 +523,11 @@ export default function AdminSearch() {
           <div className="searchSectionTitle">
             Résultats
             {results.length > 0 && (
-              <button className="btn btnGhost btnSmall" type="button" onClick={exportResults}>
+              <button
+                className="btn btnGhost btnSmall"
+                type="button"
+                onClick={exportResults}
+              >
                 <Download size={16} style={{ marginRight: 6 }} />
                 Exporter en TXT
               </button>
@@ -468,13 +536,16 @@ export default function AdminSearch() {
 
           {results.length === 0 ? (
             <div className="searchEmptyState">
-              <div className="muted">Aucun utilisateur ne correspond aux filtres sélectionnés.</div>
+              <div className="muted">
+                Aucun utilisateur ne correspond aux filtres sélectionnés.
+              </div>
             </div>
           ) : (
             <div className="searchResultsList">
               <div className="searchResultsHeader">
                 <div className="searchResultsCount">
-                  {results.length} utilisateur{results.length > 1 ? 's' : ''} trouvé{results.length > 1 ? 's' : ''}
+                  {results.length} utilisateur{results.length > 1 ? "s" : ""}{" "}
+                  trouvé{results.length > 1 ? "s" : ""}
                 </div>
               </div>
 
@@ -506,9 +577,16 @@ export default function AdminSearch() {
 
                       <div className="searchUserRight">
                         <div className="searchUserMatch">
-                          <div className="searchMatchPercentage">{result.percentage}%</div>
+                          <div className="searchMatchPercentage">
+                            {result.percentage}%
+                          </div>
                           <div className="searchMatchLabel">
-                            {result.matchCount}/{filters.filter(f => f.filterId && f.value).length} filtres
+                            {result.matchCount}/
+                            {
+                              filters.filter((f) => f.filterId && f.value)
+                                .length
+                            }{" "}
+                            filtres
                           </div>
                         </div>
                       </div>

@@ -28,19 +28,22 @@ function validateAgainstCorrect(selectedSet, correctSet) {
 
   // Single-correct
   if (correctSet.size === 1) {
-    if (selected.length !== 1) return { ok: false, msg: "Veuillez choisir une réponse." };
+    if (selected.length !== 1)
+      return { ok: false, msg: "Veuillez choisir une réponse." };
     const ok = correctSet.has(selected[0]);
-    return ok ? { ok: true, msg: "" } : { ok: false, msg: "Mauvaise sélection." };
+    return ok
+      ? { ok: true, msg: "" }
+      : { ok: false, msg: "Mauvaise sélection." };
   }
 
   // Multi-correct
   const hasWrong = selected.some((id) => !correctSet.has(id));
   if (hasWrong) return { ok: false, msg: "Mauvaise sélection." };
 
-  if (selectedSet.size !== correctSet.size) return { ok: false, msg: "Sélection incomplète." };
+  if (selectedSet.size !== correctSet.size)
+    return { ok: false, msg: "Sélection incomplète." };
   return { ok: true, msg: "" };
 }
-
 
 export default function QuestionCard({
   question,
@@ -64,8 +67,13 @@ export default function QuestionCard({
 
   const isDisabled = Boolean(interactionLocked || locked);
 
-  const type = String(question?.type || "FREE_TEXT").trim().toUpperCase();
-  const choices = useMemo(() => (Array.isArray(question?.choices) ? question.choices : []), [question?.choices]);
+  const type = String(question?.type || "FREE_TEXT")
+    .trim()
+    .toUpperCase();
+  const choices = useMemo(
+    () => (Array.isArray(question?.choices) ? question.choices : []),
+    [question?.choices],
+  );
   const freeTextDigitsOnly = Boolean(question?.digitsOnly);
 
   useEffect(() => {
@@ -88,7 +96,10 @@ export default function QuestionCard({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [question?.id]);
 
-  const choiceTextById = useMemo(() => new Map(choices.map((c) => [c.id, c.text])), [choices]);
+  const choiceTextById = useMemo(
+    () => new Map(choices.map((c) => [c.id, c.text])),
+    [choices],
+  );
 
   const correctChoiceIds = useMemo(() => {
     if (!question) return new Set();
@@ -217,7 +228,10 @@ export default function QuestionCard({
   // Checkbox (validate button)
   // --------------------
 
-  const checkboxMode = String(question?.checkboxMode || "MULTI").toUpperCase() === "SINGLE" ? "SINGLE" : "MULTI";
+  const checkboxMode =
+    String(question?.checkboxMode || "MULTI").toUpperCase() === "SINGLE"
+      ? "SINGLE"
+      : "MULTI";
 
   const toggleCheckbox = (id) => {
     if (isDisabled) return;
@@ -295,7 +309,7 @@ export default function QuestionCard({
       setPhotoData(resizedData);
       setErr("");
     } catch (e) {
-      console.error('Error processing image:', e);
+      console.error("Error processing image:", e);
       setErr("Impossible de lire ce fichier.");
     }
   };
@@ -303,7 +317,8 @@ export default function QuestionCard({
   const submitPhoto = () => {
     if (isDisabled) return;
     if (!question) return;
-    const val = photoMode === "URL" ? (photoUrl || "").trim() : (photoData || "").trim();
+    const val =
+      photoMode === "URL" ? (photoUrl || "").trim() : (photoData || "").trim();
     if (!val) {
       setErr("Veuillez ajouter une photo (lien ou upload). ");
       return;
@@ -313,17 +328,17 @@ export default function QuestionCard({
   };
 
   const hasImage = Boolean(question?.imageUrl);
-  const imgSrc = question?.imageUrl || null; 
+  const imgSrc = question?.imageUrl || null;
 
   return (
     <div className="qcRoot">
       <div className="qcDevice glass">
         <div className={`qcScreen${hasImage ? " qcScreenHasImage" : ""}`}>
           {hasImage ? (
-            <img className="qcImage" src={imgSrc} alt="" />
+            <img className="qcImage" src={imgSrc} alt="" loading="lazy" decoding="async" />
           ) : (
             <div className="qcPlaceholder">
-              <img src="/bniconnect.png" alt="BNI Connect" />
+              <img src="/bniconnect.png" alt="BNI Connect" loading="lazy" decoding="async" />
               <div className="qcPlaceholderText">BNI CONNECT</div>
             </div>
           )}
@@ -331,14 +346,16 @@ export default function QuestionCard({
       </div>
 
       <div className="qcQuestionRow">
-        <div className="qcQuestionText" style={{ whiteSpace: 'pre-wrap' }}>
+        <div className="qcQuestionText" style={{ whiteSpace: "pre-wrap" }}>
           {question?.title || "Sans titre"}
         </div>
       </div>
 
       {isPriorityActive(question) && question?.priorityUntil ? (
         <div className="qcPillsRow">
-          <span className="pill priorityPill">Prioritaire jusqu'au : {formatPriorityUntil(question.priorityUntil)}</span>
+          <span className="pill priorityPill">
+            Prioritaire jusqu'au : {formatPriorityUntil(question.priorityUntil)}
+          </span>
         </div>
       ) : null}
 
@@ -360,7 +377,12 @@ export default function QuestionCard({
                 if (e.key === "Enter") submitFreeText();
               }}
             />
-            <button className="btn btnPrimary" onClick={submitFreeText} type="button" disabled={isDisabled}>
+            <button
+              className="btn btnPrimary"
+              onClick={submitFreeText}
+              type="button"
+              disabled={isDisabled}
+            >
               Valider
             </button>
           </div>
@@ -380,14 +402,24 @@ export default function QuestionCard({
           </div>
         ) : type === "DROPDOWN" ? (
           <div className="dropdownArea">
-            <select className="select" value={dropdownId} onChange={(e) => setDropdownId(e.target.value)} disabled={isDisabled}>
+            <select
+              className="select"
+              value={dropdownId}
+              onChange={(e) => setDropdownId(e.target.value)}
+              disabled={isDisabled}
+            >
               {(choices || []).map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.text}
                 </option>
               ))}
             </select>
-            <button className="btn btnPrimary" type="button" onClick={submitDropdown} disabled={isDisabled}>
+            <button
+              className="btn btnPrimary"
+              type="button"
+              onClick={submitDropdown}
+              disabled={isDisabled}
+            >
               Valider
             </button>
           </div>
@@ -395,7 +427,10 @@ export default function QuestionCard({
           <div className="checkboxArea">
             <div className={`checkboxGrid ${checkboxColsClass}`}>
               {(choices || []).slice(0, 8).map((c) => (
-                <label key={c.id} className={`checkboxItem ${selected.has(c.id) ? "on" : ""}`}>
+                <label
+                  key={c.id}
+                  className={`checkboxItem ${selected.has(c.id) ? "on" : ""}`}
+                >
                   <input
                     className="checkboxNative"
                     type="checkbox"
@@ -411,7 +446,12 @@ export default function QuestionCard({
               ))}
             </div>
             <div className="checkboxFooter">
-              <button className="btn btnPrimary" type="button" onClick={submitCheckbox} disabled={isDisabled}>
+              <button
+                className="btn btnPrimary"
+                type="button"
+                onClick={submitCheckbox}
+                disabled={isDisabled}
+              >
                 Valider
               </button>
             </div>
@@ -420,7 +460,9 @@ export default function QuestionCard({
           <div className="sliderArea">
             <div className="sliderTop">
               <div className="sliderValue pill">{sliderVal}</div>
-              <div className="sliderRange muted">{sliderMin} → {sliderMax}</div>
+              <div className="sliderRange muted">
+                {sliderMin} → {sliderMax}
+              </div>
             </div>
             <input
               className="range"
@@ -432,11 +474,16 @@ export default function QuestionCard({
               onChange={(e) => setSliderVal(Number(e.target.value))}
               disabled={isDisabled}
             />
-            <button className="btn btnPrimary" type="button" onClick={submitSlider} disabled={isDisabled}>
+            <button
+              className="btn btnPrimary"
+              type="button"
+              onClick={submitSlider}
+              disabled={isDisabled}
+            >
               Valider
             </button>
           </div>
-         ) : type === "PHOTO" ? (
+        ) : type === "PHOTO" ? (
           <div className="photoArea">
             {((photoMode === "URL" ? photoUrl : photoData) || "").trim() ? (
               <div className="photoPreview photoPreviewSmall">
@@ -489,14 +536,21 @@ export default function QuestionCard({
                     className="input"
                     type="file"
                     accept="image/*"
-                    onChange={(e) => onPickPhotoFile(e.target.files?.[0] || null)}
+                    onChange={(e) =>
+                      onPickPhotoFile(e.target.files?.[0] || null)
+                    }
                     disabled={isDisabled}
                   />
                 )}
               </>
             )}
 
-            <button className="btn btnPrimary" type="button" onClick={submitPhoto} disabled={isDisabled}>
+            <button
+              className="btn btnPrimary"
+              type="button"
+              onClick={submitPhoto}
+              disabled={isDisabled}
+            >
               Valider
             </button>
           </div>
@@ -506,7 +560,6 @@ export default function QuestionCard({
 
         {err ? <div className="errorText">{err}</div> : null}
       </div>
-
     </div>
   );
 }

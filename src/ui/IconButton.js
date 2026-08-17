@@ -1,7 +1,13 @@
 import React from "react";
 import "./ui.css";
 
-export default function IconButton({ title, onClick, children, active, disabled }) {
+export default function IconButton({
+  title,
+  onClick,
+  children,
+  active,
+  disabled,
+}) {
   return (
     <button
       className={`iconBtn ${active ? "active" : ""} ${disabled ? "disabled" : ""}`}

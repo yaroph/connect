@@ -62,14 +62,20 @@ export default function AdminSettings() {
             Nombre de questions aléatoires par jour
           </label>
           <p className="muted" style={{ fontSize: 13, marginBottom: 10 }}>
-            Limite quotidienne de questions aléatoires qu'un utilisateur peut répondre
+            Limite quotidienne de questions aléatoires qu'un utilisateur peut
+            répondre
           </p>
           <input
             type="number"
             min="1"
             max="100"
             value={settings.randomQuestionsPerDay || 10}
-            onChange={(e) => handleChange("randomQuestionsPerDay", parseInt(e.target.value) || 1)}
+            onChange={(e) =>
+              handleChange(
+                "randomQuestionsPerDay",
+                parseInt(e.target.value) || 1,
+              )
+            }
             style={{
               padding: "8px 12px",
               fontSize: 14,
@@ -86,14 +92,20 @@ export default function AdminSettings() {
             Nombre de questions aléatoires par semaine
           </label>
           <p className="muted" style={{ fontSize: 13, marginBottom: 10 }}>
-            Limite hebdomadaire de questions aléatoires qu'un utilisateur peut répondre
+            Limite hebdomadaire de questions aléatoires qu'un utilisateur peut
+            répondre
           </p>
           <input
             type="number"
             min="1"
             max="500"
             value={settings.randomQuestionsPerWeek || 50}
-            onChange={(e) => handleChange("randomQuestionsPerWeek", parseInt(e.target.value) || 1)}
+            onChange={(e) =>
+              handleChange(
+                "randomQuestionsPerWeek",
+                parseInt(e.target.value) || 1,
+              )
+            }
             style={{
               padding: "8px 12px",
               fontSize: 14,
@@ -110,14 +122,20 @@ export default function AdminSettings() {
             Montant minimum de cagnotte pour retrait ($)
           </label>
           <p className="muted" style={{ fontSize: 13, marginBottom: 10 }}>
-            Montant minimum que l'utilisateur doit avoir dans sa cagnotte pour pouvoir effectuer un retrait (en dollars)
+            Montant minimum que l'utilisateur doit avoir dans sa cagnotte pour
+            pouvoir effectuer un retrait (en dollars)
           </p>
           <input
             type="number"
             min="0.01"
             step="0.01"
             value={settings.minimumWithdrawalAmount || 50}
-            onChange={(e) => handleChange("minimumWithdrawalAmount", parseFloat(e.target.value) || 0.01)}
+            onChange={(e) =>
+              handleChange(
+                "minimumWithdrawalAmount",
+                parseFloat(e.target.value) || 0.01,
+              )
+            }
             style={{
               padding: "8px 12px",
               fontSize: 14,
@@ -134,14 +152,20 @@ export default function AdminSettings() {
             Gains par question aléatoire répondue ($)
           </label>
           <p className="muted" style={{ fontSize: 13, marginBottom: 10 }}>
-            Montant gagné par l'utilisateur pour chaque question aléatoire répondue (en dollars, exemple : 500 = $ 500)
+            Montant gagné par l'utilisateur pour chaque question aléatoire
+            répondue (en dollars, exemple : 500 = $ 500)
           </p>
           <input
             type="number"
             min="0.01"
             step="0.01"
-            value={settings.earningsPerRandomQuestion || 0.10}
-            onChange={(e) => handleChange("earningsPerRandomQuestion", parseFloat(e.target.value) || 0.01)}
+            value={settings.earningsPerRandomQuestion || 0.1}
+            onChange={(e) =>
+              handleChange(
+                "earningsPerRandomQuestion",
+                parseFloat(e.target.value) || 0.01,
+              )
+            }
             style={{
               padding: "8px 12px",
               fontSize: 14,
@@ -158,14 +182,20 @@ export default function AdminSettings() {
             Gains par questionnaire complété ($)
           </label>
           <p className="muted" style={{ fontSize: 13, marginBottom: 10 }}>
-            Montant gagné par l'utilisateur pour chaque questionnaire complété (en dollars)
+            Montant gagné par l'utilisateur pour chaque questionnaire complété
+            (en dollars)
           </p>
           <input
             type="number"
             min="0.01"
             step="0.01"
-            value={settings.earningsPerQuestionnaire || 1.00}
-            onChange={(e) => handleChange("earningsPerQuestionnaire", parseFloat(e.target.value) || 0.01)}
+            value={settings.earningsPerQuestionnaire || 1.0}
+            onChange={(e) =>
+              handleChange(
+                "earningsPerQuestionnaire",
+                parseFloat(e.target.value) || 0.01,
+              )
+            }
             style={{
               padding: "8px 12px",
               fontSize: 14,
@@ -189,7 +219,12 @@ export default function AdminSettings() {
             min="1"
             max="50"
             value={settings.maxWithdrawalsPerMonth || 5}
-            onChange={(e) => handleChange("maxWithdrawalsPerMonth", parseInt(e.target.value) || 1)}
+            onChange={(e) =>
+              handleChange(
+                "maxWithdrawalsPerMonth",
+                parseInt(e.target.value) || 1,
+              )
+            }
             style={{
               padding: "8px 12px",
               fontSize: 14,
@@ -201,7 +236,9 @@ export default function AdminSettings() {
         </div>
 
         {/* Bouton de sauvegarde */}
-        <div style={{ marginTop: 32, paddingTop: 24, borderTop: "1px solid #eee" }}>
+        <div
+          style={{ marginTop: 32, paddingTop: 24, borderTop: "1px solid #eee" }}
+        >
           <button
             className="btn btnPrimary"
             onClick={handleSave}

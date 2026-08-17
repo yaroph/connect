@@ -1,29 +1,40 @@
-.adminHeaderRow{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
+.adminHeaderRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
   gap: 8px;
   margin-bottom: 12px;
 }
-.adminTitle{ font-size: 18px; font-weight: 900; }
-.adminSub{ color: rgba(255,255,255,0.65); font-size: 13px; margin-top: 4px; }
+.adminTitle {
+  font-size: 18px;
+  font-weight: 900;
+}
+.adminSub {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 13px;
+  margin-top: 4px;
+}
 
-.cardList{ display:flex; flex-direction:column; gap: 8px; }
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
-.adminCard{
+.adminCard {
   border-radius: 18px;
   padding: 10px 12px;
 }
 
-.adminCardTop{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+.adminCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
 
-.adminCardTitle{ 
-  font-weight: 900; 
+.adminCardTitle {
+  font-weight: 900;
   font-size: 16px;
   flex: 1;
   min-width: 0;
@@ -31,7 +42,11 @@
   word-break: break-word;
 }
 
-.adminCardMeta{ color: rgba(255,255,255,0.62); font-size: 12px; margin-top: 4px; }
+.adminCardMeta {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+  margin-top: 4px;
+}
 
 .adminCardTopRight {
   display: flex;
@@ -40,27 +55,27 @@
   flex-shrink: 0;
 }
 
-.adminRightPills{
-  display:flex;
+.adminRightPills {
+  display: flex;
   gap: 8px;
-  align-items:center;
-  flex-wrap:wrap;
-  justify-content:flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
-.statusOn{ 
-  background: rgba(34,197,94,0.22); 
-  border-color: rgba(34,197,94,0.35); 
-  color: rgba(255,255,255,0.92); 
+.statusOn {
+  background: rgba(34, 197, 94, 0.22);
+  border-color: rgba(34, 197, 94, 0.35);
+  color: rgba(255, 255, 255, 0.92);
 }
 
-.statusOff{ 
-  background: rgba(255,255,255,0.06); 
+.statusOff {
+  background: rgba(255, 255, 255, 0.06);
 }
 
-.statusUnreleased{ 
-  background: rgba(255, 165, 0, 0.18); 
-  border-color: rgba(255, 165, 0, 0.35); 
+.statusUnreleased {
+  background: rgba(255, 165, 0, 0.18);
+  border-color: rgba(255, 165, 0, 0.35);
   color: rgba(255, 200, 100, 0.95);
   font-weight: 700;
   text-transform: uppercase;
@@ -68,10 +83,10 @@
   font-size: 11px;
 }
 
-.moneyPill{ 
-  background: rgba(34,197,94,0.22); 
-  border-color: rgba(34,197,94,0.35); 
-  color: rgba(255,255,255,0.92); 
+.moneyPill {
+  background: rgba(34, 197, 94, 0.22);
+  border-color: rgba(34, 197, 94, 0.35);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 /* Bouton pour sortir un questionnaire unreleased */
@@ -129,16 +144,21 @@
   font-size: 14px;
 }
 
-.adminCardBottom{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+.adminCardBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 8px;
   gap: 8px;
 }
-.adminIconRow{ display:flex; gap: 8px; }
+.adminIconRow {
+  display: flex;
+  gap: 8px;
+}
 
-.adminToggleWrap{ transform: scale(0.95); }
+.adminToggleWrap {
+  transform: scale(0.95);
+}
 
 /* Bouton pour sortir le questionnaire */
 .btnRelease {
@@ -161,33 +181,35 @@
   transform: translateY(-1px);
 }
 
-.adminCardDanger{
+.adminCardDanger {
   margin-top: 8px;
-  display:flex;
-  justify-content:flex-end;
+  display: flex;
+  justify-content: flex-end;
 }
-.btn.danger{
-  border-color: rgba(255,110,110,0.22);
-  background: rgba(255,110,110,0.08);
+.btn.danger {
+  border-color: rgba(255, 110, 110, 0.22);
+  background: rgba(255, 110, 110, 0.08);
 }
-.btn.danger:hover{
-  border-color: rgba(255,110,110,0.35);
-  background: rgba(255,110,110,0.12);
+.btn.danger:hover {
+  border-color: rgba(255, 110, 110, 0.35);
+  background: rgba(255, 110, 110, 0.12);
 }
 
-.sideHint{
+.sideHint {
   border-radius: var(--radius-lg);
   padding: 16px;
   box-shadow: none;
 }
-.hintList{
+.hintList {
   margin: 10px 0 0;
   padding-left: 18px;
-  color: rgba(255,255,255,0.70);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 13px;
   line-height: 1.45;
 }
-.hintList b{ color: rgba(255,255,255,0.92); }
+.hintList b {
+  color: rgba(255, 255, 255, 0.92);
+}
 
 /* Two columns layout for questionnaire editor */
 .editorFormTwoCols {
@@ -215,11 +237,11 @@
   overflow: hidden;
 }
 
-.editorForm .miniCard{
+.editorForm .miniCard {
   padding: 18px;
   border-radius: 16px;
   box-shadow: none;
-  background: rgba(0,0,0,0.15);
+  background: rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-sizing: border-box;
   width: 100%;
@@ -288,26 +310,26 @@
   box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
 }
 
-.questionsBlock{ 
+.questionsBlock {
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
 }
 
-.questionsHeader{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+.questionsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
   margin-bottom: 10px;
   flex-shrink: 0;
 }
 
-.qInlineList{ 
-  display:flex; 
-  flex-direction:column; 
-  gap: 8px; 
+.qInlineList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .qInlineListScrollable {
@@ -335,10 +357,10 @@
   background: rgba(255, 255, 255, 0.25);
 }
 
-.qInline{
+.qInline {
   border-radius: 16px;
   padding: 14px;
-  box-shadow:none;
+  box-shadow: none;
 }
 
 /* Header avec titre, pills et image sur une ligne */
@@ -350,7 +372,7 @@
   margin-bottom: 8px;
 }
 
-.qInlineTitle{ 
+.qInlineTitle {
   font-weight: 800;
   font-size: 15px;
   flex: 1;
@@ -366,7 +388,7 @@
   flex-shrink: 0;
 }
 
-.qInlineMeta{
+.qInlineMeta {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
@@ -475,30 +497,31 @@
   line-height: 1;
 }
 
-.qInlineActions{ 
-  display:flex; 
-  gap: 8px; 
-  justify-content:flex-end; 
-  flex-wrap:wrap; 
+.qInlineActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   margin-top: 10px;
 }
 
-.tagPill{
-  background: rgba(255,255,255,0.08);
+.tagPill {
+  background: rgba(255, 255, 255, 0.08);
 }
 
-
 /* Compact action buttons inside admin cards */
-.adminCard .iconBtn{
+.adminCard .iconBtn {
   width: 34px;
   height: 34px;
   border-radius: 12px;
 }
-.adminCard .iconBtn svg{ display:block; }
-.adminCardTitle{
+.adminCard .iconBtn svg {
+  display: block;
+}
+.adminCardTitle {
   line-height: 1.15;
 }
-.adminCardMeta{
+.adminCardMeta {
   line-height: 1.2;
 }
 
@@ -509,7 +532,7 @@
     height: auto;
     max-height: none;
   }
-  
+
   .editorRightCol {
     border-left: none;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -517,7 +540,7 @@
     padding-top: 24px;
     max-height: 400px;
   }
-  
+
   .qInlineListScrollable {
     max-height: 300px;
   }

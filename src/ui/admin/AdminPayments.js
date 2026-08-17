@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Copy, CheckCircle2 } from "lucide-react";
-import { adminListPayments, adminValidatePayment, adminCancelPayment } from "../../data/storage";
+import {
+  adminListPayments,
+  adminValidatePayment,
+  adminCancelPayment,
+} from "../../data/storage";
 import { confirmAction, notifySuccess, notifyError } from "../notify";
 
 function CopyBtn({ value }) {
@@ -35,7 +39,8 @@ export default function AdminPayments({ onCountChange }) {
     try {
       const r = await adminListPayments();
       setPayments(r.payments || []);
-      if (typeof onCountChange === "function") onCountChange((r.payments || []).length);
+      if (typeof onCountChange === "function")
+        onCountChange((r.payments || []).length);
     } finally {
       setLoading(false);
     }
@@ -45,15 +50,21 @@ export default function AdminPayments({ onCountChange }) {
     load();
   }, [load]);
 
-  const total = useMemo(() => payments.reduce((s, p) => s + Number(p.amount || 0), 0), [payments]);
+  const total = useMemo(
+    () => payments.reduce((s, p) => s + Number(p.amount || 0), 0),
+    [payments],
+  );
 
-  const removeLocal = useCallback((id) => {
-    setPayments((prev) => {
-      const next = prev.filter((x) => x.id !== id);
-      if (typeof onCountChange === "function") onCountChange(next.length);
-      return next;
-    });
-  }, [onCountChange]);
+  const removeLocal = useCallback(
+    (id) => {
+      setPayments((prev) => {
+        const next = prev.filter((x) => x.id !== id);
+        if (typeof onCountChange === "function") onCountChange(next.length);
+        return next;
+      });
+    },
+    [onCountChange],
+  );
 
   return (
     <div>
@@ -67,13 +78,17 @@ export default function AdminPayments({ onCountChange }) {
       {loading ? <div className="muted">Chargement…</div> : null}
 
       <div className="adminPayList">
-        {payments.length === 0 && !loading ? <div className="muted">Aucune demande</div> : null}
+        {payments.length === 0 && !loading ? (
+          <div className="muted">Aucune demande</div>
+        ) : null}
         {payments.map((p) => (
           <div key={p.id} className="adminPayCard">
             <div className="adminPayHead">
               <div>
                 <div className="adminPayTitle">Paiement pour {p.fullName}</div>
-                <div className="adminPaySub muted">Validé le {new Date(p.createdAt).toLocaleString()}</div>
+                <div className="adminPaySub muted">
+                  Validé le {new Date(p.createdAt).toLocaleString()}
+                </div>
               </div>
 
               <div style={{ display: "flex", gap: "8px" }}>
@@ -83,7 +98,7 @@ export default function AdminPayments({ onCountChange }) {
                   disabled={processingId === p.id}
                   onClick={() => {
                     confirmAction(
-                      "Êtes-vous sûr de vouloir annuler ce paiement ? L'argent sera remis dans la cagnotte \"Argent en attente\".",
+                      'Êtes-vous sûr de vouloir annuler ce paiement ? L\'argent sera remis dans la cagnotte "Argent en attente".',
                       async () => {
                         try {
                           setProcessingId(p.id);
@@ -92,14 +107,16 @@ export default function AdminPayments({ onCountChange }) {
                           await adminCancelPayment(p.id);
                           notifySuccess("Paiement annulé avec succès");
                         } catch (error) {
-                          notifyError("Erreur lors de l'annulation du paiement");
+                          notifyError(
+                            "Erreur lors de l'annulation du paiement",
+                          );
                           console.error(error);
                           // Re-sync en cas d'erreur
                           await load();
                         } finally {
                           setProcessingId(null);
                         }
-                      }
+                      },
                     );
                   }}
                 >
@@ -144,7 +161,9 @@ export default function AdminPayments({ onCountChange }) {
               </div>
               <div className="adminPayRow">
                 <div className="adminPayKey">Montant</div>
-                <div className="adminPayVal adminPayValGreen">${Number(p.amount || 0).toFixed(2)}</div>
+                <div className="adminPayVal adminPayValGreen">
+                  ${Number(p.amount || 0).toFixed(2)}
+                </div>
                 <CopyBtn value={p.amount} />
               </div>
             </div>

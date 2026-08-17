@@ -15,7 +15,9 @@ function ImportanceToggle({ value, onChange }) {
     <div className="impRow">
       <div className="impLabel">Gestion de l&apos;importance</div>
       <div className="impControl">
-        <span className={`impSide ${!isCaptcha ? "active" : ""}`}>Sensible</span>
+        <span className={`impSide ${!isCaptcha ? "active" : ""}`}>
+          Sensible
+        </span>
         <button
           type="button"
           className={`impSwitch ${isCaptcha ? "on" : "off"}`}
@@ -37,38 +39,62 @@ export default function QuestionEditorModal({
   onSave,
   forcedQuestionnaireId = null,
 }) {
-  const safeDb = useMemo(() => (db || { tags: [], questions: [], questionnaires: [] }), [db]);
+  const safeDb = useMemo(
+    () => db || { tags: [], questions: [], questionnaires: [] },
+    [db],
+  );
   const isEdit = Boolean(question?.id);
-  const isIndividual = forcedQuestionnaireId === null && !question?.questionnaire;
+  const isIndividual =
+    forcedQuestionnaireId === null && !question?.questionnaire;
 
   const [title, setTitle] = useState(question?.title || "");
   const [type, setType] = useState(question?.type || "FREE_TEXT");
 
   // Options spécifiques selon le type
   const [checkboxMode, setCheckboxMode] = useState(() => {
-    const raw = String(question?.checkboxMode || question?.checkboxmode || "").trim().toUpperCase();
+    const raw = String(question?.checkboxMode || question?.checkboxmode || "")
+      .trim()
+      .toUpperCase();
     if (raw === "SINGLE" || raw === "UNIQUE") return "SINGLE";
     if (raw === "MULTI" || raw === "MULTIPLE") return "MULTI";
-    if (question?.checkboxMultiple === false || question?.allowMultiple === false) return "SINGLE";
+    if (
+      question?.checkboxMultiple === false ||
+      question?.allowMultiple === false
+    )
+      return "SINGLE";
     return "MULTI";
   });
 
   const [sliderMin, setSliderMin] = useState(() => {
-    const v = Number(question?.sliderMin ?? question?.slidermin ?? question?.start ?? 0);
+    const v = Number(
+      question?.sliderMin ?? question?.slidermin ?? question?.start ?? 0,
+    );
     return Number.isFinite(v) ? v : 0;
   });
   const [sliderMax, setSliderMax] = useState(() => {
-    const v = Number(question?.sliderMax ?? question?.slidermax ?? question?.end ?? 10);
+    const v = Number(
+      question?.sliderMax ?? question?.slidermax ?? question?.end ?? 10,
+    );
     return Number.isFinite(v) ? v : 10;
   });
 
   // Bonne réponse OPTIONNELLE (texte libre uniquement)
-  const [correctAnswer, setCorrectAnswer] = useState(question?.correctAnswer || "");
+  const [correctAnswer, setCorrectAnswer] = useState(
+    question?.correctAnswer || "",
+  );
   // Texte libre: option pour n'accepter que des chiffres
-  const [digitsOnly, setDigitsOnly] = useState(Boolean(question?.digitsOnly ?? question?.freeTextDigitsOnly ?? question?.onlyDigits));
+  const [digitsOnly, setDigitsOnly] = useState(
+    Boolean(
+      question?.digitsOnly ??
+      question?.freeTextDigitsOnly ??
+      question?.onlyDigits,
+    ),
+  );
 
   // Importance (MVP: sauvegarde uniquement, aucune logique)
-  const [importance, setImportance] = useState(question?.importance || "SENSIBLE");
+  const [importance, setImportance] = useState(
+    question?.importance || "SENSIBLE",
+  );
 
   // Prioritaire (questions individuelles uniquement)
   const [priority, setPriority] = useState(Boolean(question?.priority));
@@ -81,7 +107,9 @@ export default function QuestionEditorModal({
   });
 
   // Image
-  const [imageMode, setImageMode] = useState(question?.imageUrl ? "URL" : "NONE"); // NONE | URL | UPLOAD
+  const [imageMode, setImageMode] = useState(
+    question?.imageUrl ? "URL" : "NONE",
+  ); // NONE | URL | UPLOAD
   const [imageUrl, setImageUrl] = useState(question?.imageUrl || "");
 
   // Tag optionnel, activable via toggle
@@ -101,11 +129,15 @@ export default function QuestionEditorModal({
     ];
   });
 
-  const typeHasChoices = type === "QCM" || type === "DROPDOWN" || type === "CHECKBOX";
+  const typeHasChoices =
+    type === "QCM" || type === "DROPDOWN" || type === "CHECKBOX";
   const choicesMin = type === "CHECKBOX" ? 1 : 2;
   const choicesMax = type === "CHECKBOX" ? 8 : 999;
 
-  const tags = useMemo(() => [...(safeDb.tags || []), ...USER_VARIABLE_TAGS], [safeDb]);
+  const tags = useMemo(
+    () => [...(safeDb.tags || []), ...USER_VARIABLE_TAGS],
+    [safeDb],
+  );
   const filteredTags = useMemo(() => {
     const q = norm(tagSearch).toLowerCase();
     if (!q) return tags;
@@ -129,14 +161,21 @@ export default function QuestionEditorModal({
   const addChoice = () =>
     setChoices((prev) => {
       if (prev.length >= choicesMax) return prev;
-      return [...prev, { id: newId("c"), text: `Choix ${prev.length + 1}`, isCorrect: false }];
+      return [
+        ...prev,
+        { id: newId("c"), text: `Choix ${prev.length + 1}`, isCorrect: false },
+      ];
     });
 
   const updateChoice = (id, patch) =>
-    setChoices((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+    setChoices((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, ...patch } : c)),
+    );
 
   const removeChoice = (id) =>
-    setChoices((prev) => (prev.length <= choicesMin ? prev : prev.filter((c) => c.id !== id)));
+    setChoices((prev) =>
+      prev.length <= choicesMin ? prev : prev.filter((c) => c.id !== id),
+    );
 
   const [err, setErr] = useState("");
 
@@ -157,12 +196,15 @@ export default function QuestionEditorModal({
     if (type === "SLIDER") {
       const a = Number(sliderMin);
       const b = Number(sliderMax);
-      if (!Number.isFinite(a) || !Number.isFinite(b)) return "Le slider doit avoir un début et une fin valides.";
-      if (a === b) return "Le slider doit avoir une plage (début différent de fin).";
+      if (!Number.isFinite(a) || !Number.isFinite(b))
+        return "Le slider doit avoir un début et une fin valides.";
+      if (a === b)
+        return "Le slider doit avoir une plage (début différent de fin).";
     }
 
     if (isIndividual && priority) {
-      if (!String(priorityUntil || "").trim()) return "Veuillez choisir une date de fin pour la priorité.";
+      if (!String(priorityUntil || "").trim())
+        return "Veuillez choisir une date de fin pour la priorité.";
     }
 
     return "";
@@ -177,12 +219,16 @@ export default function QuestionEditorModal({
     setErr("");
 
     // Gestion tag
-    let finalTagId = tagEnabled ? (selectedTagId || null) : null;
+    let finalTagId = tagEnabled ? selectedTagId || null : null;
     let createdTag = null;
 
-    if (tagEnabled && norm(newTagName) && !norm(newTagName).toLowerCase().startsWith("variable.user.")) {
+    if (
+      tagEnabled &&
+      norm(newTagName) &&
+      !norm(newTagName).toLowerCase().startsWith("variable.user.")
+    ) {
       const existing = (safeDb.tags || []).find(
-        (t) => (t.name || "").toLowerCase() === norm(newTagName).toLowerCase()
+        (t) => (t.name || "").toLowerCase() === norm(newTagName).toLowerCase(),
       );
       if (existing) finalTagId = existing.id;
       else {
@@ -202,33 +248,50 @@ export default function QuestionEditorModal({
       importance, // "SENSIBLE" | "CAPTCHA"
       // Prioritaire (individuel uniquement)
       priority: isIndividual ? Boolean(priority) : false,
-      priorityUntil: isIndividual && priority ? (String(priorityUntil || "").trim() || null) : null,
-      imageUrl: imageMode === "NONE" ? null : (norm(imageUrl) || null),
+      priorityUntil:
+        isIndividual && priority
+          ? String(priorityUntil || "").trim() || null
+          : null,
+      imageUrl: imageMode === "NONE" ? null : norm(imageUrl) || null,
       tagId: finalTagId,
       // Bonne réponse (optionnelle) : uniquement pour "Texte libre"
-      correctAnswer: type === "FREE_TEXT" && norm(correctAnswer) ? (digitsOnly ? String(norm(correctAnswer)).replace(/\D+/g, "") : norm(correctAnswer)) : null,
+      correctAnswer:
+        type === "FREE_TEXT" && norm(correctAnswer)
+          ? digitsOnly
+            ? String(norm(correctAnswer)).replace(/\D+/g, "")
+            : norm(correctAnswer)
+          : null,
       // FREE_TEXT only
       digitsOnly: type === "FREE_TEXT" ? Boolean(digitsOnly) : false,
 
       // New type-specific fields
       checkboxMode: type === "CHECKBOX" ? checkboxMode : null,
-      sliderMin: type === "SLIDER" ? Math.min(Number(sliderMin), Number(sliderMax)) : null,
-      sliderMax: type === "SLIDER" ? Math.max(Number(sliderMin), Number(sliderMax)) : null,
+      sliderMin:
+        type === "SLIDER"
+          ? Math.min(Number(sliderMin), Number(sliderMax))
+          : null,
+      sliderMax:
+        type === "SLIDER"
+          ? Math.max(Number(sliderMin), Number(sliderMax))
+          : null,
 
-      choices:
-        typeHasChoices
-          ? choices.map((c) => ({ ...c, text: norm(c.text) }))
-          : [],
+      choices: typeHasChoices
+        ? choices.map((c) => ({ ...c, text: norm(c.text) }))
+        : [],
     };
 
-
-    if (forcedQuestionnaireId !== null) payload.questionnaire = forcedQuestionnaireId;
+    if (forcedQuestionnaireId !== null)
+      payload.questionnaire = forcedQuestionnaireId;
 
     onSave?.(payload, createdTag);
   };
 
   return (
-    <Modal title={isEdit ? "Modifier une question" : "Créer une question"} onClose={onClose} wide>
+    <Modal
+      title={isEdit ? "Modifier une question" : "Créer une question"}
+      onClose={onClose}
+      wide
+    >
       <div className="qeGrid">
         <div className="qeLeft">
           <div className="field">
@@ -244,7 +307,11 @@ export default function QuestionEditorModal({
 
           <div className="field">
             <div className="label">Type de réponse</div>
-            <select className="select" value={type} onChange={(e) => setType(e.target.value)}>
+            <select
+              className="select"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+            >
               <option value="FREE_TEXT">Texte libre</option>
               <option value="QCM">QCM</option>
               <option value="DROPDOWN">Déroulant</option>
@@ -257,18 +324,30 @@ export default function QuestionEditorModal({
           {type === "CHECKBOX" ? (
             <div className="field">
               <div className="label">Checkbox : choix multiple ou unique</div>
-              <select className="select" value={checkboxMode} onChange={(e) => setCheckboxMode(e.target.value)}>
+              <select
+                className="select"
+                value={checkboxMode}
+                onChange={(e) => setCheckboxMode(e.target.value)}
+              >
                 <option value="MULTI">Choix multiple</option>
                 <option value="SINGLE">Choix unique</option>
               </select>
-              <div className="muted" style={{ fontSize: 12 }}>Min. 1 réponse — Max. 8</div>
+              <div className="muted" style={{ fontSize: 12 }}>
+                Min. 1 réponse — Max. 8
+              </div>
             </div>
           ) : null}
 
           {type === "SLIDER" ? (
             <div className="field">
               <div className="label">Slider : début et fin</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 10,
+                }}
+              >
                 <input
                   className="input"
                   type="number"
@@ -295,26 +374,41 @@ export default function QuestionEditorModal({
                 value={correctAnswer}
                 onChange={(e) => {
                   const v = e.target.value;
-                  setCorrectAnswer(digitsOnly ? String(v).replace(/\D+/g, "") : v);
+                  setCorrectAnswer(
+                    digitsOnly ? String(v).replace(/\D+/g, "") : v,
+                  );
                 }}
                 placeholder="Ex: sport"
               />
 
-              <label className="muted" style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 10, userSelect: "none" }}>
+              <label
+                className="muted"
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  alignItems: "center",
+                  marginTop: 10,
+                  userSelect: "none",
+                }}
+              >
                 <input
                   type="checkbox"
                   checked={digitsOnly}
                   onChange={(e) => {
                     const next = Boolean(e.target.checked);
                     setDigitsOnly(next);
-                    if (next) setCorrectAnswer((prev) => String(prev || "").replace(/\D+/g, ""));
+                    if (next)
+                      setCorrectAnswer((prev) =>
+                        String(prev || "").replace(/\D+/g, ""),
+                      );
                   }}
                 />
                 Chiffre seulement
               </label>
 
               <div className="muted" style={{ fontSize: 12 }}>
-                Pour l&apos;instant, la validation côté utilisateur n&apos;en dépend pas (MVP).
+                Pour l&apos;instant, la validation côté utilisateur n&apos;en
+                dépend pas (MVP).
               </div>
             </div>
           ) : null}
@@ -323,7 +417,10 @@ export default function QuestionEditorModal({
             <div className="qeChoices glass">
               <div className="qeChoicesHeader">
                 <div className="adminTitle">Choix</div>
-                <div className="pill">Min. {choicesMin}</div>{type === "CHECKBOX" ? <div className="pill">Max. 8</div> : null}
+                <div className="pill">Min. {choicesMin}</div>
+                {type === "CHECKBOX" ? (
+                  <div className="pill">Max. 8</div>
+                ) : null}
               </div>
 
               <div className="choiceList">
@@ -332,13 +429,17 @@ export default function QuestionEditorModal({
                     <input
                       className="input choiceInput"
                       value={c.text}
-                      onChange={(e) => updateChoice(c.id, { text: e.target.value })}
+                      onChange={(e) =>
+                        updateChoice(c.id, { text: e.target.value })
+                      }
                       placeholder={`Choix ${idx + 1}`}
                     />
                     <button
                       className={`circlePick ${c.isCorrect ? "on" : ""}`}
                       title="Marquer comme bonne réponse (optionnel)"
-                      onClick={() => updateChoice(c.id, { isCorrect: !c.isCorrect })}
+                      onClick={() =>
+                        updateChoice(c.id, { isCorrect: !c.isCorrect })
+                      }
                       type="button"
                     />
                     <button
@@ -353,12 +454,18 @@ export default function QuestionEditorModal({
                 ))}
               </div>
 
-              <button className="btn btnPrimary" onClick={addChoice} type="button" disabled={choices.length >= choicesMax}>
+              <button
+                className="btn btnPrimary"
+                onClick={addChoice}
+                type="button"
+                disabled={choices.length >= choicesMax}
+              >
                 + Ajouter un choix
               </button>
 
               <div className="muted" style={{ fontSize: 12, marginTop: 8 }}>
-                Le rond à droite définit la/les bonne(s) réponse(s) — optionnel pour l&apos;instant.
+                Le rond à droite définit la/les bonne(s) réponse(s) — optionnel
+                pour l&apos;instant.
               </div>
             </div>
           ) : null}
@@ -366,7 +473,15 @@ export default function QuestionEditorModal({
           {isIndividual ? (
             <div className="field" style={{ marginTop: 10 }}>
               <div className="label">Prioritaire</div>
-              <label className="muted" style={{ display: "flex", gap: 10, alignItems: "center", userSelect: "none" }}>
+              <label
+                className="muted"
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  alignItems: "center",
+                  userSelect: "none",
+                }}
+              >
                 <input
                   type="checkbox"
                   checked={!!priority}
@@ -461,7 +576,11 @@ export default function QuestionEditorModal({
 
             <hr className="sep" />
 
-            <Toggle checked={tagEnabled} onChange={setTagEnabled} label="Ajouter un tag" />
+            <Toggle
+              checked={tagEnabled}
+              onChange={setTagEnabled}
+              label="Ajouter un tag"
+            />
 
             {tagEnabled ? (
               <>

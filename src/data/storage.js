@@ -25,14 +25,58 @@ function cloneDeep(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
+export function getAuthToken() {
+  return localStorage.getItem("bni_token") || "";
+}
+
+export function setAuthToken(token) {
+  if (token) localStorage.setItem("bni_token", token);
+  else localStorage.removeItem("bni_token");
+}
+
+// Clean up legacy plaintext credentials key if present
+const CREDS_KEY = "bni_creds";
+
+export function saveCredentials() {
+  try {
+    localStorage.removeItem(CREDS_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+export function getSavedCredentials() {
+  try {
+    localStorage.removeItem(CREDS_KEY);
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+export function clearSavedCredentials() {
+  try {
+    localStorage.removeItem(CREDS_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 async function fetchJSON(url, options = {}) {
+  const token = getAuthToken();
+  const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
+
   const tryFetch = async (u) => {
     const res = await fetch(u, {
       // Avoid stale reads after writes (Netlify/edge caches, browser cache)
       cache: options.cache ?? "no-store",
       ...options,
-      // Ensure we never drop Content-Type when callers pass their own headers
-      headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+      // Ensure we never drop Content-Type and include auth token
+      headers: {
+        "Content-Type": "application/json",
+        ...authHeaders,
+        ...(options.headers || {}),
+      },
     });
     if (!res.ok) {
       const txt = await res.text().catch(() => "");
@@ -68,118 +112,127 @@ async function fetchJSON(url, options = {}) {
   }
 }
 
-export function getAuthToken() {
-  return localStorage.getItem("bni_token") || "";
-}
-
-export function setAuthToken(token) {
-  if (token) localStorage.setItem("bni_token", token);
-  else localStorage.removeItem("bni_token");
-}
-
-// Persist last used credentials so the browser can restore the session
-// even if the server re-issues a token (ex: serverless cold start).
-// NOTE: This stores the password in localStorage.
-const CREDS_KEY = "bni_creds";
-
-export function saveCredentials({ prenom, nom, motDePasse }) {
-  try {
-    const payload = {
-      prenom: String(prenom || "").trim(),
-      nom: String(nom || "").trim(),
-      motDePasse: String(motDePasse || "").trim(),
-      savedAt: new Date().toISOString(),
-    };
-    // Only store if all fields are present
-    if (!payload.prenom || !payload.nom || !payload.motDePasse) return;
-    localStorage.setItem(CREDS_KEY, JSON.stringify(payload));
-  } catch {
-    // ignore
-  }
-}
-
-export function getSavedCredentials() {
-  try {
-    const raw = localStorage.getItem(CREDS_KEY);
-    if (!raw) return null;
-    const p = JSON.parse(raw);
-    if (!p || typeof p !== "object") return null;
-    const prenom = String(p.prenom || "").trim();
-    const nom = String(p.nom || "").trim();
-    const motDePasse = String(p.motDePasse || "").trim();
-    if (!prenom || !nom || !motDePasse) return null;
-    return { prenom, nom, motDePasse };
-  } catch {
-    return null;
-  }
-}
-
-export function clearSavedCredentials() {
-  try {
-    localStorage.removeItem(CREDS_KEY);
-  } catch {
-    // ignore
-  }
-}
-
 export async function authRegister(payload) {
-  return fetchJSON(API_AUTH_REGISTER, { method: "POST", body: JSON.stringify(payload) });
+  return fetchJSON(API_AUTH_REGISTER, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function authLogin(payload) {
-  return fetchJSON(API_AUTH_LOGIN, { method: "POST", body: JSON.stringify(payload) });
+  return fetchJSON(API_AUTH_LOGIN, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function authMe() {
   const token = getAuthToken();
-  return fetchJSON(API_AUTH_ME, { headers: { Authorization: `Bearer ${token}` } });
+  return fetchJSON(API_AUTH_ME, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 }
 
 // Password reset ("Mot de passe oublié ?")
-export async function passwordResetVerify({ prenom, nom, dateNaissance, compteBancaire }) {
+export async function passwordResetVerify({
+  prenom,
+  nom,
+  dateNaissance,
+  compteBancaire,
+}) {
   return fetchJSON(API_AUTH_PASSWORD_RESET_VERIFY, {
     method: "POST",
     body: JSON.stringify({ prenom, nom, dateNaissance, compteBancaire }),
   });
 }
 
-export async function passwordResetSet({ prenom, nom, dateNaissance, compteBancaire, nouveauMotDePasse }) {
+export async function passwordResetSet({
+  prenom,
+  nom,
+  dateNaissance,
+  compteBancaire,
+  nouveauMotDePasse,
+}) {
   return fetchJSON(API_AUTH_PASSWORD_RESET, {
     method: "POST",
-    body: JSON.stringify({ prenom, nom, dateNaissance, compteBancaire, nouveauMotDePasse }),
+    body: JSON.stringify({
+      prenom,
+      nom,
+      dateNaissance,
+      compteBancaire,
+      nouveauMotDePasse,
+    }),
   });
 }
 
 export async function earnRandom(userId) {
-  return fetchJSON(API_EARN_RANDOM, { method: "POST", body: JSON.stringify({ userId }) });
+  return fetchJSON(API_EARN_RANDOM, {
+    method: "POST",
+    body: JSON.stringify({ userId }),
+  });
 }
 
 export async function skipRandom(userId) {
-  return fetchJSON(API_SKIP_RANDOM, { method: "POST", body: JSON.stringify({ userId }) });
+  return fetchJSON(API_SKIP_RANDOM, {
+    method: "POST",
+    body: JSON.stringify({ userId }),
+  });
 }
 
 export async function earnQuestionnaire(userId, amount, questionnaireId) {
-  return fetchJSON(API_EARN_QUESTIONNAIRE, { method: "POST", body: JSON.stringify({ userId, amount, questionnaireId }) });
+  return fetchJSON(API_EARN_QUESTIONNAIRE, {
+    method: "POST",
+    body: JSON.stringify({ userId, amount, questionnaireId }),
+  });
 }
 
 export async function appendAnswer(entry) {
-  return fetchJSON(API_ANS_APPEND, { method: "POST", body: JSON.stringify(entry || {}) });
+  return fetchJSON(API_ANS_APPEND, {
+    method: "POST",
+    body: JSON.stringify(entry || {}),
+  });
 }
 
 export async function appendCompletion(entry) {
-  return fetchJSON(API_CMP_APPEND, { method: "POST", body: JSON.stringify(entry || {}) });
+  return fetchJSON(API_CMP_APPEND, {
+    method: "POST",
+    body: JSON.stringify(entry || {}),
+  });
 }
 
 export async function requestWithdraw(userId) {
-  return fetchJSON(API_REQUEST_WITHDRAW, { method: "POST", body: JSON.stringify({ userId }) });
+  return fetchJSON(API_REQUEST_WITHDRAW, {
+    method: "POST",
+    body: JSON.stringify({ userId }),
+  });
 }
 
 export async function verifyPaymentStatus(userId) {
-  return fetchJSON("/api/user/verify-payment-status", { method: "POST", body: JSON.stringify({ userId }) });
+  return fetchJSON("/api/user/verify-payment-status", {
+    method: "POST",
+    body: JSON.stringify({ userId }),
+  });
 }
 
-export async function recordSensible(userId, tagName, answer, questionId, questionTitle, isCaptcha = false) {
-  return fetchJSON(API_USER_SENSIBLE, { method: "POST", body: JSON.stringify({ userId, tagName, answer, questionId, questionTitle, isCaptcha }) });
+export async function recordSensible(
+  userId,
+  tagName,
+  answer,
+  questionId,
+  questionTitle,
+  isCaptcha = false,
+) {
+  return fetchJSON(API_USER_SENSIBLE, {
+    method: "POST",
+    body: JSON.stringify({
+      userId,
+      tagName,
+      answer,
+      questionId,
+      questionTitle,
+      isCaptcha,
+    }),
+  });
 }
 
 export async function updateMe(patch) {
@@ -196,7 +249,10 @@ export async function adminListUsers() {
 }
 
 export async function adminUpdateUser(userId, patch) {
-  return fetchJSON(`${API_ADMIN_USERS}/${userId}`, { method: "PUT", body: JSON.stringify(patch) });
+  return fetchJSON(`${API_ADMIN_USERS}/${userId}`, {
+    method: "PUT",
+    body: JSON.stringify(patch),
+  });
 }
 
 export async function adminListPayments() {
@@ -205,11 +261,17 @@ export async function adminListPayments() {
 }
 
 export async function adminValidatePayment(paymentId) {
-  return fetchJSON(`${API_ADMIN_PAYMENTS}/${paymentId}/validate`, { method: "POST", body: JSON.stringify({}) });
+  return fetchJSON(`${API_ADMIN_PAYMENTS}/${paymentId}/validate`, {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
 }
 
 export async function adminCancelPayment(paymentId) {
-  return fetchJSON(`${API_ADMIN_PAYMENTS}/${paymentId}/cancel`, { method: "POST", body: JSON.stringify({}) });
+  return fetchJSON(`${API_ADMIN_PAYMENTS}/${paymentId}/cancel`, {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
 }
 
 export async function adminGetStatistics() {
@@ -218,11 +280,14 @@ export async function adminGetStatistics() {
 
 /**
  * Get list of answered question IDs for a user in a specific questionnaire
- * @param {string} questionnaireId 
- * @param {string} userId 
+ * @param {string} questionnaireId
+ * @param {string} userId
  * @returns {Promise} { ok: boolean, answeredQuestionIds: string[], completed: boolean }
  */
-export async function getAnsweredQuestionsInQuestionnaire(questionnaireId, userId) {
+export async function getAnsweredQuestionsInQuestionnaire(
+  questionnaireId,
+  userId,
+) {
   try {
     // Cache-buster to avoid any intermediate caching of user-specific progress
     const url = `/api/questionnaires/${questionnaireId}/questions?userId=${encodeURIComponent(userId)}&_=${Date.now()}`;
@@ -230,17 +295,17 @@ export async function getAnsweredQuestionsInQuestionnaire(questionnaireId, userI
     return {
       ok: result.ok || false,
       answeredQuestionIds: result.answeredQuestionIds || [],
-      completed: result.completed || false
+      completed: result.completed || false,
     };
   } catch (e) {
-    console.error('[getAnsweredQuestionsInQuestionnaire] Error:', e);
+    console.error("[getAnsweredQuestionsInQuestionnaire] Error:", e);
     return { ok: false, answeredQuestionIds: [], completed: false };
   }
 }
 
 /**
  * Get progress for all questionnaires for a user
- * @param {string} userId 
+ * @param {string} userId
  * @returns {Promise} { ok: boolean, progress: { [qnId]: { totalQuestions, answeredCount, isCompleted, remaining } } }
  */
 export async function getUserQuestionnairesProgress(userId) {
@@ -249,50 +314,50 @@ export async function getUserQuestionnairesProgress(userId) {
     const result = await fetchJSON(url);
     return {
       ok: result.ok || false,
-      progress: result.progress || {}
+      progress: result.progress || {},
     };
   } catch (e) {
-    console.error('[getUserQuestionnairesProgress] Error:', e);
+    console.error("[getUserQuestionnairesProgress] Error:", e);
     return { ok: false, progress: {} };
   }
 }
 
 /**
  * Validate and complete a questionnaire (checks all questions are answered)
- * @param {string} questionnaireId 
- * @param {string} userId 
- * @returns {Promise} 
+ * @param {string} questionnaireId
+ * @param {string} userId
+ * @returns {Promise}
  */
 export async function validateQuestionnaire(questionnaireId, userId) {
   try {
     const url = `/api/questionnaire/${questionnaireId}/validate`;
-    const result = await fetchJSON(url, { 
-      method: "POST", 
-      body: JSON.stringify({ userId }) 
+    const result = await fetchJSON(url, {
+      method: "POST",
+      body: JSON.stringify({ userId }),
     });
     return result;
   } catch (e) {
-    console.error('[validateQuestionnaire] Error:', e);
+    console.error("[validateQuestionnaire] Error:", e);
     return { ok: false, error: e.message };
   }
 }
 
 /**
  * Mark a questionnaire as completed (for sync purposes)
- * @param {string} questionnaireId 
- * @param {string} userId 
+ * @param {string} questionnaireId
+ * @param {string} userId
  * @returns {Promise}
  */
 export async function markQuestionnaireCompleted(questionnaireId, userId) {
   try {
     const url = `/api/questionnaire/${questionnaireId}/mark-completed`;
-    const result = await fetchJSON(url, { 
-      method: "POST", 
-      body: JSON.stringify({ userId }) 
+    const result = await fetchJSON(url, {
+      method: "POST",
+      body: JSON.stringify({ userId }),
     });
     return result;
   } catch (e) {
-    console.error('[markQuestionnaireCompleted] Error:', e);
+    console.error("[markQuestionnaireCompleted] Error:", e);
     return { ok: false, error: e.message };
   }
 }
@@ -307,19 +372,29 @@ export async function markQuestionnaireCompleted(questionnaireId, userId) {
  * @param {Array<{questionId:string, questionTitle?:string|null, answer:any, isCaptcha?:boolean}>} answers
  * @param {string} userName
  */
-export async function syncQuestionnaireAnswers(questionnaireId, userId, answers = [], userName = "") {
+export async function syncQuestionnaireAnswers(
+  questionnaireId,
+  userId,
+  answers = [],
+  userName = "",
+) {
   try {
     const qnId = String(questionnaireId || "").trim();
     const uId = String(userId || "").trim();
-    if (!qnId || !uId) return { ok: false, error: "missing questionnaireId/userId" };
+    if (!qnId || !uId)
+      return { ok: false, error: "missing questionnaireId/userId" };
 
     const url = `${API_QN_SYNC_ANSWERS}/${encodeURIComponent(qnId)}/sync-answers`;
     return await fetchJSON(url, {
       method: "POST",
-      body: JSON.stringify({ userId: uId, userName: String(userName || "").trim(), answers: Array.isArray(answers) ? answers : [] }),
+      body: JSON.stringify({
+        userId: uId,
+        userName: String(userName || "").trim(),
+        answers: Array.isArray(answers) ? answers : [],
+      }),
     });
   } catch (e) {
-    console.error('[syncQuestionnaireAnswers] Error:', e);
+    console.error("[syncQuestionnaireAnswers] Error:", e);
     return { ok: false, error: e.message };
   }
 }
@@ -329,9 +404,9 @@ export async function loadSettings() {
 }
 
 export async function saveSettings(settings) {
-  return fetchJSON(API_ADMIN_SETTINGS, { 
-    method: "PUT", 
-    body: JSON.stringify(settings) 
+  return fetchJSON(API_ADMIN_SETTINGS, {
+    method: "PUT",
+    body: JSON.stringify(settings),
   });
 }
 
@@ -352,45 +427,45 @@ export async function resizeImage(base64Image, maxHeight = 500) {
   return new Promise((resolve, reject) => {
     // Create an image element
     const img = new Image();
-    
+
     img.onload = () => {
       // Calculate new dimensions
       let width = img.width;
       let height = img.height;
-      
+
       // Only resize if image is taller than maxHeight
       if (height <= maxHeight) {
         resolve(base64Image);
         return;
       }
-      
+
       // Calculate new dimensions maintaining aspect ratio
       const ratio = maxHeight / height;
       width = Math.round(width * ratio);
       height = maxHeight;
-      
+
       // Create canvas
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
-      
+
       // Draw resized image
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, width, height);
-      
+
       // Convert back to base64
       try {
-        const resizedBase64 = canvas.toDataURL('image/jpeg', 0.85); // 85% quality for good balance
+        const resizedBase64 = canvas.toDataURL("image/jpeg", 0.85); // 85% quality for good balance
         resolve(resizedBase64);
       } catch (error) {
         reject(error);
       }
     };
-    
+
     img.onerror = () => {
-      reject(new Error('Failed to load image'));
+      reject(new Error("Failed to load image"));
     };
-    
+
     img.src = base64Image;
   });
 }
@@ -404,7 +479,13 @@ export function isExpired(endDate) {
 
 export function isQuestionnaireActive(qn) {
   // Un questionnaire "unrelease" (non publié) n'est jamais actif sur le site
-  if (qn && (qn.unrelease || qn.unreleased || String(qn.status || "").toLowerCase() === "unrelease")) return false;
+  if (
+    qn &&
+    (qn.unrelease ||
+      qn.unreleased ||
+      String(qn.status || "").toLowerCase() === "unrelease")
+  )
+    return false;
   return Boolean(qn && qn.visible) && !isExpired(qn.endDate);
 }
 
@@ -423,22 +504,32 @@ function normalizeDB(db) {
   // migrate questions to new format
   db.questions = db.questions.map((q) => {
     const questionnaireId =
-      q.questionnaire ??
-      q.questionnaireId ??
-      q.sourceQuestionnaireId ??
-      null;
+      q.questionnaire ?? q.questionnaireId ?? q.sourceQuestionnaireId ?? null;
 
-    const allowed = new Set(["FREE_TEXT", "QCM", "DROPDOWN", "CHECKBOX", "SLIDER", "PHOTO"]);
-    let type = String(q.type || "FREE_TEXT").trim().toUpperCase();
+    const allowed = new Set([
+      "FREE_TEXT",
+      "QCM",
+      "DROPDOWN",
+      "CHECKBOX",
+      "SLIDER",
+      "PHOTO",
+    ]);
+    let type = String(q.type || "FREE_TEXT")
+      .trim()
+      .toUpperCase();
     if (!allowed.has(type)) type = q.type === "QCM" ? "QCM" : "FREE_TEXT";
-    const hasChoices = type === "QCM" || type === "DROPDOWN" || type === "CHECKBOX";
+    const hasChoices =
+      type === "QCM" || type === "DROPDOWN" || type === "CHECKBOX";
 
     let checkboxMode = null;
     if (type === "CHECKBOX") {
-      const raw = String(q.checkboxMode || q.checkboxmode || "").trim().toUpperCase();
+      const raw = String(q.checkboxMode || q.checkboxmode || "")
+        .trim()
+        .toUpperCase();
       if (raw === "SINGLE" || raw === "UNIQUE") checkboxMode = "SINGLE";
       else if (raw === "MULTI" || raw === "MULTIPLE") checkboxMode = "MULTI";
-      else if (q.checkboxMultiple === false || q.allowMultiple === false) checkboxMode = "SINGLE";
+      else if (q.checkboxMultiple === false || q.allowMultiple === false)
+        checkboxMode = "SINGLE";
       else checkboxMode = "MULTI";
     }
 
@@ -462,7 +553,10 @@ function normalizeDB(db) {
       type,
       correctAnswer: q.correctAnswer ?? null,
       // FREE_TEXT only: if true, user can only enter digits.
-      digitsOnly: type === "FREE_TEXT" ? Boolean(q.digitsOnly ?? q.freeTextDigitsOnly ?? q.onlyDigits) : false,
+      digitsOnly:
+        type === "FREE_TEXT"
+          ? Boolean(q.digitsOnly ?? q.freeTextDigitsOnly ?? q.onlyDigits)
+          : false,
       imageUrl: q.imageUrl ?? null,
       importance: q.importance || (q.sensitive ? "SENSIBLE" : "SENSIBLE"),
       tagId: q.tagId ?? null,
@@ -470,7 +564,11 @@ function normalizeDB(db) {
       priority: Boolean(q.priority ?? q.prioritaire) && !questionnaireId,
       priorityUntil: questionnaireId
         ? null
-        : (q.priorityUntil ?? q.prioritaireUntil ?? q.priorityEndDate ?? q.prioritaireFin ?? null),
+        : (q.priorityUntil ??
+          q.prioritaireUntil ??
+          q.priorityEndDate ??
+          q.prioritaireFin ??
+          null),
       active: Boolean(q.active),
       questionnaire: questionnaireId,
       forcedInactiveByQuestionnaire: Boolean(q.forcedInactiveByQuestionnaire),
@@ -497,14 +595,22 @@ function normalizeDB(db) {
     reward: Number(qn.reward || 0),
     visible: Boolean(qn.visible),
     // New status field
-    unrelease: Boolean(qn.unrelease ?? qn.unreleased ?? (String(qn.status || "").toLowerCase() === "unrelease")),
+    unrelease: Boolean(
+      qn.unrelease ??
+      qn.unreleased ??
+      String(qn.status || "").toLowerCase() === "unrelease",
+    ),
     endDate: qn.endDate || null,
     isPrivate: Boolean(qn.isPrivate),
     code: qn.code || "",
     // Order is persisted on the server in questionnaire.json via `questionorder`.
     // Keep `questionOrder` (camelCase) for UI code compatibility.
-    questionOrder: asArray(qn.questionorder ?? qn.questionOrder ?? qn.questionIds),
-    questionorder: asArray(qn.questionorder ?? qn.questionOrder ?? qn.questionIds),
+    questionOrder: asArray(
+      qn.questionorder ?? qn.questionOrder ?? qn.questionIds,
+    ),
+    questionorder: asArray(
+      qn.questionorder ?? qn.questionOrder ?? qn.questionIds,
+    ),
     createdAt: qn.createdAt || new Date().toISOString(),
     updatedAt: qn.updatedAt || new Date().toISOString(),
   }));
@@ -528,18 +634,25 @@ function normalizeDB(db) {
     const qn = qnById.get(q.questionnaire);
     if (!qn) return q;
 
-    const qnUnreleased = Boolean(qn && (qn.unrelease || qn.unreleased || String(qn.status || "").toLowerCase() === "unrelease"));
+    const qnUnreleased = Boolean(
+      qn &&
+      (qn.unrelease ||
+        qn.unreleased ||
+        String(qn.status || "").toLowerCase() === "unrelease"),
+    );
     const qnActive = isQuestionnaireActive(qn);
 
     // If questionnaire is unreleased (non publié), its questions must always be inactive
     if (qnUnreleased) {
-      if (q.active) return { ...q, active: false, forcedInactiveByQuestionnaire: true };
+      if (q.active)
+        return { ...q, active: false, forcedInactiveByQuestionnaire: true };
       return { ...q, active: false };
     }
 
     // If questionnaire is active, lock linked questions to inactive
     if (qnActive) {
-      if (q.active) return { ...q, active: false, forcedInactiveByQuestionnaire: true };
+      if (q.active)
+        return { ...q, active: false, forcedInactiveByQuestionnaire: true };
       return { ...q, active: false };
     }
 
@@ -564,14 +677,16 @@ let inflightScope = null;
  * Call this after any modification to the database
  */
 export function clearDBCache() {
-  console.log('🔄 Invalidation du cache DB');
+  // console.log("🔄 Invalidation du cache DB");
   dbCacheByScope.clear();
   inflightDb = null;
   inflightScope = null;
 }
 
 export async function loadDB(options = {}) {
-  const scope = String(options.scope || "").trim().toLowerCase();
+  const scope = String(options.scope || "")
+    .trim()
+    .toLowerCase();
   const cacheKey = scope || "full";
   const now = Date.now();
   const cached = dbCacheByScope.get(cacheKey);
@@ -608,7 +723,7 @@ export async function loadDB(options = {}) {
 export async function loadDBProgressive(onFullDataLoaded) {
   // Phase 1: Load minimal data (only active questions and visible questionnaires)
   const minimalDb = await loadDB({ scope: "minimal", force: true });
-  
+
   // Phase 2: Load full public data in background
   if (onFullDataLoaded) {
     loadDB({ scope: "public", force: true })
@@ -619,7 +734,7 @@ export async function loadDBProgressive(onFullDataLoaded) {
         console.error("[loadDBProgressive] Failed to load full data:", e);
       });
   }
-  
+
   return minimalDb;
 }
 
@@ -636,8 +751,8 @@ export async function saveDB(db) {
 
 /**
  * Get list of question IDs that the user has already answered in a questionnaire (local version)
- * @param {string} userId 
- * @param {string} questionnaireId 
+ * @param {string} userId
+ * @param {string} questionnaireId
  * @param {Array} answers - Array of answer objects from DB
  * @returns {Set} Set of answered question IDs
  */
@@ -645,15 +760,19 @@ export function filterAnsweredQuestionsLocal(userId, questionnaireId, answers) {
   if (!userId || !questionnaireId || !Array.isArray(answers)) {
     return new Set();
   }
-  
+
   const answeredIds = new Set();
-  
+
   for (const ans of answers) {
-    if (ans.userId === userId && ans.questionnaireId === questionnaireId && ans.questionId) {
+    if (
+      ans.userId === userId &&
+      ans.questionnaireId === questionnaireId &&
+      ans.questionId
+    ) {
       answeredIds.add(ans.questionId);
     }
   }
-  
+
   return answeredIds;
 }
 
@@ -699,7 +818,9 @@ export function updateDB(currentDB, updater) {
  * @returns {Promise} Response from server
  */
 export async function adminDeleteUser(userId) {
-  const result = await fetchJSON(`${API_ADMIN_USERS}/${userId}`, { method: "DELETE" });
+  const result = await fetchJSON(`${API_ADMIN_USERS}/${userId}`, {
+    method: "DELETE",
+  });
   if (result && result.ok) {
     clearDBCache(); // Invalider le cache après suppression
   }
@@ -712,7 +833,9 @@ export async function adminDeleteUser(userId) {
  * @returns {Promise} Response from server
  */
 export async function adminDeleteAnswer(answerId) {
-  const result = await fetchJSON(`/api/admin/answers/${answerId}`, { method: "DELETE" });
+  const result = await fetchJSON(`/api/admin/answers/${answerId}`, {
+    method: "DELETE",
+  });
   if (result && result.ok) {
     clearDBCache(); // Invalider le cache après suppression
   }

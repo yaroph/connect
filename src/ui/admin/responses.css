@@ -1,33 +1,53 @@
-.respWrap{ display:flex; flex-direction:column; gap: 12px; }
-.respCard{ border-radius: 18px; padding: 12px; box-shadow:none; }
-.respTop{ display:flex; align-items:flex-start; justify-content:space-between; gap: 10px; }
-.respTitle{ font-weight: 900; }
-.respLine{ margin-top: 8px; }
-.respAnswer{
+.respWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.respCard {
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: none;
+}
+.respTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.respTitle {
+  font-weight: 900;
+}
+.respLine {
+  margin-top: 8px;
+}
+.respAnswer {
   margin-top: 8px;
   border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(0,0,0,0.14);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.14);
   padding: 10px 12px;
-  color: rgba(255,255,255,0.92);
+  color: rgba(255, 255, 255, 0.92);
   white-space: pre-wrap;
 }
-.pill.wip{ margin-left: 8px; }
+.pill.wip {
+  margin-left: 8px;
+}
 
+.respValue {
+  margin-top: 4px;
+}
 
-.respValue{ margin-top: 4px; }
-
-.respImgLink{
+.respImgLink {
   display: inline-block;
 }
-.respImgThumb{
+.respImgThumb {
   width: 96px;
   height: 96px;
   border-radius: 16px;
   object-fit: cover;
-  border: 1px solid rgba(255,255,255,0.16);
-  background: rgba(0,0,0,0.10);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
 }
 
 /* Styles pour les graphiques de réponses */

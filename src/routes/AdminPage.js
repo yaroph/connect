@@ -2,7 +2,13 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import "../styles/admin.css";
 import LogoHeader from "../ui/LogoHeader";
 import Tabs from "../ui/Tabs";
-import { loadDB, updateDB, saveDB, adminListPayments, clearDBCache } from "../data/storage";
+import {
+  loadDB,
+  updateDB,
+  saveDB,
+  adminListPayments,
+  clearDBCache,
+} from "../data/storage";
 import AdminQuestionnaire from "../ui/admin/AdminQuestionnaire";
 import AdminQuestions from "../ui/admin/AdminQuestions";
 import AdminTags from "../ui/admin/AdminTags";
@@ -36,7 +42,8 @@ export default function AdminPage() {
           setTimeout(run, 900);
           return;
         }
-        const msg = "Impossible de charger la base de données. Lance bien le serveur (npm start).";
+        const msg =
+          "Impossible de charger la base de données. Lance bien le serveur (npm start).";
         setDbError(msg);
         notifyError(msg);
       }
@@ -59,7 +66,9 @@ export default function AdminPage() {
       }
     };
     run();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const [topTab, setTopTab] = useState("Questionnaire");
@@ -73,32 +82,36 @@ export default function AdminPage() {
     // Force-reload the questionnaire DB
     let cancelled = false;
     loadDB({ force: true })
-      .then((r) => { if (!cancelled && r) setDb(r); })
+      .then((r) => {
+        if (!cancelled && r) setDb(r);
+      })
       .catch(() => {});
 
     // Refresh payment badge count
     adminListPayments()
-      .then((r) => { if (!cancelled) setPaymentCount((r.payments || []).length); })
+      .then((r) => {
+        if (!cancelled) setPaymentCount((r.payments || []).length);
+      })
       .catch(() => {});
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topTab]);
 
-  const topTabs = useMemo(
-    () => {
-      const payLabel = paymentCount > 0 ? `Payments (${paymentCount})` : "Payments";
-      return [
-        { id: "Utilisateur", label: "Utilisateur", wip: false },
-        { id: "Recherche", label: "Recherche", wip: false },
-        { id: "Questionnaire", label: "Questionnaire", wip: false },
-        { id: "Payment", label: payLabel, wip: false },
-        { id: "Statistique", label: "Statistique", wip: false },
-        { id: "Paramètres", label: "Paramètres", wip: false },
-      ];
-    },
-    [paymentCount]
-  );
+  const topTabs = useMemo(() => {
+    const payLabel =
+      paymentCount > 0 ? `Payments (${paymentCount})` : "Payments";
+    return [
+      { id: "Utilisateur", label: "Utilisateur", wip: false },
+      { id: "Recherche", label: "Recherche", wip: false },
+      { id: "Questionnaire", label: "Questionnaire", wip: false },
+      { id: "Payment", label: payLabel, wip: false },
+      { id: "Statistique", label: "Statistique", wip: false },
+      { id: "Paramètres", label: "Paramètres", wip: false },
+    ];
+  }, [paymentCount]);
 
   const subTabs = useMemo(
     () => [
@@ -106,7 +119,7 @@ export default function AdminPage() {
       { id: "Question individuel", label: "Question individuel" },
       { id: "Tags", label: "Tags" },
     ],
-    []
+    [],
   );
 
   const onDBChange = (updater) => {
@@ -133,43 +146,57 @@ export default function AdminPage() {
   };
 
   if (!db) {
-  return (
-    <div className="adminRoot">
-      <LogoHeader />
-      <div className="adminBody">
-        <div className="glass adminPanel" style={{ maxWidth: 820, margin: "0 auto" }}>
-          <div className="adminContent" style={{ padding: 0 }}>
-            <div className="serverLoading" style={{ margin: 0 }}>
-              <div className="serverLoadingTop">
-                <div className="serverLoadingTitle">Connexion au serveur</div>
-                <div className="serverLoadingSpinner" aria-hidden="true" />
-              </div>
+    return (
+      <div className="adminRoot">
+        <LogoHeader />
+        <div className="adminBody">
+          <div
+            className="glass adminPanel"
+            style={{ maxWidth: 820, margin: "0 auto" }}
+          >
+            <div className="adminContent" style={{ padding: 0 }}>
+              <div className="serverLoading" style={{ margin: 0 }}>
+                <div className="serverLoadingTop">
+                  <div className="serverLoadingTitle">Connexion au serveur</div>
+                  <div className="serverLoadingSpinner" aria-hidden="true" />
+                </div>
 
-              <div className="serverLoadingText">
-                {dbError ? dbError : (
-                  <>
-                    Chargement…<span className="loadingDots" aria-hidden="true" />
-                  </>
-                )}
-              </div>
+                <div className="serverLoadingText">
+                  {dbError ? (
+                    dbError
+                  ) : (
+                    <>
+                      Chargement…
+                      <span className="loadingDots" aria-hidden="true" />
+                    </>
+                  )}
+                </div>
 
-              <div className="serverLoadingBar" aria-hidden="true"><span /></div>
-              {!dbError ? (
-                <div className="serverLoadingHint">Initialisation de l&apos;interface d&apos;administration…</div>
-              ) : null}
+                <div className="serverLoadingBar" aria-hidden="true">
+                  <span />
+                </div>
+                {!dbError ? (
+                  <div className="serverLoadingHint">
+                    Initialisation de l&apos;interface d&apos;administration…
+                  </div>
+                ) : null}
 
-              <div style={{ padding: 18, paddingTop: 14 }}>
-                <button className="btn btnPrimary" type="button" onClick={() => window.location.reload()}>
-                  Réessayer
-                </button>
+                <div style={{ padding: 18, paddingTop: 14 }}>
+                  <button
+                    className="btn btnPrimary"
+                    type="button"
+                    onClick={() => window.location.reload()}
+                  >
+                    Réessayer
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   return (
     <div className="adminRoot">
@@ -225,13 +252,24 @@ export default function AdminPage() {
         ) : (
           <div className="glass adminPanel">
             <div className="adminSubTabs">
-              <Tabs items={subTabs} activeId={subTab} onChange={setSubTab} variant="sub" />
+              <Tabs
+                items={subTabs}
+                activeId={subTab}
+                onChange={setSubTab}
+                variant="sub"
+              />
             </div>
 
             <div className="adminContent">
-              {subTab === "Questionnaire" ? <AdminQuestionnaire db={db} onDBChange={onDBChange} /> : null}
-              {subTab === "Question individuel" ? <AdminQuestions db={db} onDBChange={onDBChange} /> : null}
-              {subTab === "Tags" ? <AdminTags db={db} onDBChange={onDBChange} /> : null}
+              {subTab === "Questionnaire" ? (
+                <AdminQuestionnaire db={db} onDBChange={onDBChange} />
+              ) : null}
+              {subTab === "Question individuel" ? (
+                <AdminQuestions db={db} onDBChange={onDBChange} />
+              ) : null}
+              {subTab === "Tags" ? (
+                <AdminTags db={db} onDBChange={onDBChange} />
+              ) : null}
             </div>
           </div>
         )}

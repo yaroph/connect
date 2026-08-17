@@ -9,19 +9,23 @@ export default function NoticeHost() {
     const onNotify = (e) => {
       const d = e?.detail || {};
       if (!d.message) return;
-      const item = { id: d.id || `${Date.now()}`, type: d.type || "info", message: d.message };
+      const item = {
+        id: d.id || `${Date.now()}`,
+        type: d.type || "info",
+        message: d.message,
+      };
       setItems((prev) => [item, ...prev].slice(0, 3));
       setTimeout(() => {
         setItems((prev) => prev.filter((x) => x.id !== item.id));
       }, 4200);
     };
-    
+
     const onConfirm = (e) => {
       const d = e?.detail || {};
       if (!d.message) return;
       setConfirmData(d);
     };
-    
+
     window.addEventListener("bni_notify", onNotify);
     window.addEventListener("bni_confirm", onConfirm);
     return () => {
@@ -51,7 +55,7 @@ export default function NoticeHost() {
           ))}
         </div>
       )}
-      
+
       {confirmData && (
         <div className="confirmOverlay" onClick={handleCancel}>
           <div className="confirmDialog" onClick={(e) => e.stopPropagation()}>

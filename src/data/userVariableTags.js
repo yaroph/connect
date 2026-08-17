@@ -2,20 +2,50 @@
 // These tags are visible like regular tags, but are not editable/deletable.
 
 export const USER_VARIABLE_TAGS = [
-  { id: "vu_dateNaissance", name: "variable.user.dateNaissance", field: "dateNaissance" },
+  {
+    id: "vu_dateNaissance",
+    name: "variable.user.dateNaissance",
+    field: "dateNaissance",
+  },
   { id: "vu_telephone", name: "variable.user.telephone", field: "telephone" },
-  { id: "vu_photoProfil", name: "variable.user.photoProfil", field: "photoProfil" },
-  { id: "vu_numeroCitoyen", name: "variable.user.numeroCitoyen", field: "numeroCitoyen" },
+  {
+    id: "vu_photoProfil",
+    name: "variable.user.photoProfil",
+    field: "photoProfil",
+  },
+  {
+    id: "vu_numeroCitoyen",
+    name: "variable.user.numeroCitoyen",
+    field: "numeroCitoyen",
+  },
   { id: "vu_sexe", name: "variable.user.sexe", field: "sexe" },
-  { id: "vu_couleurPeau", name: "variable.user.couleurPeau", field: "couleurPeau" },
-  { id: "vu_couleurCheveux", name: "variable.user.couleurCheveux", field: "couleurCheveux" },
-  { id: "vu_longueurCheveux", name: "variable.user.longueurCheveux", field: "longueurCheveux" },
-  { id: "vu_styleVestimentaire", name: "variable.user.styleVestimentaire", field: "styleVestimentaire" },
+  {
+    id: "vu_couleurPeau",
+    name: "variable.user.couleurPeau",
+    field: "couleurPeau",
+  },
+  {
+    id: "vu_couleurCheveux",
+    name: "variable.user.couleurCheveux",
+    field: "couleurCheveux",
+  },
+  {
+    id: "vu_longueurCheveux",
+    name: "variable.user.longueurCheveux",
+    field: "longueurCheveux",
+  },
+  {
+    id: "vu_styleVestimentaire",
+    name: "variable.user.styleVestimentaire",
+    field: "styleVestimentaire",
+  },
   { id: "vu_metier", name: "variable.user.metier", field: "metier" },
 ];
 
 const byId = new Map(USER_VARIABLE_TAGS.map((t) => [t.id, t]));
-const byNameLower = new Map(USER_VARIABLE_TAGS.map((t) => [String(t.name).toLowerCase(), t]));
+const byNameLower = new Map(
+  USER_VARIABLE_TAGS.map((t) => [String(t.name).toLowerCase(), t]),
+);
 
 export function isUserVariableTag(tag) {
   if (!tag) return false;

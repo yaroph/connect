@@ -1,54 +1,65 @@
-.qToolsRow{
+.qToolsRow {
   border-radius: 18px;
   padding: 12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  box-shadow:none;
+  box-shadow: none;
 }
-.qSearch{
-  flex:1;
-  display:flex;
-  align-items:center;
+.qSearch {
+  flex: 1;
+  display: flex;
+  align-items: center;
   gap: 10px;
   border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.18);
   padding: 10px 12px;
 }
-.qSearchInput{
-  flex:1;
-  border:0;
-  outline:none;
+.qSearchInput {
+  flex: 1;
+  border: 0;
+  outline: none;
   background: transparent;
-  color: rgba(255,255,255,0.92);
+  color: rgba(255, 255, 255, 0.92);
   font-size: 14px;
 }
 
-.qFilterWrap{
-  display:flex;
+.qFilterWrap {
+  display: flex;
   gap: 10px;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
 }
 
-.lockIcon{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
+.lockIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-right: 8px;
   opacity: 0.9;
 }
 
-.autoHint{
+.autoHint {
   font-size: 11px;
-  text-align:right;
+  text-align: right;
   margin-top: 2px;
 }
 
-.qFilterSelect{ display:flex; gap: 10px; }
-.disabledBtn{ opacity:.45; cursor:not-allowed; }
-.qnPill{ max-width: 360px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qFilterSelect {
+  display: flex;
+  gap: 10px;
+}
+.disabledBtn {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.qnPill {
+  max-width: 360px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* Image preview in question card (individual questions) - in header */
 .questionImagePreview {
