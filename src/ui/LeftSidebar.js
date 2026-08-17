@@ -1,5 +1,7 @@
 import React, { useMemo } from "react";
 import { Eye, Play, Lock, ShieldCheck, RotateCcw, Zap } from "lucide-react";
+import { use3DTilt } from "./use3DTilt";
+import AnimatedCounter from "./AnimatedCounter";
 import "./leftSidebar.css";
 
 export default function LeftSidebar({
@@ -14,6 +16,7 @@ export default function LeftSidebar({
   onOpenProfile,
   className = "",
 }) {
+  const { tiltProps, glareStyle } = use3DTilt(10);
   const earned = Number(user?.gagneSurBNI || 0);
   const status = user?.retrait?.status || "IDLE";
   const requestedAmount = Number(user?.retrait?.amount || 0);
@@ -46,8 +49,14 @@ export default function LeftSidebar({
 
   return (
     <aside className={`leftSidebar glass ${className}`.trim()}>
-      {/* Carte Bancaire Cyber BNI */}
-      <div className="cyberBankCard">
+      {/* Carte Bancaire Cyber BNI avec 3D Tilt & Reflet Holographique */}
+      <div className="cyberBankCard" {...tiltProps}>
+        <div className="cyberCardGlare" style={glareStyle} />
+        <div className="hudBracket hudBracketTL" />
+        <div className="hudBracket hudBracketTR" />
+        <div className="hudBracket hudBracketBL" />
+        <div className="hudBracket hudBracketBR" />
+
         <div className="cyberCardTop">
           <div className="cyberCardChip" />
           <div className="cyberCardBrand">BNI CONNECT</div>
@@ -56,7 +65,7 @@ export default function LeftSidebar({
         <div className="cyberCardBalanceRow">
           <div className="cyberCardBalanceLabel">Cagnotte en attente</div>
           <div className="cyberCardBalanceValue">
-            $ {Number(pending || 0).toFixed(2)}
+            <AnimatedCounter value={pending || 0} />
           </div>
         </div>
 
@@ -78,7 +87,9 @@ export default function LeftSidebar({
           </div>
           <div className="cyberCardTotalEarned" title="Total gagné sur BNI">
             <span className="cyberCardTotalLabel">Total</span>
-            <span className="cyberCardTotalVal">${earned.toFixed(2)}</span>
+            <span className="cyberCardTotalVal">
+              <AnimatedCounter value={earned} />
+            </span>
           </div>
         </div>
       </div>

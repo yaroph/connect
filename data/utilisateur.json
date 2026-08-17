@@ -32,7 +32,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T12:39:17.895Z",
-    "updatedAt": "2026-08-17T13:18:05.032Z"
+    "updatedAt": "2026-08-17T13:25:59.267Z"
   },
   {
     "id": "admin_1786970358178",
@@ -65,7 +65,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T12:39:18.179Z",
-    "updatedAt": "2026-08-17T13:18:05.032Z"
+    "updatedAt": "2026-08-17T13:25:59.267Z"
   },
   {
     "id": "u_f38af9c35fb51eab56e1f980c18e8e7e_1786970379790",
@@ -102,7 +102,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T12:39:39.790Z",
-    "updatedAt": "2026-08-17T13:18:05.032Z"
+    "updatedAt": "2026-08-17T13:25:59.267Z"
   },
   {
     "id": "u_de32af2f22f6670c0ddc54c341c58e7a_1786970975426",
@@ -139,7 +139,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T12:49:35.429Z",
-    "updatedAt": "2026-08-17T13:18:05.032Z"
+    "updatedAt": "2026-08-17T13:25:59.267Z"
   },
   {
     "id": "u_e8d90944c4cec1ae6e7a1acc12399aa5_1786972371253",
@@ -176,7 +176,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T13:12:51.254Z",
-    "updatedAt": "2026-08-17T13:18:05.032Z"
+    "updatedAt": "2026-08-17T13:25:59.267Z"
   },
   {
     "id": "u_3ec732e3ceaa67ee73a3f2e710fb4550_1786972684507",
@@ -213,6 +213,43 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T13:18:04.507Z",
-    "updatedAt": "2026-08-17T13:18:05.032Z"
+    "updatedAt": "2026-08-17T13:25:59.267Z"
+  },
+  {
+    "id": "u_e69bb4907c0b9fbedc3da179363beb06_1786973158762",
+    "prenom": "TestPrenom1786973158747",
+    "nom": "TestNom1786973158747",
+    "fullName": "TestPrenom1786973158747 TestNom1786973158747",
+    "compteBancaire": "1786973158747",
+    "dateNaissance": "1998-05-15",
+    "telephone": "5550100",
+    "motDePasse": "enc:9e2b2b889010b17729a4d522:065c62bf11a907785f88be3b4298a601:4d4cc0baaba5c1ca9a09",
+    "photoProfil": "",
+    "numeroCitoyen": "",
+    "sexe": "Homme",
+    "couleurPeau": "",
+    "couleurCheveux": "",
+    "longueurCheveux": "",
+    "styleVestimentaire": "",
+    "metier": "",
+    "gagneSurBNI": 0,
+    "is_admin": false,
+    "token": "tok_e4fe8d1ec55778832c01c171c279a37f80177ed558827eda21d8f394303e9613_1786973158762",
+    "retrait": {
+      "status": "PENDING",
+      "amount": 100,
+      "requestedAt": "2026-08-17T13:25:58.933Z"
+    },
+    "lastLoginAt": "2026-08-17T13:25:58.802Z",
+    "loginByDay": {
+      "2026-08-17": 2
+    },
+    "withdrawalsByMonth": {
+      "2026-08": 1
+    },
+    "sensibleAnswersTagged": [],
+    "sensibleAnswersUntagged": [],
+    "createdAt": "2026-08-17T13:25:58.762Z",
+    "updatedAt": "2026-08-17T13:25:59.267Z"
   }
 ]

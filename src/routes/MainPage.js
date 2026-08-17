@@ -9,6 +9,7 @@ import {
   Trophy,
   Inbox,
 } from "lucide-react";
+import CyberBackground from "../ui/CyberBackground";
 import "../styles/main.css";
 import {
   loadDBProgressive,
@@ -1656,6 +1657,7 @@ export default function MainPage({ authUser, authPending }) {
 
   return (
     <div className="mainRoot">
+      <CyberBackground />
       <LogoHeader
         onClick={() => {
           if (mode === "QUESTIONNAIRE") {

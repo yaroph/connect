@@ -405,7 +405,8 @@ export default function QuestionCard({
 
   return (
     <div
-      className={`qcRoot ${isDragging ? "isDragging" : ""}`}
+      key={question?.id || "q"}
+      className={`qcRoot cyberGlitchIn hudBracketHolder ${isDragging ? "isDragging" : ""}`}
       style={{
         transform: cardTransform,
         transition: isDragging ? "none" : "transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1)",
@@ -415,6 +416,11 @@ export default function QuestionCard({
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
     >
+      <div className="hudBracket hudBracketTL" />
+      <div className="hudBracket hudBracketTR" />
+      <div className="hudBracket hudBracketBL" />
+      <div className="hudBracket hudBracketBR" />
+
       {/* Holographic Stamps on Swipe */}
       {likeStampOpacity > 0 ? (
         <div className="swipeStamp swipeStampLike" style={{ opacity: likeStampOpacity }}>

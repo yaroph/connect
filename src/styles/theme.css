@@ -780,3 +780,94 @@ textarea {
   }
 }
 
+/* ==========================================
+   CYBERPUNK 2042 3D & HUD CORNERS / GLITCH
+   ========================================== */
+
+/* Holographic Glare Overlay */
+.cyberCardGlare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 2;
+  mix-blend-mode: screen;
+  transition: opacity 0.15s ease-out;
+}
+
+/* Cyber Glitch Entrance Animation */
+@keyframes cyberGlitchIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.98) translateY(4px);
+    filter: drop-shadow(3px 0 0 rgba(0, 240, 255, 0.6)) drop-shadow(-3px 0 0 rgba(255, 42, 109, 0.6));
+  }
+  40% {
+    opacity: 0.9;
+    filter: drop-shadow(-2px 0 0 rgba(0, 240, 255, 0.4)) drop-shadow(2px 0 0 rgba(255, 214, 0, 0.4));
+  }
+  70% {
+    opacity: 1;
+    filter: drop-shadow(1px 0 0 rgba(0, 240, 255, 0.2));
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: none;
+  }
+}
+
+.cyberGlitchIn {
+  animation: cyberGlitchIn 0.24s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+/* HUD Corner Brackets [┌ ┐ └ ┘] */
+.hudBracketHolder {
+  position: relative;
+}
+
+.hudBracket {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: rgba(0, 240, 255, 0.6);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.hudBracketTL {
+  top: 6px;
+  left: 6px;
+  border-top: 1.5px solid rgba(0, 240, 255, 0.7);
+  border-left: 1.5px solid rgba(0, 240, 255, 0.7);
+}
+
+.hudBracketTR {
+  top: 6px;
+  right: 6px;
+  border-top: 1.5px solid rgba(0, 240, 255, 0.7);
+  border-right: 1.5px solid rgba(0, 240, 255, 0.7);
+}
+
+.hudBracketBL {
+  bottom: 6px;
+  left: 6px;
+  border-bottom: 1.5px solid rgba(0, 240, 255, 0.7);
+  border-left: 1.5px solid rgba(0, 240, 255, 0.7);
+}
+
+.hudBracketBR {
+  bottom: 6px;
+  right: 6px;
+  border-bottom: 1.5px solid rgba(0, 240, 255, 0.7);
+  border-right: 1.5px solid rgba(0, 240, 255, 0.7);
+}
+
+/* Animated Counter Glow */
+.cyberAnimatedCounter {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+
