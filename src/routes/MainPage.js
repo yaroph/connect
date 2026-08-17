@@ -44,7 +44,7 @@ import ProfileModal from "../ui/ProfileModal";
 import PrivatePinModal from "../ui/PrivatePinModal";
 import PreviewQuestionnaireModal from "../ui/PreviewQuestionnaireModal";
 import RewardCelebration from "../ui/RewardCelebration";
-import { notifyError } from "../ui/notify";
+import { notifyError, notifySuccess } from "../ui/notify";
 import { getUserFieldForTagId } from "../data/userVariableTags";
 
 // Fonction pour obtenir une ou plusieurs questions aléatoires depuis le serveur avec cooldown
@@ -1714,11 +1714,15 @@ export default function MainPage({ authUser, authPending }) {
             try {
               const r = await requestWithdraw(user.id);
               if (r && r.ok) {
+                const amt = Number(r.retrait?.amount || pending || 0);
                 setPending(0);
                 setUser((prev) => ({ ...prev, retrait: r.retrait }));
+                notifySuccess(
+                  `Demande de virement de $ ${amt.toFixed(2)} enregistrée. Le traitement par notre service financier prend généralement 1 à 3 jours ouvrés.`,
+                );
               }
             } catch (e) {
-              // ignore
+              notifyError("Erreur lors de la demande de retrait.");
             }
           }}
         />

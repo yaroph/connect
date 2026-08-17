@@ -74,46 +74,178 @@
   letter-spacing: 0.3px;
 }
 
-.btnWaiting {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
-  color: #030712 !important;
-  border-color: rgba(245, 158, 11, 0.6) !important;
-  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.35) !important;
+/* ==========================================
+   CARTE D'ATTENTE DE VIREMENT CYBER HUD
+   ========================================== */
+.pendingPaymentCard {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(15, 23, 42, 0.88) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45), 0 0 20px rgba(245, 158, 11, 0.18);
+  position: relative;
+  overflow: hidden;
+  margin-top: 6px;
 }
 
-.adminAccessBtn {
-  margin-top: 10px;
+.pendingPaymentCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #fbbf24, transparent);
+  animation: cyberScanline 3s linear infinite;
+}
+
+.pendingPaymentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.pendingStatusTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  color: #fbbf24;
+}
+
+.pendingPulseDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fbbf24;
+  box-shadow: 0 0 10px #fbbf24;
+  animation: pendingPulse 1.6s ease-in-out infinite;
+}
+
+.pendingIconSpin {
+  animation: cyberSpin 12s linear infinite;
+}
+
+.pendingAmountTag {
+  font-size: 14.5px;
+  font-weight: 900;
+  color: #34d399;
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+  font-family: var(--fontFamilyMono, monospace);
+}
+
+.pendingPaymentContent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.pendingMsgPrimary {
+  font-size: 13px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.pendingMsgDesc {
+  font-size: 11.5px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.pendingMsgDesc strong {
+  color: #e2e8f0;
+}
+
+.pendingTimeNotice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.15);
+  padding: 6px 9px;
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  margin-top: 4px;
+}
+
+.pendingTimeNotice strong {
+  color: #fff;
+}
+
+.pendingTimeline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.timelineStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #64748b;
+  min-width: 45px;
+  text-align: center;
+}
+
+.timelineStep.done {
+  color: #34d399;
+}
+
+.timelineStep.current {
+  color: #fbbf24;
+}
+
+.stepIndicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 700;
-  border-color: rgba(56, 189, 248, 0.25);
-  color: #38bdf8;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1.5px solid currentColor;
 }
 
-.adminAccessBtn:hover {
-  background: rgba(56, 189, 248, 0.12);
-  border-color: rgba(0, 240, 255, 0.5);
-  color: #7dd3fc;
-  box-shadow: 0 0 16px rgba(0, 240, 255, 0.15);
+.timelineTrack {
+  flex: 1;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 4px;
+  margin-top: -14px;
 }
 
-.waitWrap {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: center;
+.timelineTrack.activeTrack {
+  background: linear-gradient(90deg, #10b981 0%, #f59e0b 100%);
 }
 
-.spinner {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 2px solid rgba(0, 0, 0, 0.3);
-  border-top-color: #000;
-  animation: spin 0.8s linear infinite;
+@keyframes pendingPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
+}
+
+@keyframes cyberScanline {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes spin {

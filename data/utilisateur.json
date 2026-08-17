@@ -32,7 +32,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T12:39:17.895Z",
-    "updatedAt": "2026-08-17T13:51:53.877Z"
+    "updatedAt": "2026-08-17T14:46:20.723Z"
   },
   {
     "id": "admin_1786970358178",
@@ -65,7 +65,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T12:39:18.179Z",
-    "updatedAt": "2026-08-17T13:51:53.877Z"
+    "updatedAt": "2026-08-17T14:46:20.723Z"
   },
   {
     "id": "u_f38af9c35fb51eab56e1f980c18e8e7e_1786970379790",
@@ -102,7 +102,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T12:39:39.790Z",
-    "updatedAt": "2026-08-17T13:51:53.877Z"
+    "updatedAt": "2026-08-17T14:46:20.723Z"
   },
   {
     "id": "u_de32af2f22f6670c0ddc54c341c58e7a_1786970975426",
@@ -139,7 +139,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T12:49:35.429Z",
-    "updatedAt": "2026-08-17T13:51:53.877Z"
+    "updatedAt": "2026-08-17T14:46:20.723Z"
   },
   {
     "id": "u_e8d90944c4cec1ae6e7a1acc12399aa5_1786972371253",
@@ -176,7 +176,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T13:12:51.254Z",
-    "updatedAt": "2026-08-17T13:51:53.877Z"
+    "updatedAt": "2026-08-17T14:46:20.723Z"
   },
   {
     "id": "u_3ec732e3ceaa67ee73a3f2e710fb4550_1786972684507",
@@ -213,7 +213,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T13:18:04.507Z",
-    "updatedAt": "2026-08-17T13:51:53.877Z"
+    "updatedAt": "2026-08-17T14:46:20.723Z"
   },
   {
     "id": "u_e69bb4907c0b9fbedc3da179363beb06_1786973158762",
@@ -250,7 +250,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T13:25:58.762Z",
-    "updatedAt": "2026-08-17T13:51:53.877Z"
+    "updatedAt": "2026-08-17T14:46:20.723Z"
   },
   {
     "id": "u_f1fede2c8880cd04c4e8ceb60a28511f_1786973485989",
@@ -287,7 +287,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T13:31:25.989Z",
-    "updatedAt": "2026-08-17T13:51:53.877Z"
+    "updatedAt": "2026-08-17T14:46:20.723Z"
   },
   {
     "id": "u_a835e7edd4d7b07a62794ee21fedf347_1786973699174",
@@ -324,7 +324,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T13:34:59.174Z",
-    "updatedAt": "2026-08-17T13:51:53.877Z"
+    "updatedAt": "2026-08-17T14:46:20.723Z"
   },
   {
     "id": "u_80cf4febf9d73ab2b446a84f169a3796_1786973900491",
@@ -361,7 +361,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T13:38:20.492Z",
-    "updatedAt": "2026-08-17T13:51:53.877Z"
+    "updatedAt": "2026-08-17T14:46:20.723Z"
   },
   {
     "id": "u_6592b1e07aec24f80a91297739d57d3e_1786974713322",
@@ -398,6 +398,43 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T13:51:53.323Z",
-    "updatedAt": "2026-08-17T13:51:53.877Z"
+    "updatedAt": "2026-08-17T14:46:20.723Z"
+  },
+  {
+    "id": "u_6b36263bdc166bc7b8826e1eb70e492b_1786977954964",
+    "prenom": "TestPrenom1786977954159",
+    "nom": "TestNom1786977954159",
+    "fullName": "TestPrenom1786977954159 TestNom1786977954159",
+    "compteBancaire": "1786977954159",
+    "dateNaissance": "1998-05-15",
+    "telephone": "5550100",
+    "motDePasse": "enc:592ea48bd2c8578d2baa1978:7fda1014173e3c3fcf50e6a5ca3d477d:de22c7dc69c0c2056407",
+    "photoProfil": "",
+    "numeroCitoyen": "",
+    "sexe": "Homme",
+    "couleurPeau": "",
+    "couleurCheveux": "",
+    "longueurCheveux": "",
+    "styleVestimentaire": "",
+    "metier": "",
+    "gagneSurBNI": 0,
+    "is_admin": false,
+    "token": "tok_0cb3cbe78da6cc98a853bd4e352a27caffaddc9735811c9acde65f366816c0f3_1786977954963",
+    "retrait": {
+      "status": "PENDING",
+      "amount": 100,
+      "requestedAt": "2026-08-17T14:46:06.771Z"
+    },
+    "lastLoginAt": "2026-08-17T14:46:00.421Z",
+    "loginByDay": {
+      "2026-08-17": 2
+    },
+    "withdrawalsByMonth": {
+      "2026-08": 1
+    },
+    "sensibleAnswersTagged": [],
+    "sensibleAnswersUntagged": [],
+    "createdAt": "2026-08-17T14:45:54.964Z",
+    "updatedAt": "2026-08-17T14:46:20.723Z"
   }
 ]
