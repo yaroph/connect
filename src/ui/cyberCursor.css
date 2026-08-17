@@ -1,75 +1,70 @@
 /* Cyberpunk 2042 HUD Custom Cursor */
 .cyberCursorContainer {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
-  z-index: 999999;
+  z-index: 9999999;
   overflow: hidden;
 }
 
 /* Central Precision Laser Dot */
 .cyberCursorDot {
   position: absolute;
-  top: -4px;
-  left: -4px;
+  top: 0;
+  left: 0;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: #00f0ff;
-  box-shadow: 0 0 10px #00f0ff, 0 0 18px rgba(0, 240, 255, 0.7);
+  box-shadow: 0 0 8px #00f0ff, 0 0 16px rgba(0, 240, 255, 0.8);
   pointer-events: none;
   will-change: transform;
-  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
 }
 
 .cyberCursorDot.isHovered {
   background: #ffd600;
-  box-shadow: 0 0 12px #ffd600, 0 0 24px rgba(255, 214, 0, 0.8);
-  transform: scale(1.25);
-}
-
-.cyberCursorDot.isClicking {
-  transform: scale(0.75);
+  box-shadow: 0 0 10px #ffd600, 0 0 20px rgba(255, 214, 0, 0.8);
 }
 
 /* Outer Holographic Reticle Ring with Smooth Lerp */
 .cyberCursorRing {
   position: absolute;
-  top: -16px;
-  left: -16px;
-  width: 32px;
-  height: 32px;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  border: 1.5px solid rgba(0, 240, 255, 0.6);
+  border: 1.5px solid rgba(0, 240, 255, 0.65);
   box-shadow: 0 0 14px rgba(0, 240, 255, 0.25);
   pointer-events: none;
   will-change: transform;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: width 0.2s cubic-bezier(0.2, 0.9, 0.3, 1),
-              height 0.2s cubic-bezier(0.2, 0.9, 0.3, 1),
-              top 0.2s cubic-bezier(0.2, 0.9, 0.3, 1),
-              left 0.2s cubic-bezier(0.2, 0.9, 0.3, 1),
-              border-color 0.2s ease,
-              box-shadow 0.2s ease;
+  transition: width 0.18s cubic-bezier(0.2, 0.9, 0.3, 1),
+              height 0.18s cubic-bezier(0.2, 0.9, 0.3, 1),
+              border-color 0.18s ease,
+              box-shadow 0.18s ease;
 }
 
 /* Target Lock-On Mode when Hovering Clickable Elements */
 .cyberCursorRing.isHovered {
-  top: -24px;
-  left: -24px;
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   border-color: #ffd600;
   border-style: dashed;
-  box-shadow: 0 0 22px rgba(255, 214, 0, 0.45), inset 0 0 12px rgba(255, 214, 0, 0.2);
+  box-shadow: 0 0 18px rgba(255, 214, 0, 0.45), inset 0 0 8px rgba(255, 214, 0, 0.15);
   animation: cyberCursorSpin 7s linear infinite;
 }
 
 .cyberCursorRing.isClicking {
+  transform: translate(-50%, -50%) scale(0.85);
   border-color: #00f0ff;
-  box-shadow: 0 0 28px rgba(0, 240, 255, 0.65);
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.65);
 }
 
 /* Reticle Crosshair Ticks */

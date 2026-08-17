@@ -359,15 +359,25 @@ textarea {
   pointer-events: none;
 }
 
-/* Holo Foil Iridescent Layer */
+/* Subtle Specular Sheen Layer */
+.cyberCardGlare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
 .cyberCardHoloFoil {
   position: absolute;
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
   z-index: 2;
-  mix-blend-mode: color-dodge;
-  transition: opacity 0.15s ease-out;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
 }
 
 .cyberCardTop {

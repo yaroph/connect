@@ -19,19 +19,19 @@ export function use3DTilt({ maxTilt = 10, enableGyro = true, enableHolo = true }
       card.style.transition = "transform 0.08s ease-out";
 
       if (glareRef.current) {
-        glareRef.current.style.background = `radial-gradient(circle at ${glareX.toFixed(1)}% ${glareY.toFixed(1)}%, rgba(255, 255, 255, 0.4) 0%, rgba(0, 240, 255, 0.25) 25%, transparent 60%)`;
+        glareRef.current.style.background = `radial-gradient(circle at ${glareX.toFixed(1)}% ${glareY.toFixed(1)}%, rgba(255, 255, 255, 0.12) 0%, rgba(0, 240, 255, 0.08) 35%, transparent 65%)`;
         glareRef.current.style.opacity = "1";
       }
 
       if (holoRef.current && enableHolo) {
-        const holoAngle = (rotateX * 5 + rotateY * 5 + 135) % 360;
+        const holoAngle = (rotateX * 4 + rotateY * 4 + 135) % 360;
         holoRef.current.style.background = `linear-gradient(${holoAngle}deg, 
-          rgba(255, 0, 128, 0.22) 0%, 
-          rgba(255, 214, 0, 0.25) 25%, 
-          rgba(0, 240, 255, 0.28) 50%, 
-          rgba(16, 185, 129, 0.22) 75%, 
-          rgba(255, 0, 128, 0.22) 100%)`;
-        holoRef.current.style.opacity = String(Math.min(0.85, (Math.abs(rotateX) + Math.abs(rotateY)) / (maxTilt * 1.5) + 0.15));
+          rgba(255, 0, 128, 0.08) 0%, 
+          rgba(255, 214, 0, 0.1) 25%, 
+          rgba(0, 240, 255, 0.1) 50%, 
+          rgba(16, 185, 129, 0.08) 75%, 
+          rgba(255, 0, 128, 0.08) 100%)`;
+        holoRef.current.style.opacity = "1";
       }
     } else {
       card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
@@ -47,7 +47,7 @@ export function use3DTilt({ maxTilt = 10, enableGyro = true, enableHolo = true }
         holoRef.current.style.transition = "opacity 0.4s ease-out";
       }
     }
-  }, [enableHolo, maxTilt]);
+  }, [enableHolo]);
 
   const onMouseMove = useCallback(
     (e) => {
