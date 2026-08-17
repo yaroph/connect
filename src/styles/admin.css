@@ -354,6 +354,318 @@
   }
 }
 
+.adminFieldRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.adminFieldRight {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.adminReadOnlyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.adminReadOnlyVal {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f1f5f9;
+  font-family: var(--fontFamilyMono, monospace);
+  word-break: break-all;
+}
+
+/* ----------------------------- */
+/* Admin: Settings Grid          */
+/* ----------------------------- */
+
+.adminSettingsWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.adminSettingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 18px;
+}
+
+.adminSettingCard {
+  border-radius: 16px;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  background: rgba(15, 23, 42, 0.7);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: all 0.15s ease;
+}
+
+.adminSettingCard:hover {
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);
+}
+
+.settingCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.settingCardIcon {
+  color: #00f0ff;
+}
+
+.settingCardTitle {
+  font-size: 14px;
+  font-weight: 800;
+  color: #f8fafc;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.settingFields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.settingField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settingLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.settingDesc {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.settingInput {
+  width: 100%;
+  max-width: 220px;
+}
+
+.settingInputPrefixWrap {
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: 220px;
+}
+
+.settingPrefix {
+  position: absolute;
+  left: 12px;
+  font-weight: 800;
+  color: #34d399;
+  font-family: var(--fontFamilyMono, monospace);
+  pointer-events: none;
+}
+
+.settingInput.withPrefix {
+  padding-left: 28px;
+}
+
+/* ----------------------------- */
+/* Admin: Payments New HUD       */
+/* ----------------------------- */
+
+.adminPaymentsWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.adminPayTotalCountBadge {
+  padding: 6px 12px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #34d399;
+  letter-spacing: 0.4px;
+}
+
+.adminEmptyPayments {
+  padding: 40px 20px;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.adminPayHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.adminPayUserIdentity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adminPayAvatarInitials {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(2, 132, 199, 0.2);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00f0ff;
+}
+
+.adminPayCitizenName {
+  font-size: 15px;
+  font-weight: 800;
+  color: #f8fafc;
+  text-transform: capitalize;
+}
+
+.adminPayDate {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.adminPayActionBtns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adminPayCancelBtn {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  gap: 6px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.adminPayCancelBtn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  color: #fff;
+}
+
+.adminPayValidateBtn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 800;
+  gap: 6px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(16, 185, 129, 0.35);
+  transition: all 0.15s ease;
+}
+
+.adminPayValidateBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.55);
+}
+
+.adminPayChipsGrid {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.adminPayChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.adminPayChipEmerald {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.adminPayChipIcon {
+  color: #38bdf8;
+}
+
+.adminPayChipLabel {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.adminPayChipVal {
+  font-weight: 800;
+  color: #f1f5f9;
+  font-family: var(--fontFamilyMono, monospace);
+}
+
+.adminPayChipEmerald .adminPayChipVal {
+  color: #34d399;
+  font-size: 13.5px;
+}
+
+.iconCopySm {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  padding: 0;
+}
+
 .adminField {
   display: flex;
   flex-direction: column;

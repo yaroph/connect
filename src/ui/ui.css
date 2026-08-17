@@ -114,6 +114,54 @@
   animation: pendingPulse 1.6s ease-in-out infinite;
 }
 
+/* Icon Button Cyber HUD */
+.iconBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: rgba(15, 23, 42, 0.75);
+  color: #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.iconBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(30, 41, 59, 0.9);
+  border-color: #00f0ff;
+  color: #00f0ff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+}
+
+.iconBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.iconBtn.active {
+  background: rgba(0, 240, 255, 0.18);
+  border-color: #00f0ff;
+  color: #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+.iconBtn.disabled,
+.iconBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.iconBtn.danger:hover:not(:disabled) {
+  border-color: #ef4444;
+  color: #f87171;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+}
+
 /* Modal Cyber */
 .modalBackdrop {
   position: fixed;
