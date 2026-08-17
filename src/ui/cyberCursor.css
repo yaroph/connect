@@ -10,59 +10,85 @@
   overflow: hidden;
 }
 
-/* Central Precision Laser Dot */
-.cyberCursorDot {
+/* Wrappers: handle ONLY translation via translate3d (NEVER animated by CSS keyframes) */
+.cyberCursorDotWrapper {
   position: absolute;
   top: 0;
   left: 0;
-  width: 8px;
-  height: 8px;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity 0.2s ease;
+}
+
+.cyberCursorRingWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity 0.2s ease;
+}
+
+/* Inner Dot: Centered with margin/translate(-50%, -50%) */
+.cyberCursorDot {
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  margin-left: -3px;
   border-radius: 50%;
   background: #00f0ff;
   box-shadow: 0 0 8px #00f0ff, 0 0 16px rgba(0, 240, 255, 0.8);
   pointer-events: none;
-  will-change: transform;
-  transition: background 0.15s ease, box-shadow 0.15s ease;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-.cyberCursorDot.isHovered {
+.cyberCursorDotWrapper.isHovered .cyberCursorDot {
   background: #ffd600;
-  box-shadow: 0 0 10px #ffd600, 0 0 20px rgba(255, 214, 0, 0.8);
+  box-shadow: 0 0 10px #ffd600, 0 0 20px rgba(255, 214, 0, 0.85);
+  transform: scale(1.4);
 }
 
-/* Outer Holographic Reticle Ring with Smooth Lerp */
+.cyberCursorDotWrapper.isClicking .cyberCursorDot {
+  transform: scale(0.7);
+}
+
+/* Inner Reticle Ring: Centered with margin/translate(-50%, -50%) */
 .cyberCursorRing {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
+  margin-top: -14px;
+  margin-left: -14px;
   border-radius: 50%;
   border: 1.5px solid rgba(0, 240, 255, 0.65);
-  box-shadow: 0 0 14px rgba(0, 240, 255, 0.25);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
   pointer-events: none;
-  will-change: transform;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   transition: width 0.18s cubic-bezier(0.2, 0.9, 0.3, 1),
               height 0.18s cubic-bezier(0.2, 0.9, 0.3, 1),
+              margin-top 0.18s cubic-bezier(0.2, 0.9, 0.3, 1),
+              margin-left 0.18s cubic-bezier(0.2, 0.9, 0.3, 1),
               border-color 0.18s ease,
-              box-shadow 0.18s ease;
+              box-shadow 0.18s ease,
+              transform 0.18s ease;
 }
 
-/* Target Lock-On Mode when Hovering Clickable Elements */
-.cyberCursorRing.isHovered {
-  width: 46px;
-  height: 46px;
+/* Target Lock-On Mode when Hovering Interactive Elements */
+.cyberCursorRingWrapper.isHovered .cyberCursorRing {
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  margin-left: -22px;
   border-color: #ffd600;
   border-style: dashed;
   box-shadow: 0 0 18px rgba(255, 214, 0, 0.45), inset 0 0 8px rgba(255, 214, 0, 0.15);
   animation: cyberCursorSpin 7s linear infinite;
 }
 
-.cyberCursorRing.isClicking {
-  transform: translate(-50%, -50%) scale(0.85);
+.cyberCursorRingWrapper.isClicking .cyberCursorRing {
+  transform: scale(0.85);
   border-color: #00f0ff;
   box-shadow: 0 0 24px rgba(0, 240, 255, 0.65);
 }
@@ -70,12 +96,12 @@
 /* Reticle Crosshair Ticks */
 .cyberCursorTick {
   position: absolute;
-  background: rgba(0, 240, 255, 0.8);
+  background: rgba(0, 240, 255, 0.85);
   pointer-events: none;
-  transition: background 0.2s ease;
+  transition: background 0.18s ease;
 }
 
-.cyberCursorRing.isHovered .cyberCursorTick {
+.cyberCursorRingWrapper.isHovered .cyberCursorTick {
   background: #ffd600;
 }
 

@@ -6,15 +6,13 @@ export default function CyberCursor() {
   const ringRef = useRef(null);
 
   const [visible, setVisible] = useState(false);
-  const isHoveredRef = useRef(false);
-  const isClickingRef = useRef(false);
 
-  const mousePos = useRef({ x: -100, y: -100 });
-  const ringPos = useRef({ x: -100, y: -100 });
+  const mousePos = useRef({ x: -200, y: -200 });
+  const ringPos = useRef({ x: -200, y: -200 });
   const animFrameId = useRef(null);
 
   useEffect(() => {
-    // Only activate on devices with a precision mouse pointer
+    // Only activate on devices with a mouse
     if (window.matchMedia("(pointer: coarse)").matches) {
       return;
     }
@@ -29,35 +27,31 @@ export default function CyberCursor() {
         setVisible(true);
       }
 
-      // Check if hovering over clickable element
+      // Detect hover on interactive elements
       const target = e.target;
-      if (target) {
+      if (target && dotRef.current && ringRef.current) {
         const isClickable = Boolean(
           target.closest(
             'button, a, input, select, textarea, [role="button"], .btn, .qcmBtn, .checkboxItem, .cyberBankCard, .navItem, [onclick], label, .toggleSwitch',
           ),
         );
-        isHoveredRef.current = isClickable;
 
-        if (dotRef.current) {
-          if (isClickable) dotRef.current.classList.add("isHovered");
-          else dotRef.current.classList.remove("isHovered");
-        }
-        if (ringRef.current) {
-          if (isClickable) ringRef.current.classList.add("isHovered");
-          else ringRef.current.classList.remove("isHovered");
+        if (isClickable) {
+          dotRef.current.classList.add("isHovered");
+          ringRef.current.classList.add("isHovered");
+        } else {
+          dotRef.current.classList.remove("isHovered");
+          ringRef.current.classList.remove("isHovered");
         }
       }
     };
 
     const onMouseDown = () => {
-      isClickingRef.current = true;
       if (dotRef.current) dotRef.current.classList.add("isClicking");
       if (ringRef.current) ringRef.current.classList.add("isClicking");
     };
 
     const onMouseUp = () => {
-      isClickingRef.current = false;
       if (dotRef.current) dotRef.current.classList.remove("isClicking");
       if (ringRef.current) ringRef.current.classList.remove("isClicking");
     };
@@ -78,18 +72,18 @@ export default function CyberCursor() {
     document.addEventListener("mouseleave", onMouseLeave);
     document.addEventListener("mouseenter", onMouseEnter);
 
-    // Smooth lerp loop for the outer HUD ring
+    // 60-120 FPS RAF loop for buttery smooth position tracking
     const render = () => {
       if (dotRef.current && ringRef.current) {
-        // Direct follow for central dot
-        dotRef.current.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0) translate(-50%, -50%)`;
+        // Direct follow for central laser dot
+        dotRef.current.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0)`;
 
-        // Smooth spring follow for outer ring
-        const lerpFactor = 0.25;
+        // Smooth spring follow for outer reticle wrapper
+        const lerpFactor = 0.3;
         ringPos.current.x += (mousePos.current.x - ringPos.current.x) * lerpFactor;
         ringPos.current.y += (mousePos.current.y - ringPos.current.y) * lerpFactor;
 
-        ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0) translate(-50%, -50%)`;
+        ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`;
       }
 
       animFrameId.current = requestAnimationFrame(render);
@@ -110,14 +104,18 @@ export default function CyberCursor() {
   return (
     <div className="cyberCursorContainer" aria-hidden="true">
       {/* Central Laser Dot */}
-      <div ref={dotRef} className="cyberCursorDot" />
+      <div ref={dotRef} className="cyberCursorDotWrapper">
+        <div className="cyberCursorDot" />
+      </div>
 
       {/* Outer Holographic HUD Ring */}
-      <div ref={ringRef} className="cyberCursorRing">
-        <span className="cyberCursorTick tickN" />
-        <span className="cyberCursorTick tickS" />
-        <span className="cyberCursorTick tickE" />
-        <span className="cyberCursorTick tickW" />
+      <div ref={ringRef} className="cyberCursorRingWrapper">
+        <div className="cyberCursorRing">
+          <span className="cyberCursorTick tickN" />
+          <span className="cyberCursorTick tickS" />
+          <span className="cyberCursorTick tickE" />
+          <span className="cyberCursorTick tickW" />
+        </div>
       </div>
     </div>
   );
