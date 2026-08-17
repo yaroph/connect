@@ -16,7 +16,7 @@ export default function LeftSidebar({
   onOpenProfile,
   className = "",
 }) {
-  const { tiltProps, glareStyle, holoStyle } = use3DTilt({ maxTilt: 12, enableGyro: true, enableHolo: true });
+  const { cardRef, glareRef, holoRef, tiltProps } = use3DTilt({ maxTilt: 10, enableGyro: true, enableHolo: true });
   const earned = Number(user?.gagneSurBNI || 0);
   const status = user?.retrait?.status || "IDLE";
   const requestedAmount = Number(user?.retrait?.amount || 0);
@@ -50,9 +50,9 @@ export default function LeftSidebar({
   return (
     <aside className={`leftSidebar glass ${className}`.trim()}>
       {/* Carte Bancaire Cyber BNI avec 3D Tilt & Reflet Holographique Prismatique */}
-      <div className="cyberBankCard" {...tiltProps}>
-        <div className="cyberCardGlare" style={glareStyle} />
-        <div className="cyberCardHoloFoil" style={holoStyle} />
+      <div ref={cardRef} className="cyberBankCard" {...tiltProps}>
+        <div ref={glareRef} className="cyberCardGlare" />
+        <div ref={holoRef} className="cyberCardHoloFoil" />
         <div className="hudBracket hudBracketTL" />
         <div className="hudBracket hudBracketTR" />
         <div className="hudBracket hudBracketBL" />

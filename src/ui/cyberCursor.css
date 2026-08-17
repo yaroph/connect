@@ -121,9 +121,13 @@
   }
 }
 
-/* Hide native cursor on devices with a mouse for seamless immersion */
+/* Hide native cursor completely on devices with a mouse for full immersion */
 @media (pointer: fine) {
-  body, button, a, input, select, textarea, [role="button"], .btn, .qcmBtn, .checkboxItem {
-    cursor: default;
+  html,
+  body,
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
   }
 }
