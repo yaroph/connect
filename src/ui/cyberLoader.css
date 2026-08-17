@@ -1,0 +1,138 @@
+/* ==========================================
+   CYBERPUNK 2042 HUD PAGE LOADER
+   ========================================== */
+
+.cyberLoaderRoot {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(0, 240, 255, 0.08) 0%, transparent 65%),
+              #030712;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.cyberLoaderInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  animation: cyberLoaderIn 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+.cyberLoaderGraphic {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cyberLoaderRingOuter {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px dashed rgba(0, 240, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.25), inset 0 0 14px rgba(0, 240, 255, 0.15);
+  animation: cyberRingSpin 6s linear infinite;
+}
+
+.cyberLoaderRingInner {
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  border-top-color: #ffd600;
+  border-bottom-color: #00f0ff;
+  box-shadow: 0 0 16px rgba(255, 214, 0, 0.3);
+  animation: cyberRingSpinReverse 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.cyberLoaderLogo {
+  width: 85px;
+  height: auto;
+  filter: drop-shadow(0 0 16px rgba(0, 240, 255, 0.6));
+  animation: cyberLogoPulse 2s ease-in-out infinite alternate;
+  user-select: none;
+}
+
+.cyberLoaderText {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: #00f0ff;
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
+  text-align: center;
+  font-family: var(--fontFamilyMono, monospace);
+  animation: cyberTextFlicker 3s ease-in-out infinite;
+}
+
+.cyberLoaderLine {
+  width: 160px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  overflow: hidden;
+  position: relative;
+}
+
+.cyberLoaderBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, #00f0ff, #ffd600, transparent);
+  border-radius: 99px;
+  animation: cyberLoaderScan 1.4s ease-in-out infinite;
+}
+
+@keyframes cyberRingSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes cyberRingSpinReverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes cyberLogoPulse {
+  0% {
+    transform: scale(0.96);
+    filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.4));
+  }
+  100% {
+    transform: scale(1.03);
+    filter: drop-shadow(0 0 22px rgba(0, 240, 255, 0.85));
+  }
+}
+
+@keyframes cyberLoaderScan {
+  0% {
+    left: -45%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes cyberTextFlicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+
+@keyframes cyberLoaderIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

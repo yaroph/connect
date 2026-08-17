@@ -12,6 +12,7 @@ import {
 } from "./data/storage";
 import NoticeHost from "./ui/NoticeHost";
 import CyberCursor from "./ui/CyberCursor";
+import CyberLoader from "./ui/CyberLoader";
 
 function RequireAuth({ children }) {
   const location = useLocation();
@@ -59,7 +60,7 @@ function RequireAuth({ children }) {
     };
   }, [location.pathname]);
 
-  if (state.loading) return null;
+  if (state.loading) return <CyberLoader />;
   if (!state.ok)
     return <Navigate to="/login" replace state={{ from: location }} />;
   return React.cloneElement(children, {
@@ -110,7 +111,7 @@ function RequireAdmin({ children }) {
     };
   }, [location.pathname]);
 
-  if (state.loading) return null;
+  if (state.loading) return <CyberLoader message="ACCÈS SÉCURISÉ PANEL ADMINISTRATEUR…" />;
   if (!state.ok)
     return <Navigate to="/login" replace state={{ from: location }} />;
   if (!state.isAdmin) return <Navigate to="/" replace />;
