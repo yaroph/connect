@@ -1,1 +1,29 @@
-{}
+{
+  "u_bc5143d7a66fc0afc4de19f2b0f1c371_1786970357895": {
+    "pending": 0.1,
+    "randomByDay": {
+      "2026-08-17": 1
+    },
+    "randomByWeek": {
+      "2026-W33": 1
+    }
+  },
+  "u_f38af9c35fb51eab56e1f980c18e8e7e_1786970379790": {
+    "pending": 0,
+    "randomByDay": {
+      "2026-08-17": 1
+    },
+    "randomByWeek": {
+      "2026-W33": 1
+    }
+  },
+  "u_de32af2f22f6670c0ddc54c341c58e7a_1786970975426": {
+    "pending": 0,
+    "randomByDay": {
+      "2026-08-17": 1
+    },
+    "randomByWeek": {
+      "2026-W33": 1
+    }
+  }
+}

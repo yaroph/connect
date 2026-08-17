@@ -1,41 +1,61 @@
 :root {
-  /* Palette moderne et harmonieuse */
-  --bgTop: #1a76db;
-  --bgMid: #0b53c6;
-  --bgDeep: #042c76;
+  /* ==========================================
+     CYBER-NÉOBANQUE ULTRA-MODERNE DESIGN SYSTEM
+     ========================================== */
+  --bgDeep: #050811;
+  --bgMid: #090f1e;
+  --bgTop: #0d172e;
 
-  --panelTop: rgba(18, 95, 205, 0.65);
-  --panelBot: rgba(4, 44, 118, 0.75);
+  /* Glassmorphism HD - Surfaces sombres translucides */
+  --panelTop: rgba(15, 23, 42, 0.82);
+  --panelBot: rgba(8, 14, 28, 0.9);
 
-  --cardTop: rgba(14, 75, 185, 0.65);
-  --cardBot: rgba(4, 44, 118, 0.75);
+  --cardTop: rgba(18, 28, 52, 0.78);
+  --cardBot: rgba(10, 16, 32, 0.88);
 
-  --stroke: rgba(255, 255, 255, 0.12);
-  --stroke2: rgba(255, 255, 255, 0.22);
-  --strokeActive: rgba(255, 255, 255, 0.35);
+  /* Bordures fines luminescentes */
+  --stroke: rgba(56, 189, 248, 0.18);
+  --stroke2: rgba(56, 189, 248, 0.32);
+  --strokeActive: rgba(0, 240, 255, 0.65);
+  --strokeHighlight: rgba(255, 255, 255, 0.15);
 
-  --text: rgba(255, 255, 255, 0.95);
-  --muted: rgba(255, 255, 255, 0.72);
-  --muted2: rgba(255, 255, 255, 0.52);
+  /* Typographie & Contraste */
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --muted2: #64748b;
 
-  --green: #22c55e;
-  --green2: #16a34a;
-  --greenHover: #4ade80;
+  /* Accents Cyber */
+  --cyan: #00f0ff;
+  --cyanGlow: rgba(0, 240, 255, 0.35);
+  --cyanDark: #0284c7;
+
+  --emerald: #10b981;
+  --emeraldGlow: rgba(16, 185, 129, 0.35);
+  --emeraldDark: #059669;
+
+  --green: #10b981;
+  --green2: #059669;
+  --greenHover: #34d399;
 
   --amber: #f59e0b;
+  --amberGlow: rgba(245, 158, 11, 0.3);
   --red: #ef4444;
+  --redGlow: rgba(239, 68, 68, 0.3);
 
-  --shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
-  --shadowLg: 0 24px 70px rgba(0, 0, 0, 0.45);
-  --shadowCard: 0 16px 50px rgba(0, 0, 0, 0.32);
+  /* Ombres Cyber & Lueurs */
+  --shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 0 1px rgba(56, 189, 248, 0.2);
+  --shadowLg: 0 32px 80px rgba(0, 0, 0, 0.65), 0 0 24px rgba(0, 240, 255, 0.12);
+  --shadowCard: 0 16px 44px rgba(0, 0, 0, 0.45);
+  --shadowCyan: 0 0 20px rgba(0, 240, 255, 0.28);
+  --shadowEmerald: 0 0 20px rgba(16, 185, 129, 0.32);
 
-  --radiusXL: 28px;
-  --radiusLG: 22px;
-  --radiusMD: 16px;
-  --radiusSM: 12px;
+  --radiusXL: 26px;
+  --radiusLG: 20px;
+  --radiusMD: 14px;
+  --radiusSM: 10px;
 
   --font:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial,
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
     sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
@@ -59,14 +79,19 @@ body {
   color: var(--text);
   background:
     radial-gradient(
-      1200px 700px at 25% 20%,
-      rgba(255, 255, 255, 0.14),
-      transparent 60%
+      1000px 550px at 18% 12%,
+      rgba(0, 240, 255, 0.08),
+      transparent 65%
     ),
     radial-gradient(
-      1100px 700px at 75% 10%,
-      rgba(255, 255, 255, 0.1),
-      transparent 62%
+      1100px 600px at 82% 18%,
+      rgba(16, 185, 129, 0.06),
+      transparent 65%
+    ),
+    radial-gradient(
+      900px 500px at 50% 85%,
+      rgba(14, 165, 233, 0.05),
+      transparent 70%
     ),
     linear-gradient(180deg, var(--bgTop), var(--bgMid) 45%, var(--bgDeep));
   overflow-x: hidden;
@@ -87,31 +112,40 @@ textarea {
   font-family: inherit;
 }
 
+/* Glassmorphism HD */
 .glass {
   background: linear-gradient(180deg, var(--panelTop), var(--panelBot));
   border: 1px solid var(--stroke);
   box-shadow: var(--shadow);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .glassCard {
   background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
   border: 1px solid var(--stroke);
   box-shadow: var(--shadowCard);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border-radius: var(--radiusLG);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
+.glassCard:hover {
+  border-color: var(--stroke2);
+  box-shadow: var(--shadow), 0 0 16px rgba(56, 189, 248, 0.08);
+}
+
+/* Boutons Cyber */
 .btn {
   border: 1px solid var(--stroke2);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text);
-  padding: 12px 18px;
+  padding: 11px 18px;
   border-radius: var(--radiusSM);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -121,206 +155,311 @@ textarea {
     transform 0.14s ease,
     background 0.14s ease,
     border-color 0.14s ease,
-    box-shadow 0.14s ease,
-    opacity 0.14s ease;
+    box-shadow 0.14s ease;
   user-select: none;
 }
 
 .btn:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.12);
   border-color: var(--strokeActive);
+  box-shadow: 0 4px 16px rgba(0, 240, 255, 0.15);
 }
 
 .btn:active {
-  transform: translateY(1px);
-  opacity: 0.94;
+  transform: translateY(0);
+}
+
+.btnPrimary {
+  background: linear-gradient(135deg, #0284c7 0%, #00f0ff 100%);
+  border: 1px solid rgba(0, 240, 255, 0.45);
+  color: #050811;
+  font-weight: 800;
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3);
+}
+
+.btnPrimary:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #38bdf8 100%);
+  border-color: rgba(0, 240, 255, 0.8);
+  box-shadow: 0 6px 24px rgba(0, 240, 255, 0.45);
+  color: #030712;
+}
+
+.btnSuccess {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  color: #050811;
+  font-weight: 800;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+}
+
+.btnSuccess:hover {
+  background: linear-gradient(135deg, #047857 0%, #34d399 100%);
+  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.45);
+}
+
+.btnGhost {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.14);
+  color: var(--muted);
+}
+
+.btnGhost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--stroke2);
+  color: var(--text);
+}
+
+.btnDanger {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.btnDanger:hover {
+  background: rgba(239, 68, 68, 0.28);
+  border-color: rgba(239, 68, 68, 0.6);
+  box-shadow: 0 4px 18px rgba(239, 68, 68, 0.3);
+  color: #fee2e2;
 }
 
 .btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
-.btnPrimary {
-  background: linear-gradient(
-    180deg,
-    rgba(34, 197, 94, 0.96),
-    rgba(22, 163, 74, 0.96)
-  );
-  border-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 0 12px 36px rgba(34, 197, 94, 0.28);
-}
-
-.btnPrimary:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(52, 211, 153, 0.96),
-    rgba(22, 163, 74, 0.96)
-  );
-  box-shadow: 0 14px 42px rgba(34, 197, 94, 0.38);
-}
-
-.btnGhost {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.btnDangerText {
-  color: #fca5a5;
-}
-
-.btnDangerText:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.35);
-  color: #fee2e2;
-}
-
+/* Badges & Pills */
 .pill {
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--stroke);
-  background: rgba(0, 0, 0, 0.16);
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.2px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--stroke);
+  background: rgba(0, 0, 0, 0.25);
+  letter-spacing: 0.3px;
 }
 
-.pill.priorityPill {
-  background: linear-gradient(
-    180deg,
-    rgba(245, 203, 92, 0.32),
-    rgba(245, 203, 92, 0.16)
-  );
-  border-color: rgba(245, 203, 92, 0.55);
-  color: rgba(255, 235, 170, 0.95);
+.pill-cyan {
+  background: rgba(0, 240, 255, 0.12);
+  border-color: rgba(0, 240, 255, 0.35);
+  color: #7dd3fc;
 }
 
-hr.sep {
-  border: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.18),
-    transparent
-  );
-  margin: 16px 0;
+.pill-emerald {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #6ee7b7;
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
+/* Raccourci Clavier Badge (Kbd) */
+.kbdBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #94a3b8;
+  margin-left: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
 }
 
-.label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
+.btnPrimary .kbdBadge {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.35);
+  color: #030712;
 }
 
-.input,
-.select,
-.textarea {
+/* Inputs & Formulaires Cyber */
+.input {
+  width: 100%;
+  padding: 12px 16px;
   border-radius: var(--radiusSM);
   border: 1px solid var(--stroke);
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(5, 8, 18, 0.7);
   color: var(--text);
-  padding: 12px 14px;
   outline: none;
   font-size: 14px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.textarea {
-  min-height: 90px;
-  resize: vertical;
+.input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.22), 0 0 16px rgba(0, 240, 255, 0.15);
 }
 
-.input:focus,
-.select:focus,
-.textarea:focus {
-  border-color: rgba(255, 255, 255, 0.32);
-  box-shadow: 0 0 0 3px rgba(26, 118, 219, 0.28);
+.input::placeholder {
+  color: var(--muted2);
 }
 
-.muted {
+/* Animations */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes pulseCyanGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.45);
+  }
+}
+
+@keyframes pulseEmeraldGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.45);
+  }
+}
+
+/* ==========================================
+   CARTE BANCAIRE BNI CYBER HOLOGRAPHIQUE
+   ========================================== */
+.cyberBankCard {
+  position: relative;
+  border-radius: 20px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, rgba(14, 28, 56, 0.95) 0%, rgba(6, 12, 26, 0.98) 100%);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 240, 255, 0.15);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.cyberBankCard::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 30%, rgba(0, 240, 255, 0.12), transparent 45%),
+              radial-gradient(circle at 75% 70%, rgba(16, 185, 129, 0.1), transparent 45%);
+  pointer-events: none;
+}
+
+.cyberCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.cyberCardChip {
+  width: 38px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #eab308 0%, #ca8a04 50%, #eab308 100%);
+  border: 1px solid rgba(254, 240, 138, 0.6);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.cyberCardChip::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
+}
+
+.cyberCardBrand {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: #38bdf8;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+}
+
+.cyberCardBalanceRow {
+  margin: 18px 0 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.cyberCardBalanceLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   color: var(--muted);
 }
 
-.errorText {
-  color: rgba(255, 120, 120, 0.95);
-  font-size: 13px;
-  margin-top: 6px;
+.cyberCardBalanceValue {
+  font-size: 26px;
+  font-weight: 900;
+  color: #34d399;
+  letter-spacing: -0.5px;
+  text-shadow: 0 0 16px rgba(52, 211, 153, 0.45);
+  margin-top: 2px;
 }
 
-.rowBtns {
+.cyberCardFooter {
   display: flex;
-  gap: 12px;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 10px;
 }
 
-@keyframes popIn {
-  from {
-    transform: scale(0.97);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+.cyberCardHolder {
+  font-size: 13px;
+  font-weight: 800;
+  color: #f1f5f9;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
-/* Custom Select styling */
-select.select,
-select.input {
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
-  padding-right: 46px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.08),
-    rgba(0, 0, 0, 0.18)
-  );
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  background-size: 16px 16px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  -webkit-text-fill-color: var(--text);
+.cyberCardAccount {
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #7dd3fc;
 }
 
-select.select option,
-select.input option {
-  color: #000;
-  background: #fff;
-}
-
-/* ---------------------------------------------------- */
-/* Modernized Profile Modal & Tabs                      */
-/* ---------------------------------------------------- */
-
+/* ==========================================
+   PROFILE MODAL & STATS GROWTH DESIGN
+   ========================================== */
 .profileModal {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 4px;
 }
 
 .profileHeaderCard {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 16px;
-  background: rgba(0, 0, 0, 0.18);
-  border: 1px solid var(--stroke);
+  padding: 16px 20px;
   border-radius: var(--radiusMD);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(8, 14, 28, 0.95));
+  border: 1px solid var(--stroke2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .profileAvatarContainer {
@@ -331,224 +470,313 @@ select.input option {
 }
 
 .profileAvatarImg {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(0, 240, 255, 0.4);
 }
 
 .profileAvatarPlaceholder {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #2563eb, #1e40af);
-  color: #fff;
-  font-size: 26px;
-  font-weight: 700;
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  background: rgba(0, 240, 255, 0.15);
+  border: 2px solid rgba(0, 240, 255, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(255, 255, 255, 0.25);
+  font-size: 24px;
+  font-weight: 900;
+  color: #7dd3fc;
 }
 
 .profileAvatarEditBtn {
   position: absolute;
-  bottom: -2px;
-  right: -2px;
+  bottom: -4px;
+  right: -4px;
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
-  font-size: 12px;
+  background: #0284c7;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.15s ease, background 0.15s ease;
-}
-
-.profileAvatarEditBtn:hover {
-  transform: scale(1.1);
-  background: #2563eb;
+  font-size: 11px;
 }
 
 .profileHeaderInfo {
-  flex: 1;
-  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .profileHeaderName {
   font-size: 18px;
-  font-weight: 700;
-  color: var(--text);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-weight: 800;
+  color: #f8fafc;
 }
 
 .profileHeaderSubtitle {
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--muted);
-  margin-top: 2px;
+}
+
+.profileTierBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  margin-top: 4px;
+  width: fit-content;
+}
+
+.tierBronze {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #7dd3fc;
+}
+
+.tierSilver {
+  background: rgba(148, 163, 184, 0.15);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: #cbd5e1;
+}
+
+.tierGold {
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  color: #fbbf24;
+}
+
+.tierVip {
+  background: rgba(0, 240, 255, 0.2);
+  border: 1px solid rgba(0, 240, 255, 0.6);
+  color: #00f0ff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
 }
 
 .profileTabs {
   display: flex;
   gap: 8px;
   border-bottom: 1px solid var(--stroke);
-  padding-bottom: 10px;
+  padding-bottom: 8px;
 }
 
 .profileTabBtn {
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 600;
-  padding: 8px 14px;
+  flex: 1;
+  padding: 10px 14px;
   border-radius: var(--radiusSM);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 13px;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: all 0.14s ease;
 }
 
 .profileTabBtn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text);
 }
 
 .profileTabBtn.active {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background: rgba(0, 240, 255, 0.12);
+  border-color: rgba(0, 240, 255, 0.35);
+  color: #38bdf8;
 }
 
 .profileSection {
-  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .profileGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 14px;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
 .profileField {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .profileLabel {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+
+.customSelectWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.customSelect {
+  width: 100%;
+  appearance: none;
+  padding-right: 32px;
+}
+
+.customSelectArrow {
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Stats & Growth Tab */
+.profileStatsTab {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.statsGrowthCards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.statsGrowthCard {
+  padding: 14px 16px;
+  border-radius: var(--radiusMD);
+}
+
+.statsGrowthHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
   color: var(--muted);
   text-transform: uppercase;
-  letter-spacing: 0.4px;
 }
 
-.profileFooter {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px solid var(--stroke);
+.statsIcon {
+  color: #38bdf8;
 }
 
-/* ---------------------------------------------------- */
-/* Preview Questionnaire Modal                          */
-/* ---------------------------------------------------- */
-
-.previewModal {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.previewHeader {
-  margin-bottom: 4px;
-}
-
-.previewTitle {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 6px;
-}
-
-.previewMeta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.previewBadge {
-  font-size: 12px;
-  font-weight: 500;
-  padding: 4px 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
-  border: 1px solid var(--stroke);
-}
-
-.previewRewardBadge {
-  font-size: 12px;
-  font-weight: 700;
-  padding: 4px 10px;
-  background: rgba(34, 197, 94, 0.2);
-  border: 1px solid rgba(34, 197, 94, 0.4);
-  color: #86efac;
-  border-radius: 999px;
-}
-
-.previewQuestionsList {
-  max-height: 420px;
-  overflow-y: auto;
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.18);
-  border-radius: var(--radiusMD);
-  border: 1px solid var(--stroke);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.previewQuestionItem {
-  padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: var(--radiusSM);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.previewQuestionTitle {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-
-.previewQuestionIndex {
-  color: #60a5fa;
-  font-weight: 700;
-}
-
-.previewQuestionType {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-/* ---------------------------------------------------- */
-/* Reward Celebration Overlay                           */
-/* ---------------------------------------------------- */
-
-.qnDoneRewardBadge {
-  font-size: 28px;
+.statsGrowthValue {
+  font-size: 22px;
   font-weight: 900;
-  color: #4ade80;
-  margin: 6px 0;
-  text-shadow: 0 4px 16px rgba(34, 197, 94, 0.5);
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: #34d399;
+  margin-top: 6px;
 }
+
+.tierProgressionWrap {
+  padding: 14px 16px;
+  border-radius: var(--radiusMD);
+}
+
+.tierProgressionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.tierProgressionPercent {
+  color: #38bdf8;
+  font-weight: 800;
+}
+
+.tierProgressBar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.tierProgressBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #00f0ff, #10b981);
+  border-radius: 999px;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+  transition: width 0.4s ease;
+}
+
+.growthChartWrap {
+  padding: 14px 16px;
+  border-radius: var(--radiusMD);
+}
+
+.growthChartTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #7dd3fc;
+  margin-bottom: 10px;
+}
+
+.growthSvgChart {
+  width: 100%;
+  height: 80px;
+}
+
+.growthChartLegend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--muted2);
+  margin-top: 6px;
+}
+
+.profileFooterActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  border-top: 1px solid var(--stroke);
+  padding-top: 14px;
+}
+
+.profilePhotoSubModal {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.photoConfirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.filePickedNotice {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  font-size: 13px;
+  color: #7dd3fc;
+}
+
+@media (max-width: 600px) {
+  .profileGrid,
+  .statsGrowthCards {
+    grid-template-columns: 1fr;
+  }
+}
+

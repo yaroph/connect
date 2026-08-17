@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { X } from "lucide-react";
+import { X, ArrowRight, Check } from "lucide-react";
 import { isPriorityActive, formatPriorityUntil } from "../data/selectors";
 import { resizeImage } from "../data/storage";
 import "./questionCard.css";
@@ -26,7 +26,6 @@ function validateAgainstCorrect(selectedSet, correctSet) {
 
   const selected = Array.from(selectedSet);
 
-  // Single-correct
   if (correctSet.size === 1) {
     if (selected.length !== 1)
       return { ok: false, msg: "Veuillez choisir une réponse." };
@@ -36,7 +35,6 @@ function validateAgainstCorrect(selectedSet, correctSet) {
       : { ok: false, msg: "Mauvaise sélection." };
   }
 
-  // Multi-correct
   const hasWrong = selected.some((id) => !correctSet.has(id));
   if (hasWrong) return { ok: false, msg: "Mauvaise sélection." };
 
@@ -57,13 +55,18 @@ export default function QuestionCard({
   const [dropdownId, setDropdownId] = useState("");
   const [sliderVal, setSliderVal] = useState(0);
 
-  const [photoMode, setPhotoMode] = useState("URL"); // URL | UPLOAD
+  const [photoMode, setPhotoMode] = useState("URL");
   const [photoUrl, setPhotoUrl] = useState("");
   const [photoData, setPhotoData] = useState("");
 
   const [err, setErr] = useState("");
   const submittedRef = useRef(false);
   const [locked, setLocked] = useState(false);
+
+  // Swipe 3D Engine State
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef({ x: 0, y: 0 });
 
   const isDisabled = Boolean(interactionLocked || locked);
 
@@ -93,8 +96,10 @@ export default function QuestionCard({
 
     setErr("");
     setLocked(false);
+    setDragOffset({ x: 0, y: 0 });
+    setIsDragging(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [question?.id]);
+  }, [question?.id, choices]);
 
   const choiceTextById = useMemo(
     () => new Map(choices.map((c) => [c.id, c.text])),
@@ -131,24 +136,18 @@ export default function QuestionCard({
     submit(val);
   };
 
-  // --------------------
-  // QCM (auto submit)
-  // --------------------
-
   const tryAutoSubmitQCM = (nextSelected) => {
     if (submittedRef.current) return;
     if (!question) return;
 
     const answerText = (ids) => answerTextFromIds(ids, choiceTextById);
 
-    // If no correct choices configured, accept first selection immediately.
     if (correctChoiceIds.size === 0) {
       setErr("");
       submit(answerText(Array.from(nextSelected)));
       return;
     }
 
-    // Single-correct: validate immediately on click.
     if (correctChoiceIds.size === 1) {
       const picked = Array.from(nextSelected)[0];
       const ok = correctChoiceIds.has(picked);
@@ -161,7 +160,6 @@ export default function QuestionCard({
       return;
     }
 
-    // Multi-correct: auto-validate once enough picks are selected.
     const arr = Array.from(nextSelected);
     const hasWrong = arr.some((id) => !correctChoiceIds.has(id));
 
@@ -176,7 +174,6 @@ export default function QuestionCard({
       return;
     }
 
-    // Still selecting
     setErr("");
   };
 
@@ -185,25 +182,18 @@ export default function QuestionCard({
     setSelected((prev) => {
       const next = new Set(prev);
 
-      // For single-correct (or no-correct), behave like radio: only one selected.
       if (correctChoiceIds.size <= 1) {
         next.clear();
         next.add(id);
       } else {
-        // Multi-correct: toggle
         if (next.has(id)) next.delete(id);
         else next.add(id);
       }
 
-      // Auto-validate/submit
       tryAutoSubmitQCM(next);
       return next;
     });
   };
-
-  // --------------------
-  // Dropdown (validate button)
-  // --------------------
 
   const submitDropdown = () => {
     if (isDisabled) return;
@@ -223,10 +213,6 @@ export default function QuestionCard({
     setErr("");
     submit(answerTextFromIds([dropdownId], choiceTextById));
   };
-
-  // --------------------
-  // Checkbox (validate button)
-  // --------------------
 
   const checkboxMode =
     String(question?.checkboxMode || "MULTI").toUpperCase() === "SINGLE"
@@ -266,10 +252,6 @@ export default function QuestionCard({
     submit(answerTextFromIds(Array.from(selected), choiceTextById));
   };
 
-  // --------------------
-  // Slider (validate button)
-  // --------------------
-
   const sliderMin = useMemo(() => {
     const a = Number(question?.sliderMin ?? 0);
     const b = Number(question?.sliderMax ?? 10);
@@ -296,15 +278,10 @@ export default function QuestionCard({
     submit(String(n));
   };
 
-  // --------------------
-  // Photo (validate button)
-  // --------------------
-
   const onPickPhotoFile = async (file) => {
     if (!file) return;
     try {
       const data = await fileToDataUrl(file);
-      // Redimensionner l'image à max 500px de hauteur
       const resizedData = await resizeImage(data, 500);
       setPhotoData(resizedData);
       setErr("");
@@ -327,11 +304,130 @@ export default function QuestionCard({
     submit(val);
   };
 
+  // ----------------------------------------------------
+  // Raccourcis Clavier Intuitifs (1-9, Entrée, Espace, S)
+  // ----------------------------------------------------
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (isDisabled) return;
+
+      const activeTag = document.activeElement?.tagName?.toLowerCase();
+      const isInput = activeTag === "input" || activeTag === "textarea" || activeTag === "select";
+
+      // Allow Enter inside input to submit
+      if (isInput && e.key === "Enter" && type === "FREE_TEXT") {
+        submitFreeText();
+        return;
+      }
+
+      if (isInput) return; // Don't intercept number keys if focusing an input
+
+      // Number keys 1-9 for choices
+      const num = parseInt(e.key, 10);
+      if (!isNaN(num) && num >= 1 && num <= choices.length) {
+        const choice = choices[num - 1];
+        if (choice) {
+          e.preventDefault();
+          if (type === "QCM") {
+            onChoiceClick(choice.id);
+          } else if (type === "CHECKBOX") {
+            toggleCheckbox(choice.id);
+          }
+          return;
+        }
+      }
+
+      // Enter / Space to validate
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (type === "DROPDOWN") submitDropdown();
+        else if (type === "CHECKBOX") submitCheckbox();
+        else if (type === "SLIDER") submitSlider();
+        else if (type === "PHOTO") submitPhoto();
+        return;
+      }
+
+      // S or ArrowRight to Skip (Passer) in random mode
+      if ((e.key === "s" || e.key === "S" || e.key === "ArrowRight") && mode === "RANDOM" && onRefreshRandom) {
+        e.preventDefault();
+        onRefreshRandom();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  });
+
+  // ----------------------------------------------------
+  // Swipe 3D Engine (Pointer / Touch drag with inertia)
+  // ----------------------------------------------------
+  const onPointerDown = (e) => {
+    if (isDisabled) return;
+    if (e.target.tagName.toLowerCase() === "input" || e.target.tagName.toLowerCase() === "select" || e.target.tagName.toLowerCase() === "button") {
+      return;
+    }
+    setIsDragging(true);
+    dragStartRef.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const onPointerMove = (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStartRef.current.x;
+    const dy = (e.clientY - dragStartRef.current.y) * 0.2;
+    setDragOffset({ x: dx, y: dy });
+  };
+
+  const onPointerUp = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+
+    // If dragged right (> 120px) -> Trigger choice if single QCM
+    if (dragOffset.x > 120 && type === "QCM" && choices.length === 2) {
+      onChoiceClick(choices[0]?.id);
+    } else if (dragOffset.x < -120 && mode === "RANDOM" && onRefreshRandom) {
+      // If dragged left (< -120px) -> Skip question
+      onRefreshRandom();
+    }
+
+    setDragOffset({ x: 0, y: 0 });
+  };
+
   const hasImage = Boolean(question?.imageUrl);
   const imgSrc = question?.imageUrl || null;
 
+  const cardRotation = dragOffset.x * 0.06;
+  const cardTransform = isDragging
+    ? `translateX(${dragOffset.x}px) translateY(${dragOffset.y}px) rotateZ(${cardRotation}deg) scale(0.98)`
+    : "translateX(0px) translateY(0px) rotateZ(0deg) scale(1)";
+
+  const likeStampOpacity = Math.max(0, Math.min(1, (dragOffset.x - 30) / 70));
+  const passStampOpacity = Math.max(0, Math.min(1, (-dragOffset.x - 30) / 70));
+
   return (
-    <div className="qcRoot">
+    <div
+      className={`qcRoot ${isDragging ? "isDragging" : ""}`}
+      style={{
+        transform: cardTransform,
+        transition: isDragging ? "none" : "transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1)",
+      }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+    >
+      {/* Holographic Stamps on Swipe */}
+      {likeStampOpacity > 0 ? (
+        <div className="swipeStamp swipeStampLike" style={{ opacity: likeStampOpacity }}>
+          <Check size={20} /> CHOISIR
+        </div>
+      ) : null}
+
+      {passStampOpacity > 0 ? (
+        <div className="swipeStamp swipeStampPass" style={{ opacity: passStampOpacity }}>
+          <ArrowRight size={20} /> PASSER [S]
+        </div>
+      ) : null}
+
       <div className="qcDevice glass">
         <div className={`qcScreen${hasImage ? " qcScreenHasImage" : ""}`}>
           {hasImage ? (
@@ -373,9 +469,6 @@ export default function QuestionCard({
               }}
               inputMode={freeTextDigitsOnly ? "numeric" : undefined}
               pattern={freeTextDigitsOnly ? "[0-9]*" : undefined}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") submitFreeText();
-              }}
             />
             <button
               className="btn btnPrimary"
@@ -383,12 +476,12 @@ export default function QuestionCard({
               type="button"
               disabled={isDisabled}
             >
-              Valider
+              Valider <span className="kbdBadge" aria-hidden="true">↵</span>
             </button>
           </div>
         ) : type === "QCM" ? (
           <div className={`qcmGrid ${qcmColsClass}`}>
-            {(choices || []).map((c) => (
+            {(choices || []).map((c, index) => (
               <button
                 key={c.id}
                 className={`qcmBtn ${selected.has(c.id) ? "selected" : ""}`}
@@ -396,7 +489,8 @@ export default function QuestionCard({
                 type="button"
                 disabled={isDisabled}
               >
-                {c.text}
+                <span>{c.text}</span>
+                <span className="kbdBadge" aria-hidden="true">{index + 1}</span>
               </button>
             ))}
           </div>
@@ -420,13 +514,13 @@ export default function QuestionCard({
               onClick={submitDropdown}
               disabled={isDisabled}
             >
-              Valider
+              Valider <span className="kbdBadge" aria-hidden="true">↵</span>
             </button>
           </div>
         ) : type === "CHECKBOX" ? (
           <div className="checkboxArea">
             <div className={`checkboxGrid ${checkboxColsClass}`}>
-              {(choices || []).slice(0, 8).map((c) => (
+              {(choices || []).slice(0, 8).map((c, index) => (
                 <label
                   key={c.id}
                   className={`checkboxItem ${selected.has(c.id) ? "on" : ""}`}
@@ -442,6 +536,7 @@ export default function QuestionCard({
                     {selected.has(c.id) ? <span className="dot" /> : null}
                   </span>
                   <span className="checkboxText">{c.text}</span>
+                  <span className="kbdBadge" aria-hidden="true">{index + 1}</span>
                 </label>
               ))}
             </div>
@@ -452,14 +547,14 @@ export default function QuestionCard({
                 onClick={submitCheckbox}
                 disabled={isDisabled}
               >
-                Valider
+                Valider <span className="kbdBadge" aria-hidden="true">↵</span>
               </button>
             </div>
           </div>
         ) : type === "SLIDER" ? (
           <div className="sliderArea">
             <div className="sliderTop">
-              <div className="sliderValue pill">{sliderVal}</div>
+              <div className="sliderValue pill pill-cyan">{sliderVal}</div>
               <div className="sliderRange muted">
                 {sliderMin} → {sliderMax}
               </div>
@@ -480,7 +575,7 @@ export default function QuestionCard({
               onClick={submitSlider}
               disabled={isDisabled}
             >
-              Valider
+              Valider <span className="kbdBadge" aria-hidden="true">↵</span>
             </button>
           </div>
         ) : type === "PHOTO" ? (
@@ -511,7 +606,7 @@ export default function QuestionCard({
                     onClick={() => setPhotoMode("URL")}
                     disabled={isDisabled}
                   >
-                    Lien
+                    Lien Web
                   </button>
                   <button
                     className={`btn btnGhost ${photoMode === "UPLOAD" ? "activeBtn" : ""}`}
@@ -519,7 +614,7 @@ export default function QuestionCard({
                     onClick={() => setPhotoMode("UPLOAD")}
                     disabled={isDisabled}
                   >
-                    Upload
+                    Upload Fichier
                   </button>
                 </div>
 
@@ -551,7 +646,7 @@ export default function QuestionCard({
               onClick={submitPhoto}
               disabled={isDisabled}
             >
-              Valider
+              Valider <span className="kbdBadge" aria-hidden="true">↵</span>
             </button>
           </div>
         ) : (

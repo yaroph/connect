@@ -9,129 +9,76 @@
   overflow-y: auto;
 }
 
-.userBlock {
-  border-radius: var(--radiusLG);
-  padding: 16px;
-  box-shadow: none;
-}
-
-.userTop {
+/* User Card Avatar in Cyber Card */
+.cyberCardUserWrap {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
 }
 
-.avatar {
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+.cyberCardUserWrap:hover {
+  opacity: 0.85;
+}
+
+.cyberCardAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid rgba(0, 240, 255, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 18px;
-  letter-spacing: 0.5px;
-  cursor: pointer;
+  font-size: 14px;
+  color: #7dd3fc;
   overflow: hidden;
   flex-shrink: 0;
-  transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
-.avatar:hover {
-  transform: scale(1.05);
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
-.avatarImg {
+.cyberCardAvatarImg {
   width: 100%;
   height: 100%;
-  border-radius: 16px;
+  border-radius: 12px;
   object-fit: cover;
 }
 
-.userHeaderDetails {
+.cyberCardTotalEarned {
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  align-items: flex-end;
 }
 
-.userName {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.2px;
-}
-
-.userNameBtn {
-  appearance: none;
-  border: none;
-  background: transparent;
-  padding: 0;
-  color: var(--text);
-  cursor: pointer;
-  text-align: left;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.userNameBtn:hover {
-  color: #60a5fa;
-}
-
-.userSubRole {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-.moneyRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.moneyBox {
-  border-radius: 14px;
-  border: 1px solid var(--stroke);
-  background: rgba(0, 0, 0, 0.18);
-  padding: 10px 12px;
-}
-
-.moneyLabel {
-  font-size: 11px;
-  font-weight: 600;
+.cyberCardTotalLabel {
+  font-size: 10px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: var(--muted);
+  color: var(--muted2);
+  letter-spacing: 0.5px;
 }
 
-.moneyValue {
-  font-size: 18px;
+.cyberCardTotalVal {
+  font-size: 14px;
   font-weight: 800;
-  margin-top: 4px;
-  color: var(--text);
-}
-
-.moneyValue.highlightPending {
-  color: #4ade80;
+  color: #94a3b8;
 }
 
 .wideBtn {
   width: 100%;
-  margin-top: 14px;
+  margin-top: 6px;
   padding: 13px 16px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 800;
   letter-spacing: 0.3px;
 }
 
 .btnWaiting {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
-  color: #fff !important;
-  border-color: rgba(245, 158, 11, 0.4) !important;
+  color: #030712 !important;
+  border-color: rgba(245, 158, 11, 0.6) !important;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.35) !important;
 }
 
 .adminAccessBtn {
@@ -142,14 +89,15 @@
   gap: 8px;
   font-size: 12px;
   font-weight: 700;
-  border-color: rgba(96, 165, 250, 0.3);
-  color: #93c5fd;
+  border-color: rgba(56, 189, 248, 0.25);
+  color: #38bdf8;
 }
 
 .adminAccessBtn:hover {
-  background: rgba(59, 130, 246, 0.15);
-  border-color: rgba(96, 165, 250, 0.5);
-  color: #bfdbfe;
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(0, 240, 255, 0.5);
+  color: #7dd3fc;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.15);
 }
 
 .waitWrap {
@@ -163,8 +111,8 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  border-top-color: #fff;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-top-color: #000;
   animation: spin 0.8s linear infinite;
 }
 
@@ -175,10 +123,12 @@
 }
 
 .sectionTitle {
-  margin: 20px 4px 12px;
-  font-size: 15px;
+  margin: 22px 4px 12px;
+  font-size: 14px;
   font-weight: 800;
-  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--muted);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -186,11 +136,12 @@
 
 .qnCountBadge {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   padding: 2px 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--muted);
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  color: #38bdf8;
 }
 
 .qnList {
@@ -204,13 +155,13 @@
   border-radius: var(--radiusLG);
   padding: 14px 16px;
   position: relative;
-  box-shadow: none;
-  transition: transform 0.14s ease, border-color 0.14s ease;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .qnCard:hover {
   transform: translateY(-2px);
-  border-color: var(--strokeActive);
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 16px rgba(0, 240, 255, 0.1);
 }
 
 .qnNameRow {
@@ -221,10 +172,11 @@
 }
 
 .qnName {
-  font-size: 16px;
+  font-size: 15.5px;
   font-weight: 800;
-  line-height: 1.3;
+  line-height: 1.35;
   margin-bottom: 8px;
+  color: #f8fafc;
 }
 
 .lockPill {
@@ -238,8 +190,8 @@
 
 .qnProgressBarContainer {
   width: 100%;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
+  height: 5px;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   overflow: hidden;
   margin-bottom: 10px;
@@ -247,8 +199,9 @@
 
 .qnProgressBarFill {
   height: 100%;
-  background: linear-gradient(90deg, #f59e0b, #eab308);
+  background: linear-gradient(90deg, #00f0ff, #10b981);
   border-radius: 999px;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
   transition: width 0.3s ease;
 }
 
@@ -263,20 +216,12 @@
 .qnMeta {
   color: var(--muted);
   font-size: 12px;
-  font-weight: 500;
-}
-
-.qnProgressText {
-  color: #fbbf24;
   font-weight: 600;
 }
 
-.qnPrice {
+.qnProgressText {
+  color: #38bdf8;
   font-weight: 700;
-  font-size: 12px;
-  color: #86efac;
-  background: rgba(34, 197, 94, 0.15);
-  border-color: rgba(34, 197, 94, 0.35);
 }
 
 .qnBtns {
@@ -287,28 +232,28 @@
 .qnBtns .btn {
   flex: 1;
   padding: 9px 12px;
-  font-size: 12px;
+  font-size: 12.5px;
 }
 
 .emptyHint {
-  color: rgba(255, 255, 255, 0.6);
-  border: 1px dashed rgba(255, 255, 255, 0.18);
+  color: var(--muted);
+  border: 1px dashed rgba(56, 189, 248, 0.2);
   border-radius: 14px;
-  padding: 16px 12px;
+  padding: 18px 14px;
   text-align: center;
   font-size: 13px;
 }
 
 .btnContinue {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
-  color: #fff !important;
-  font-weight: 700;
+  background: linear-gradient(135deg, #0284c7 0%, #00f0ff 100%) !important;
+  color: #030712 !important;
+  font-weight: 800;
   border: none;
   transition: all 0.2s ease;
 }
 
 .btnContinue:hover {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+  background: linear-gradient(135deg, #0369a1 0%, #38bdf8 100%) !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 240, 255, 0.45);
 }

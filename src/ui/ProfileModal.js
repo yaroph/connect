@@ -1,7 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Modal from "./Modal";
 import { resizeImage } from "../data/storage";
 import { notifyError } from "./notify";
+import { Award, TrendingUp, DollarSign } from "lucide-react";
+
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result || ""));
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+function ProfileField({ label, value, onChange, type = "text" }) {
+  return (
+    <div className="profileField">
+      <label className="profileLabel">{label}</label>
+      <input
+        type={type}
+        className="input"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  );
+}
+
+function ProfileSelect({ label, value, onChange, options = [] }) {
+  return (
+    <div className="profileField">
+      <label className="profileLabel">{label}</label>
+      <div className="customSelectWrap">
+        <select
+          className="select customSelect"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        >
+          <option value="">Sélectionner...</option>
+          {options.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+        <span className="customSelectArrow">▾</span>
+      </div>
+    </div>
+  );
+}
 
 export default function ProfileModal({
   user,
@@ -12,7 +59,7 @@ export default function ProfileModal({
   onLogout,
   saving,
 }) {
-  const [activeTab, setActiveTab] = useState("account"); // "account" | "details"
+  const [activeTab, setActiveTab] = useState("account"); // "account" | "details" | "stats"
   const [photoModalOpen, setPhotoModalOpen] = useState(false);
   const [photoUpload, setPhotoUpload] = useState(null);
   const [photoUrl, setPhotoUrl] = useState("");
@@ -40,9 +87,21 @@ export default function ProfileModal({
     }
   };
 
+  const earned = Number(profileDraft.gagneSurBNI || user?.gagneSurBNI || 0);
+
+  // VIP / Loyalty Tier
+  const tierInfo = useMemo(() => {
+    if (earned >= 500) return { title: "Membre VIP Diamant", color: "#00f0ff", nextTarget: 1000, icon: "💎", badgeClass: "tierVip" };
+    if (earned >= 200) return { title: "Membre Or BNI", color: "#f59e0b", nextTarget: 500, icon: "🥇", badgeClass: "tierGold" };
+    if (earned >= 50) return { title: "Membre Argent BNI", color: "#94a3b8", nextTarget: 200, icon: "🥈", badgeClass: "tierSilver" };
+    return { title: "Citoyen BNI", color: "#38bdf8", nextTarget: 50, icon: "🥉", badgeClass: "tierBronze" };
+  }, [earned]);
+
+  const tierProgress = Math.min(100, Math.round((earned / tierInfo.nextTarget) * 100));
+
   return (
     <>
-      <Modal title="Mon profil & compte" onClose={onClose}>
+      <Modal title="Mon Profil Citoyen & Compte BNI" onClose={onClose}>
         <div className="profileModal">
           {/* Top Profile Header Preview */}
           <div className="profileHeaderCard">
@@ -52,6 +111,7 @@ export default function ProfileModal({
                   src={profileDraft.photoProfil}
                   alt="Avatar"
                   className="profileAvatarImg"
+                  loading="lazy"
                 />
               ) : (
                 <div className="profileAvatarPlaceholder">
@@ -78,6 +138,9 @@ export default function ProfileModal({
               <div className="profileHeaderSubtitle">
                 {profileDraft.metier || "Citoyen"} • {profileDraft.telephone || "Sans numéro"}
               </div>
+              <div className={`profileTierBadge ${tierInfo.badgeClass}`}>
+                {tierInfo.icon} {tierInfo.title}
+              </div>
             </div>
           </div>
 
@@ -96,6 +159,13 @@ export default function ProfileModal({
               onClick={() => setActiveTab("details")}
             >
               Informations du Citoyen
+            </button>
+            <button
+              type="button"
+              className={`profileTabBtn ${activeTab === "stats" ? "active" : ""}`}
+              onClick={() => setActiveTab("stats")}
+            >
+              📈 Statistiques & Gains
             </button>
           </div>
 
@@ -141,7 +211,7 @@ export default function ProfileModal({
                 />
               </div>
             </div>
-          ) : (
+          ) : activeTab === "details" ? (
             /* Tab 2: Infos du Citoyen */
             <div className="profileSection">
               <div className="profileGrid">
@@ -248,161 +318,167 @@ export default function ProfileModal({
                     "TATOUEUR",
                     "TRIAD RECORD",
                     "WEAZEL NEWS",
-                    "WESTBROOK MOTORSPORT",
-                    "WESTBROOK SECURITY",
-                    "((Autre))",
                   ]}
                 />
+              </div>
+            </div>
+          ) : (
+            /* Tab 3: Statistiques & Croissance */
+            <div className="profileSection profileStatsTab">
+              <div className="statsGrowthCards">
+                <div className="statsGrowthCard glassCard">
+                  <div className="statsGrowthHeader">
+                    <DollarSign size={18} className="statsIcon" />
+                    <span>Total Gagné sur BNI</span>
+                  </div>
+                  <div className="statsGrowthValue">$ {earned.toFixed(2)}</div>
+                </div>
+
+                <div className="statsGrowthCard glassCard">
+                  <div className="statsGrowthHeader">
+                    <Award size={18} className="statsIcon" />
+                    <span>Niveau de Fidélité</span>
+                  </div>
+                  <div className="statsGrowthValue" style={{ color: tierInfo.color, fontSize: 18 }}>
+                    {tierInfo.title}
+                  </div>
+                </div>
+              </div>
+
+              {/* Barre de progression vers palier suivant */}
+              <div className="tierProgressionWrap glassCard">
+                <div className="tierProgressionHeader">
+                  <span>Progression vers palier suivant ($ {tierInfo.nextTarget})</span>
+                  <span className="tierProgressionPercent">{tierProgress}%</span>
+                </div>
+                <div className="tierProgressBar">
+                  <div className="tierProgressBarFill" style={{ width: `${tierProgress}%` }} />
+                </div>
+              </div>
+
+              {/* Graphique SVG d'évolution visuelle */}
+              <div className="growthChartWrap glassCard">
+                <div className="growthChartTitle">
+                  <TrendingUp size={16} /> Courbe de croissance financière
+                </div>
+                <svg className="growthSvgChart" viewBox="0 0 400 120">
+                  <defs>
+                    <linearGradient id="growthGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#00f0ff" stopOpacity="0.4" />
+                      <stop offset="100%" stopColor="#00f0ff" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M 10,100 Q 100,85 200,60 T 390,20 L 390,110 L 10,110 Z"
+                    fill="url(#growthGrad)"
+                  />
+                  <path
+                    d="M 10,100 Q 100,85 200,60 T 390,20"
+                    fill="none"
+                    stroke="#00f0ff"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                  />
+                  <circle cx="390" cy="20" r="5" fill="#34d399" />
+                </svg>
+                <div className="growthChartLegend">
+                  <span>Inscription</span>
+                  <span>Premiers Sondages</span>
+                  <span>Palier Actuel</span>
+                </div>
               </div>
             </div>
           )}
 
           {/* Footer Actions */}
-          <div className="profileFooter">
+          <div className="profileFooterActions">
             <button
-              className="btn btnGhost btnDangerText"
               type="button"
+              className="btn btnDanger"
               onClick={onLogout}
             >
               Se déconnecter
             </button>
-            <div style={{ flex: 1 }} />
             <button
-              className="btn btnGhost"
               type="button"
-              disabled={saving}
-              onClick={onClose}
-            >
-              Annuler
-            </button>
-            <button
               className="btn btnPrimary"
-              type="button"
-              disabled={saving}
               onClick={handleSave}
+              disabled={saving}
             >
-              {saving ? "Sauvegarde…" : "Enregistrer"}
+              {saving ? "Enregistrement..." : "Enregistrer les modifications"}
             </button>
           </div>
         </div>
       </Modal>
 
-      {/* Sub-modal: Change photo */}
+      {/* Modal Photo */}
       {photoModalOpen ? (
-        <Modal title="Photo de profil" onClose={() => setPhotoModalOpen(false)}>
-          <div className="field">
-            <div className="label">Importer une image locale</div>
+        <Modal
+          title="Modifier la photo de profil"
+          onClose={() => setPhotoModalOpen(false)}
+        >
+          <div className="profilePhotoSubModal">
+            <div className="photoModes">
+              <button
+                type="button"
+                className={`btn btnGhost ${!photoUpload ? "activeBtn" : ""}`}
+                onClick={() => setPhotoUpload(null)}
+              >
+                Lien Web
+              </button>
+              <button
+                type="button"
+                className={`btn btnGhost ${photoUpload ? "activeBtn" : ""}`}
+                onClick={() => document.getElementById("avatarFileInput")?.click()}
+              >
+                Upload Fichier
+              </button>
+            </div>
+
+            {!photoUpload ? (
+              <input
+                type="text"
+                className="input"
+                placeholder="https://..."
+                value={photoUrl}
+                onChange={(e) => setPhotoUrl(e.target.value)}
+              />
+            ) : (
+              <div className="filePickedNotice">
+                Fichier sélectionné : {photoUpload.name}
+              </div>
+            )}
+
             <input
-              className="input fileInput"
+              id="avatarFileInput"
               type="file"
               accept="image/*"
+              style={{ display: "none" }}
               onChange={(e) => {
-                setPhotoUpload(e.target.files?.[0] || null);
-                if (e.target.files?.[0]) setPhotoUrl("");
+                const file = e.target.files?.[0];
+                if (file) setPhotoUpload(file);
               }}
             />
-          </div>
-          <div className="field">
-            <div className="label">Ou spécifier une URL web</div>
-            <input
-              className="input"
-              value={photoUrl}
-              onChange={(e) => {
-                setPhotoUrl(e.target.value);
-                if (e.target.value) setPhotoUpload(null);
-              }}
-              placeholder="https://images.unsplash.com/..."
-            />
-          </div>
-          <div className="rowBtns" style={{ marginTop: 16 }}>
-            <button
-              className="btn btnGhost"
-              type="button"
-              onClick={() => setPhotoModalOpen(false)}
-            >
-              Annuler
-            </button>
-            <button
-              className="btn btnPrimary"
-              type="button"
-              onClick={handlePhotoConfirm}
-            >
-              Valider la photo
-            </button>
+
+            <div className="photoConfirmActions">
+              <button
+                type="button"
+                className="btn btnGhost"
+                onClick={() => setPhotoModalOpen(false)}
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                className="btn btnPrimary"
+                onClick={handlePhotoConfirm}
+              >
+                Confirmer la photo
+              </button>
+            </div>
           </div>
         </Modal>
       ) : null}
     </>
   );
-}
-
-function ProfileField({ label, value, onChange, type = "text" }) {
-  const onlyDigits = (v) => String(v || "").replace(/\D+/g, "");
-  const toDateInputValue = (v) => {
-    const s = String(v || "").trim();
-    if (!s) return "";
-    const iso = s.match(/^(\d{4}-\d{2}-\d{2})/);
-    if (iso) return iso[1];
-    const fr = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    if (fr) return `${fr[3]}-${fr[2]}-${fr[1]}`;
-    return "";
-  };
-
-  const isDigitsOnly =
-    label === "Téléphone" ||
-    label === "Numéro de compte" ||
-    label === "Numéro de citoyen";
-  const isBirthDate = label === "Date de naissance";
-
-  return (
-    <div className="profileField">
-      <div className="profileLabel">{label}</div>
-      <input
-        className="input"
-        type={isBirthDate ? "date" : type}
-        value={
-          isBirthDate
-            ? toDateInputValue(value)
-            : isDigitsOnly
-            ? onlyDigits(value)
-            : value
-        }
-        onChange={(e) => {
-          const next = e.target.value;
-          if (isDigitsOnly) onChange(onlyDigits(next));
-          else onChange(next);
-        }}
-        inputMode={isDigitsOnly ? "numeric" : undefined}
-      />
-    </div>
-  );
-}
-
-function ProfileSelect({ label, value, onChange, options }) {
-  return (
-    <div className="profileField">
-      <div className="profileLabel">{label}</div>
-      <select
-        className="input"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      >
-        <option value="">— Non renseigné —</option>
-        {(options || []).map((o) => (
-          <option key={o} value={o}>
-            {o}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
-
-function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
 }

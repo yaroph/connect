@@ -1,1 +1,144 @@
-[]
+[
+  {
+    "id": "u_bc5143d7a66fc0afc4de19f2b0f1c371_1786970357895",
+    "prenom": "TestPrenom1786970357833",
+    "nom": "TestNom1786970357833",
+    "fullName": "TestPrenom1786970357833 TestNom1786970357833",
+    "compteBancaire": "1786970357833",
+    "dateNaissance": "1998-05-15",
+    "telephone": "5550100",
+    "motDePasse": "enc:ae368ca2de084532f657b528:1933512e05c7a16bcf90ad44f1e6a76e:ebb43baed4dd20d788ff",
+    "photoProfil": "",
+    "numeroCitoyen": "",
+    "sexe": "Homme",
+    "couleurPeau": "",
+    "couleurCheveux": "",
+    "longueurCheveux": "",
+    "styleVestimentaire": "",
+    "metier": "",
+    "gagneSurBNI": 0,
+    "is_admin": false,
+    "token": "tok_a3785a06093634fb30b18340243d8e080456918612aac3d328f12b8957f28bed_1786970357895",
+    "retrait": {
+      "status": "IDLE",
+      "amount": 0,
+      "requestedAt": null
+    },
+    "lastLoginAt": "2026-08-17T12:39:17.895Z",
+    "loginByDay": {
+      "2026-08-17": 1
+    },
+    "withdrawalsByMonth": {},
+    "sensibleAnswersTagged": [],
+    "sensibleAnswersUntagged": [],
+    "createdAt": "2026-08-17T12:39:17.895Z",
+    "updatedAt": "2026-08-17T12:49:36.388Z"
+  },
+  {
+    "id": "admin_1786970358178",
+    "prenom": "Master",
+    "nom": "Admin",
+    "fullName": "Master Admin",
+    "compteBancaire": "",
+    "dateNaissance": "",
+    "telephone": "",
+    "motDePasse": "enc:386e08f791ec172a1652fd31:576c24d2973fd43b2c022c012f457300:e1771f3013738d55cd85843bb13cd292",
+    "photoProfil": "",
+    "numeroCitoyen": "",
+    "sexe": "",
+    "couleurPeau": "",
+    "couleurCheveux": "",
+    "longueurCheveux": "",
+    "styleVestimentaire": "",
+    "metier": "",
+    "gagneSurBNI": 0,
+    "is_admin": true,
+    "token": "tok_admin_1786970358179",
+    "retrait": {
+      "status": "IDLE",
+      "amount": 0,
+      "requestedAt": null
+    },
+    "lastLoginAt": null,
+    "loginByDay": {},
+    "withdrawalsByMonth": {},
+    "sensibleAnswersTagged": [],
+    "sensibleAnswersUntagged": [],
+    "createdAt": "2026-08-17T12:39:18.179Z",
+    "updatedAt": "2026-08-17T12:49:36.388Z"
+  },
+  {
+    "id": "u_f38af9c35fb51eab56e1f980c18e8e7e_1786970379790",
+    "prenom": "TestPrenom1786970379715",
+    "nom": "TestNom1786970379715",
+    "fullName": "TestPrenom1786970379715 TestNom1786970379715",
+    "compteBancaire": "1786970379715",
+    "dateNaissance": "1998-05-15",
+    "telephone": "5550100",
+    "motDePasse": "enc:fa5495583cdd3eed43dbb627:1673f05afd64591ae11a483c5fd44044:f83ee24704907fd95c69",
+    "photoProfil": "",
+    "numeroCitoyen": "",
+    "sexe": "Homme",
+    "couleurPeau": "",
+    "couleurCheveux": "",
+    "longueurCheveux": "",
+    "styleVestimentaire": "",
+    "metier": "",
+    "gagneSurBNI": 0,
+    "is_admin": false,
+    "token": "tok_624eec926f4355ef2ebb529db49d5b59642a343c0521ea907c81dc9fc88737a2_1786970379789",
+    "retrait": {
+      "status": "PENDING",
+      "amount": 100,
+      "requestedAt": "2026-08-17T12:39:40.355Z"
+    },
+    "lastLoginAt": "2026-08-17T12:39:39.951Z",
+    "loginByDay": {
+      "2026-08-17": 2
+    },
+    "withdrawalsByMonth": {
+      "2026-08": 1
+    },
+    "sensibleAnswersTagged": [],
+    "sensibleAnswersUntagged": [],
+    "createdAt": "2026-08-17T12:39:39.790Z",
+    "updatedAt": "2026-08-17T12:49:36.388Z"
+  },
+  {
+    "id": "u_de32af2f22f6670c0ddc54c341c58e7a_1786970975426",
+    "prenom": "TestPrenom1786970975328",
+    "nom": "TestNom1786970975328",
+    "fullName": "TestPrenom1786970975328 TestNom1786970975328",
+    "compteBancaire": "1786970975328",
+    "dateNaissance": "1998-05-15",
+    "telephone": "5550100",
+    "motDePasse": "enc:44f972ef33fe24f799441f1c:af5297bcaea67875e9bb8191f4f68a4f:b37b3f0db1bd8597132e",
+    "photoProfil": "",
+    "numeroCitoyen": "",
+    "sexe": "Homme",
+    "couleurPeau": "",
+    "couleurCheveux": "",
+    "longueurCheveux": "",
+    "styleVestimentaire": "",
+    "metier": "",
+    "gagneSurBNI": 0,
+    "is_admin": false,
+    "token": "tok_751f1d10f5ebec2d0b12d05438dd56f126cbb2fb2895e7cca5f57d558e25e76d_1786970975426",
+    "retrait": {
+      "status": "PENDING",
+      "amount": 100,
+      "requestedAt": "2026-08-17T12:49:35.960Z"
+    },
+    "lastLoginAt": "2026-08-17T12:49:35.537Z",
+    "loginByDay": {
+      "2026-08-17": 2
+    },
+    "withdrawalsByMonth": {
+      "2026-08": 1
+    },
+    "sensibleAnswersTagged": [],
+    "sensibleAnswersUntagged": [],
+    "createdAt": "2026-08-17T12:49:35.429Z",
+    "updatedAt": "2026-08-17T12:49:36.388Z"
+  }
+]

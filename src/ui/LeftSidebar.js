@@ -30,6 +30,13 @@ export default function LeftSidebar({
     return `${a}${b}` || "?";
   }, [user]);
 
+  const maskedAccount = useMemo(() => {
+    const acc = String(user?.compteBancaire || "").trim();
+    if (!acc) return "•••• •••• ••••";
+    if (acc.length <= 4) return acc;
+    return `BNI-••••-${acc.slice(-4)}`;
+  }, [user]);
+
   const getQuestionnaireProgress = (qnId) => {
     if (!questionnairesProgress || !questionnairesProgress[qnId]) {
       return null;
@@ -39,72 +46,71 @@ export default function LeftSidebar({
 
   return (
     <aside className={`leftSidebar glass ${className}`.trim()}>
-      <div className="userBlock glassCard">
-        <div className="userTop">
-          <div className="avatar" onClick={onOpenProfile} title="Modifier mon profil">
-            {user?.photoProfil ? (
-              <img className="avatarImg" alt="avatar" src={user.photoProfil} />
-            ) : (
-              initials
-            )}
-          </div>
-          <div className="userHeaderDetails">
-            <button
-              type="button"
-              className="userName userNameBtn"
-              onClick={() => onOpenProfile && onOpenProfile()}
-            >
-              {(user?.prenom || "") + " " + (user?.nom || "")}
-            </button>
-            <div className="userSubRole">
-              {user?.metier || "Citoyen"}
-            </div>
+      {/* Carte Bancaire Cyber BNI */}
+      <div className="cyberBankCard">
+        <div className="cyberCardTop">
+          <div className="cyberCardChip" />
+          <div className="cyberCardBrand">BNI CONNECT</div>
+        </div>
+
+        <div className="cyberCardBalanceRow">
+          <div className="cyberCardBalanceLabel">Cagnotte en attente</div>
+          <div className="cyberCardBalanceValue">
+            $ {Number(pending || 0).toFixed(2)}
           </div>
         </div>
 
-        <div className="moneyRow">
-          <div className="moneyBox">
-            <div className="moneyLabel">Gagné au total</div>
-            <div className="moneyValue">$ {earned.toFixed(2)}</div>
-          </div>
-          <div className="moneyBox">
-            <div className="moneyLabel">Cagnotte en attente</div>
-            <div className="moneyValue highlightPending">
-              $ {Number(pending || 0).toFixed(2)}
+        <div className="cyberCardFooter">
+          <div className="cyberCardUserWrap" onClick={onOpenProfile} title="Modifier mon profil">
+            <div className="cyberCardAvatar">
+              {user?.photoProfil ? (
+                <img className="cyberCardAvatarImg" alt="avatar" src={user.photoProfil} loading="lazy" />
+              ) : (
+                initials
+              )}
+            </div>
+            <div>
+              <div className="cyberCardHolder">
+                {(user?.prenom || "") + " " + (user?.nom || "")}
+              </div>
+              <div className="cyberCardAccount">{maskedAccount}</div>
             </div>
           </div>
+          <div className="cyberCardTotalEarned" title="Total gagné sur BNI">
+            <span className="cyberCardTotalLabel">Total</span>
+            <span className="cyberCardTotalVal">${earned.toFixed(2)}</span>
+          </div>
         </div>
-
-        <button
-          className={`btn wideBtn ${status === "PENDING" ? "btnWaiting" : "btnPrimary"}`}
-          type="button"
-          disabled={!canWithdraw}
-          onClick={() =>
-            canWithdraw ? onRequestWithdraw && onRequestWithdraw() : null
-          }
-        >
-          {status === "PENDING" ? (
-            <span className="waitWrap">
-              <span className="spinner" /> EN ATTENTE DE PAIEMENT ($ {requestedAmount.toFixed(2)})
-            </span>
-          ) : !canWithdraw ? (
-            `RÉCUPÉRER MON ARGENT DANS $ ${amountMissing.toFixed(2)}`
-          ) : (
-            "RÉCUPÉRER MON ARGENT"
-          )}
-        </button>
-
-        {user?.is_admin ? (
-          <button
-            className="btn wideBtn btnGhost adminAccessBtn"
-            type="button"
-            onClick={() => (window.location.href = "/admin")}
-          >
-            <ShieldCheck size={16} />
-            PANEL D'ADMINISTRATION
-          </button>
-        ) : null}
       </div>
+
+      {/* Bouton de retrait / statut */}
+      <button
+        className={`btn wideBtn ${status === "PENDING" ? "btnWaiting" : canWithdraw ? "btnSuccess" : "btnPrimary"}`}
+        type="button"
+        disabled={!canWithdraw}
+        onClick={() => (canWithdraw ? onRequestWithdraw && onRequestWithdraw() : null)}
+      >
+        {status === "PENDING" ? (
+          <span className="waitWrap">
+            <span className="spinner" /> EN ATTENTE DE PAIEMENT ($ {requestedAmount.toFixed(2)})
+          </span>
+        ) : !canWithdraw ? (
+          `RÉCUPÉRER MON ARGENT DANS $ ${amountMissing.toFixed(2)}`
+        ) : (
+          "⚡ ENCAISSER MA CAGNOTTE"
+        )}
+      </button>
+
+      {user?.is_admin ? (
+        <button
+          className="btn wideBtn btnGhost adminAccessBtn"
+          type="button"
+          onClick={() => (window.location.href = "/admin")}
+        >
+          <ShieldCheck size={16} />
+          PANEL D'ADMINISTRATION
+        </button>
+      ) : null}
 
       <div className="sectionTitle">
         <span>Questionnaires disponibles</span>
@@ -151,7 +157,7 @@ export default function LeftSidebar({
                       `${totalQuestions} question${totalQuestions > 1 ? "s" : ""}`
                     )}
                   </div>
-                  <div className="qnPrice pill">
+                  <div className="qnPrice pill pill-emerald">
                     $ {Number(qn.reward || 0).toFixed(2)}
                   </div>
                 </div>
