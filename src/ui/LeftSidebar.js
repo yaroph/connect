@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Eye, Play, Lock, ShieldCheck, RotateCcw, Zap, Clock, Hourglass, Check } from "lucide-react";
+import { Eye, Play, Lock, ShieldCheck, RotateCcw, Zap, Clock, Hourglass } from "lucide-react";
 import { use3DTilt } from "./use3DTilt";
 import AnimatedCounter from "./AnimatedCounter";
 import "./leftSidebar.css";
@@ -97,46 +97,25 @@ export default function LeftSidebar({
 
       {/* Statut de retrait / Bouton d'action */}
       {status === "PENDING" ? (
-        <div className="pendingPaymentCard cyberHudPanel">
-          <div className="pendingPaymentHeader">
-            <div className="pendingStatusTag">
+        <div className="pendingPaymentCompact">
+          <div className="pendingTopRow">
+            <div className="pendingTag">
               <span className="pendingPulseDot" />
-              <Clock size={13} className="pendingIconSpin" />
-              <span>VIREMENT EN ATTENTE</span>
+              <Clock size={12} className="pendingIconSpin" />
+              <span>VIREMENT EN COURS</span>
             </div>
-            <div className="pendingAmountTag">
+            <div className="pendingAmount">
               $ {requestedAmount.toFixed(2)}
             </div>
           </div>
 
-          <div className="pendingPaymentContent">
-            <div className="pendingMsgPrimary">
-              Demande de retrait enregistrée
-            </div>
-            <div className="pendingMsgDesc">
-              Le virement vers votre compte <strong>{maskedAccount}</strong> est en cours de traitement par le service financier.
-            </div>
-            <div className="pendingTimeNotice">
-              <Hourglass size={13} />
-              <span>Délai estimé : <strong>quelques jours (1 à 3 jours ouvrés)</strong></span>
-            </div>
+          <div className="pendingDelayNotice">
+            <Hourglass size={11} />
+            <span>Délai estimé : <strong>1 à 3 jours ouvrés</strong></span>
           </div>
 
-          <div className="pendingTimeline">
-            <div className="timelineStep done">
-              <div className="stepIndicator"><Check size={9} /></div>
-              <span>Reçue</span>
-            </div>
-            <div className="timelineTrack activeTrack" />
-            <div className="timelineStep current">
-              <div className="stepIndicator"><Clock size={9} /></div>
-              <span>Vérification BNI</span>
-            </div>
-            <div className="timelineTrack" />
-            <div className="timelineStep">
-              <div className="stepIndicator" />
-              <span>Finalisée</span>
-            </div>
+          <div className="pendingProgressBar">
+            <div className="pendingProgressFill" />
           </div>
         </div>
       ) : (
