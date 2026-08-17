@@ -1,4 +1,6 @@
 import React from "react";
+import SoundToggle from "./SoundToggle";
+import { playLaserClick } from "./soundEffects";
 import "./ui.css";
 
 export default function LogoHeader({ onClick }) {
@@ -8,9 +10,17 @@ export default function LogoHeader({ onClick }) {
         className={`headerLogo ${onClick ? "clickable" : ""}`}
         src="/bniconnect.png"
         alt="BNI Connect"
-        onClick={onClick}
+        onClick={(e) => {
+          if (onClick) {
+            playLaserClick();
+            onClick(e);
+          }
+        }}
         title={onClick ? "Retourner aux questions aléatoires" : "BNI Connect"}
       />
+      <div className="headerSoundWrap">
+        <SoundToggle />
+      </div>
     </header>
   );
 }

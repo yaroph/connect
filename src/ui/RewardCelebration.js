@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Sparkles, CheckCircle2 } from "lucide-react";
+import { playMissionComplete } from "./soundEffects";
 
 export default function RewardCelebration({
   title = "Questionnaire terminé !",
@@ -7,6 +8,9 @@ export default function RewardCelebration({
   rewardAmount = null,
   confettiList = [],
 }) {
+  useEffect(() => {
+    playMissionComplete();
+  }, []);
   return (
     <div className="qnDoneOverlay" aria-live="polite">
       <div className="qnDoneConfetti" aria-hidden="true">

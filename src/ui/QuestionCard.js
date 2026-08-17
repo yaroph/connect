@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { X, ArrowRight, Check } from "lucide-react";
 import { isPriorityActive, formatPriorityUntil } from "../data/selectors";
 import { resizeImage } from "../data/storage";
+import { playSelectChoice } from "./soundEffects";
 import "./questionCard.css";
 
 function fileToDataUrl(file) {
@@ -192,6 +193,7 @@ export default function QuestionCard({
   const onChoiceClick = (id, e) => {
     if (isDisabled) return;
     if (e) triggerShockwave(e);
+    playSelectChoice();
     setSelected((prev) => {
       const next = new Set(prev);
 

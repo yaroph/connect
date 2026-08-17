@@ -79,5 +79,14 @@
     "randomByWeek": {
       "2026-W33": 1
     }
+  },
+  "u_6592b1e07aec24f80a91297739d57d3e_1786974713322": {
+    "pending": 0,
+    "randomByDay": {
+      "2026-08-17": 1
+    },
+    "randomByWeek": {
+      "2026-W33": 1
+    }
   }
 }

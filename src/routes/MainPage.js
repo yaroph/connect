@@ -10,6 +10,7 @@ import {
   Inbox,
 } from "lucide-react";
 import CyberBackground from "../ui/CyberBackground";
+import { playCreditEarned, playSwipeWhoosh } from "../ui/soundEffects";
 import "../styles/main.css";
 import {
   loadDBProgressive,
@@ -941,6 +942,7 @@ export default function MainPage({ authUser, authPending }) {
   const onRefreshClick = (e) => {
     if (answerLockedRef.current) return;
     if (refreshLockedRef.current) return;
+    playSwipeWhoosh();
     // Disable instantly (even before React rerender)
     if (e && e.currentTarget) e.currentTarget.disabled = true;
     refreshLockedRef.current = true;
@@ -1554,6 +1556,7 @@ export default function MainPage({ authUser, authPending }) {
         .then((r) => {
           if (!r) return;
           if (r.ok) {
+            playCreditEarned();
             setPending(Number(r.pending || 0));
             setLimitMsg("");
             // Keep UI limits in sync without resetting the local progress.
