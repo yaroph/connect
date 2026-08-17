@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "../styles/auth.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, LogIn, User, Lock, ArrowRight } from "lucide-react";
 import Modal from "../ui/Modal";
+import CyberBackground from "../ui/CyberBackground";
+import { playLaserClick } from "../ui/soundEffects";
 import {
   authLogin,
   authMe,
@@ -53,6 +55,7 @@ export default function LoginPage() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    playLaserClick();
     setError("");
     setLoading(true);
     try {
@@ -62,7 +65,7 @@ export default function LoginPage() {
         saveCredentials({ prenom, nom, motDePasse });
         nav(from, { replace: true });
       } else {
-        setError(r?.error || "Connexion impossible");
+        setError(r?.error || "Identifiants invalides");
       }
     } catch (e2) {
       setError(String(e2?.message || e2 || "Identifiants invalides."));
@@ -72,6 +75,7 @@ export default function LoginPage() {
   };
 
   const openForgot = () => {
+    playLaserClick();
     setFpPrenom(prenom);
     setFpNom(nom);
     setFpDateNaissance("");
@@ -92,6 +96,7 @@ export default function LoginPage() {
   };
 
   const onVerifyForgot = async () => {
+    playLaserClick();
     setFpError("");
     setFpOk("");
     setFpLoading(true);
@@ -105,7 +110,7 @@ export default function LoginPage() {
       if (r && r.ok) {
         setFpStep(2);
       } else {
-        setFpError(r?.error || "Informations invalides");
+        setFpError(r?.error || "Informations incorrectes");
       }
     } catch (e) {
       setFpError(String(e?.message || e || "Erreur"));
@@ -115,16 +120,18 @@ export default function LoginPage() {
   };
 
   const onSetForgot = async () => {
+    playLaserClick();
     setFpError("");
     setFpOk("");
     if (!fpNew1 || fpNew1.length < 3) {
-      setFpError("Nouveau mot de passe trop court");
+      setFpError("Le mot de passe doit contenir au moins 3 caractères");
       return;
     }
     if (fpNew1 !== fpNew2) {
       setFpError("Les mots de passe ne correspondent pas");
       return;
     }
+
     setFpLoading(true);
     try {
       const r = await passwordResetSet({
@@ -135,7 +142,7 @@ export default function LoginPage() {
         nouveauMotDePasse: fpNew1,
       });
       if (r && r.ok) {
-        setFpOk("Mot de passe modifié. Vous pouvez vous reconnecter.");
+        setFpOk("Mot de passe modifié avec succès. Vous pouvez vous reconnecter.");
         setFpStep(1);
         setFpNew1("");
         setFpNew2("");
@@ -151,25 +158,32 @@ export default function LoginPage() {
 
   return (
     <div className="authRoot">
-      <div className="authCard">
+      <CyberBackground />
+
+      <div className="authCard cyberHudPanel">
+        <div className="hudBracket hudBracketTL" />
+        <div className="hudBracket hudBracketTR" />
+        <div className="hudBracket hudBracketBL" />
+        <div className="hudBracket hudBracketBR" />
+
         <div className="authLogo">
           <img
             src="/bniconnect.png"
             alt="BNI Connect"
-            style={{ width: 130, height: "auto" }}
+            className="authLogoImg"
           />
         </div>
-        <div className="authTitle">Connexion</div>
-        <div className="authSub">Entrez vos identifiants de citoyen pour continuer</div>
 
-        <div className="rpDisclaimer">
-          <span className="rpBadge">RP ONLY</span>
-          Application dédiée au jeu de rôle. N'entrez <strong>aucune information réelle</strong> (vrai mot de passe ou compte bancaire).
+        <div className="authHeaderWrap">
+          <h1 className="authTitle">Connexion</h1>
+          <p className="authSub">Authentifiez-vous pour accéder à vos questionnaires rémunérés</p>
         </div>
 
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} className="authForm">
           <div className="authField">
-            <div className="authLabel">Prénom(s)</div>
+            <label className="authLabel">
+              <User size={13} className="authFieldIcon" /> Prénom(s)
+            </label>
             <input
               className="authInput"
               value={prenom}
@@ -179,8 +193,11 @@ export default function LoginPage() {
               autoFocus
             />
           </div>
+
           <div className="authField">
-            <div className="authLabel">Nom de famille</div>
+            <label className="authLabel">
+              <User size={13} className="authFieldIcon" /> Nom de famille
+            </label>
             <input
               className="authInput"
               value={nom}
@@ -189,8 +206,11 @@ export default function LoginPage() {
               required
             />
           </div>
+
           <div className="authField">
-            <div className="authLabel">Mot de passe (Jeu)</div>
+            <label className="authLabel">
+              <Lock size={13} className="authFieldIcon" /> Mot de passe
+            </label>
             <div className="passwordInputWrapper">
               <input
                 className="authInput"
@@ -207,40 +227,44 @@ export default function LoginPage() {
                 title={showPassword ? "Masquer" : "Afficher"}
                 aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
 
-          <button className="authBtn" disabled={loading} type="submit">
-            {loading ? "Connexion en cours…" : "Se connecter"}
-          </button>
-
           {error ? <div className="authError">{error}</div> : null}
+
+          <button className="btn authBtn" disabled={loading} type="submit">
+            <LogIn size={16} />
+            <span>{loading ? "Connexion en cours…" : "Se connecter"}</span>
+          </button>
         </form>
 
-        <div className="authBottom">
-          Pas encore de compte ?
-          <Link className="authLink" to="/signup">
-            S'inscrire
-          </Link>
-        </div>
+        <div className="authFooterLinks">
+          <div className="authBottom">
+            <span>Pas encore de compte ?</span>
+            <Link className="authLink" to="/signup">
+              <span>S'inscrire</span>
+              <ArrowRight size={13} />
+            </Link>
+          </div>
 
-        <div className="authForgotWrap">
-          <button type="button" className="authForgotLink" onClick={openForgot}>
-            Mot de passe oublié ?
-          </button>
+          <div className="authForgotWrap">
+            <button type="button" className="authForgotLink" onClick={openForgot}>
+              Mot de passe oublié ?
+            </button>
+          </div>
         </div>
       </div>
 
       {forgotOpen ? (
-        <Modal title="Mot de passe oublié" onClose={closeForgot}>
+        <Modal title="Récupération de mot de passe" onClose={closeForgot}>
           {fpOk ? <div className="authOk">{fpOk}</div> : null}
 
           {fpStep === 1 ? (
             <>
-              <div className="muted" style={{ marginBottom: 12 }}>
-                Renseignez les informations de votre citoyen.
+              <div className="authModalHint">
+                Renseignez vos identifiants pour vérifier votre profil.
               </div>
               <div className="authField">
                 <div className="authLabel">Prénom(s)</div>
@@ -268,9 +292,7 @@ export default function LoginPage() {
                 />
               </div>
               <div className="authField">
-                <div className="authLabel">
-                  Numéro de compte en banque (RP)
-                </div>
+                <div className="authLabel">Numéro de compte BNI</div>
                 <input
                   className="authInput"
                   value={fpCompte}
@@ -302,7 +324,7 @@ export default function LoginPage() {
             </>
           ) : (
             <>
-              <div className="muted" style={{ marginBottom: 12 }}>
+              <div className="authModalHint">
                 Entrez votre nouveau mot de passe.
               </div>
               <div className="authField">
@@ -315,9 +337,7 @@ export default function LoginPage() {
                 />
               </div>
               <div className="authField">
-                <div className="authLabel">
-                  Confirmer le nouveau mot de passe
-                </div>
+                <div className="authLabel">Confirmer le nouveau mot de passe</div>
                 <input
                   className="authInput"
                   type="password"

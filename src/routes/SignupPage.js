@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../styles/auth.css";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Camera } from "lucide-react";
+import { Eye, EyeOff, Camera, UserPlus, User, Lock, CreditCard, Calendar, Phone, Briefcase, ArrowRight } from "lucide-react";
+import Modal from "../ui/Modal";
+import CyberBackground from "../ui/CyberBackground";
+import { playLaserClick } from "../ui/soundEffects";
 import {
   authMe,
   authRegister,
@@ -10,7 +13,6 @@ import {
   saveCredentials,
   resizeImage,
 } from "../data/storage";
-import Modal from "../ui/Modal";
 
 function onlyDigits(v) {
   return String(v || "").replace(/\D+/g, "");
@@ -72,6 +74,7 @@ export default function SignupPage() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    playLaserClick();
     setError("");
     setLoading(true);
     try {
@@ -114,28 +117,37 @@ export default function SignupPage() {
 
   return (
     <div className="authRoot">
-      <div className="authCard" style={{ width: "min(920px, 100%)" }}>
+      <CyberBackground />
+
+      <div className="authCard authCardWide cyberHudPanel">
+        <div className="hudBracket hudBracketTL" />
+        <div className="hudBracket hudBracketTR" />
+        <div className="hudBracket hudBracketBL" />
+        <div className="hudBracket hudBracketBR" />
+
         <div className="authLogo">
           <img
             src="/bniconnect.png"
             alt="BNI Connect"
-            style={{ width: 130, height: "auto" }}
+            className="authLogoImg"
           />
         </div>
-        <div className="authTitle">Créer un compte Citoyen</div>
-        <div className="authSub">Complétez vos informations pour accéder aux questionnaires rémunérés</div>
 
-        <div className="rpDisclaimer">
-          <span className="rpBadge">RP ONLY</span>
-          Application réservée au jeu de rôle. N'entrez <strong>aucune donnée personnelle réelle</strong> (mot de passe, compte bancaire, etc.).
+        <div className="authHeaderWrap">
+          <h1 className="authTitle">Créer un compte Citoyen</h1>
+          <p className="authSub">Complétez vos informations pour accéder aux questionnaires rémunérés</p>
         </div>
 
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} className="authForm">
           <div className="authGrid">
-            <div>
+            {/* Colonne 1: Obligatoire */}
+            <div className="authCol">
               <div className="authColTitle">Informations du compte (Obligatoire)</div>
+
               <div className="authField">
-                <div className="authLabel">Prénom(s)</div>
+                <label className="authLabel">
+                  <User size={13} className="authFieldIcon" /> Prénom(s)
+                </label>
                 <input
                   className="authInput"
                   value={prenom}
@@ -145,8 +157,11 @@ export default function SignupPage() {
                   autoFocus
                 />
               </div>
+
               <div className="authField">
-                <div className="authLabel">Nom de famille</div>
+                <label className="authLabel">
+                  <User size={13} className="authFieldIcon" /> Nom de famille
+                </label>
                 <input
                   className="authInput"
                   value={nom}
@@ -155,22 +170,26 @@ export default function SignupPage() {
                   placeholder="Ex: Dupont"
                 />
               </div>
+
               <div className="authField">
-                <div className="authLabel">Numéro de compte en banque (RP)</div>
+                <label className="authLabel">
+                  <CreditCard size={13} className="authFieldIcon" /> Numéro de compte BNI
+                </label>
                 <input
                   className="authInput"
                   value={compteBancaire}
-                  onChange={(e) =>
-                    setCompteBancaire(onlyDigits(e.target.value))
-                  }
+                  onChange={(e) => setCompteBancaire(onlyDigits(e.target.value))}
                   inputMode="numeric"
                   pattern="[0-9]*"
                   required
                   placeholder="Ex: 12345"
                 />
               </div>
+
               <div className="authField">
-                <div className="authLabel">Date de naissance</div>
+                <label className="authLabel">
+                  <Calendar size={13} className="authFieldIcon" /> Date de naissance
+                </label>
                 <input
                   className="authInput"
                   type="date"
@@ -179,20 +198,24 @@ export default function SignupPage() {
                   required
                 />
               </div>
+
               <div className="authField">
-                <div className="authLabel">Numéro de téléphone (RP)</div>
+                <label className="authLabel">
+                  <Phone size={13} className="authFieldIcon" /> Téléphone
+                </label>
                 <input
                   className="authInput"
                   value={telephone}
-                  onChange={(e) => setTelephone(onlyDigits(e.target.value))}
-                  inputMode="numeric"
-                  pattern="[0-9]*"
+                  onChange={(e) => setTelephone(e.target.value)}
                   required
-                  placeholder="Ex: 555-1234"
+                  placeholder="Ex: 555-0199"
                 />
               </div>
+
               <div className="authField">
-                <div className="authLabel">Mot de passe (Jeu)</div>
+                <label className="authLabel">
+                  <Lock size={13} className="authFieldIcon" /> Mot de passe
+                </label>
                 <div className="passwordInputWrapper">
                   <input
                     className="authInput"
@@ -209,265 +232,199 @@ export default function SignupPage() {
                     title={showPassword ? "Masquer" : "Afficher"}
                     aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
             </div>
 
-            <div>
-              <div className="authColTitle">Détails du citoyen (Optionnel)</div>
+            {/* Colonne 2: Profil Citoyen */}
+            <div className="authCol">
+              <div className="authColTitle">Profil Citoyen (Optionnel)</div>
+
               <div className="authField">
-                <div className="authLabel">Photo de profil</div>
-                <button
-                  className="btn btnGhost"
-                  type="button"
-                  style={{ width: "100%", justifyContent: "center", gap: 8 }}
-                  onClick={() => setPhotoModal(true)}
-                >
-                  <Camera size={16} /> {preview ? "Changer la photo" : "Choisir une photo"}
-                </button>
-              </div>
-              {preview ? (
-                <div className="authField" style={{ display: "flex", justifyContent: "center" }}>
-                  <img
-                    alt="Aperçu avatar"
-                    src={preview}
-                    style={{
-                      width: 80,
-                      height: 80,
-                      borderRadius: 16,
-                      objectFit: "cover",
-                      border: "2px solid rgba(255,255,255,0.25)",
-                    }}
-                  />
+                <label className="authLabel">Photo de profil</label>
+                <div className="authPhotoUploadWrap">
+                  <div className="authPhotoPreview">
+                    {preview ? (
+                      <img src={preview} alt="Aperçu" className="authPhotoImg" />
+                    ) : (
+                      <Camera size={24} className="authPhotoPlaceholderIcon" />
+                    )}
+                  </div>
+                  <div className="authPhotoBtns">
+                    <button
+                      type="button"
+                      className="btn btnGhost authPhotoBtn"
+                      onClick={() => setPhotoModal(true)}
+                    >
+                      <Camera size={14} />
+                      <span>{preview ? "Modifier la photo" : "Ajouter une photo"}</span>
+                    </button>
+                    {preview ? (
+                      <button
+                        type="button"
+                        className="btn btnGhost authPhotoBtnRemove"
+                        onClick={() => {
+                          setPhotoUrl("");
+                          setPhotoUpload(null);
+                        }}
+                      >
+                        Supprimer
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
-              ) : null}
+              </div>
+
               <div className="authField">
-                <div className="authLabel">Numéro de citoyen</div>
+                <label className="authLabel">Numéro de citoyen</label>
                 <input
                   className="authInput"
                   value={numeroCitoyen}
-                  onChange={(e) => setNumeroCitoyen(onlyDigits(e.target.value))}
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  placeholder="Ex: 9876"
+                  onChange={(e) => setNumeroCitoyen(e.target.value)}
+                  placeholder="Ex: ABC12345"
                 />
               </div>
+
               <div className="authField">
-                <div className="authLabel">Sexe</div>
-                <select
-                  className="authInput"
-                  value={sexe}
-                  onChange={(e) => setSexe(e.target.value)}
-                >
-                  <option value="">— Non renseigné —</option>
-                  {["Homme", "Femme", "Neutre"].map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="authField">
-                <div className="authLabel">Couleur de peau</div>
-                <select
-                  className="authInput"
-                  value={couleurPeau}
-                  onChange={(e) => setCouleurPeau(e.target.value)}
-                >
-                  <option value="">— Non renseigné —</option>
-                  {["Claire", "Métisse", "Foncé", "Asiatique"].map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="authField">
-                <div className="authLabel">Couleur de cheveux</div>
-                <select
-                  className="authInput"
-                  value={couleurCheveux}
-                  onChange={(e) => setCouleurCheveux(e.target.value)}
-                >
-                  <option value="">— Non renseigné —</option>
-                  {[
-                    "Noir",
-                    "Chatain",
-                    "Blond",
-                    "Roux",
-                    "Gris",
-                    "Blanc",
-                    "Bleu",
-                    "Vert",
-                    "Jaune",
-                    "Rose",
-                    "Autre",
-                  ].map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="authField">
-                <div className="authLabel">Longueur de cheveux</div>
-                <select
-                  className="authInput"
-                  value={longueurCheveux}
-                  onChange={(e) => setLongueurCheveux(e.target.value)}
-                >
-                  <option value="">— Non renseigné —</option>
-                  {[
-                    "Fantaisie",
-                    "Long",
-                    "Crépu",
-                    "Mi-long",
-                    "Court",
-                    "Tressé",
-                    "Chauve",
-                  ].map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="authField">
-                <div className="authLabel">Style vestimentaire</div>
-                <select
-                  className="authInput"
-                  value={styleVestimentaire}
-                  onChange={(e) => setStyleVestimentaire(e.target.value)}
-                >
-                  <option value="">— Non renseigné —</option>
-                  {[
-                    "Corpo",
-                    "Chic",
-                    "Kikoo",
-                    "Street",
-                    "Schlag",
-                    "Neutre",
-                    "Sport",
-                    "Futuriste",
-                    "Fantaisie",
-                  ].map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="authField">
-                <div className="authLabel">Métier</div>
-                <select
+                <label className="authLabel">
+                  <Briefcase size={13} className="authFieldIcon" /> Métier / Profession
+                </label>
+                <input
                   className="authInput"
                   value={metier}
                   onChange={(e) => setMetier(e.target.value)}
-                >
-                  <option value="">— Non renseigné —</option>
-                  {[
-                    "((Sans Emploi))",
-                    "(A mon compte)",
-                    "AGENT IMMOBILIER",
-                    "APEX NIGHTCLUB",
-                    "ARAKOSHI",
-                    "ATELIS",
-                    "AZUL PAWNSHOP",
-                    "BNI",
-                    "CASINO EMPIRE",
-                    "CERBERUS",
-                    "CHATEAU D'AMOUR",
-                    "CLUB 77",
-                    "COIFFEUR",
-                    "DARNEL",
-                    "EREBOS",
-                    "FIVE STAR RECORD",
-                    "GOUVERNEMENT",
-                    "HOPITAL (Mordechai)",
-                    "HOPITAL (Nova Life)",
-                    "HOPITAL (publique)",
-                    "LA HAUTE",
-                    "LE CERCLE",
-                    "LIFEINVADER",
-                    "LSPD POLICE DEP",
-                    "LTD LOTUS QUARTER",
-                    "LTD VERDANT",
-                    "LUCHETTI'S",
-                    "LUXXX CLUB",
-                    "MAZZARI MOTORS",
-                    "MIDNIGHT CLUB",
-                    "MLAD & KO",
-                    "POMPIER (LSFD)",
-                    "PREMIUM DELUXE MOTORSPORT",
-                    "SECRET SERVICE",
-                    "SIA",
-                    "TATOUEUR",
-                    "TRIAD RECORD",
-                    "WEAZEL NEWS",
-                    "WESTBROOK MOTORSPORT",
-                    "WESTBROOK SECURITY",
-                    "((Autre))",
-                  ].map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
+                  placeholder="Ex: Mécanicien, Avocat..."
+                />
+              </div>
+
+              <div className="authRowFields">
+                <div className="authField" style={{ flex: 1 }}>
+                  <label className="authLabel">Sexe</label>
+                  <select
+                    className="authInput authSelect"
+                    value={sexe}
+                    onChange={(e) => setSexe(e.target.value)}
+                  >
+                    <option value="">Non spécifié</option>
+                    <option value="Homme">Homme</option>
+                    <option value="Femme">Femme</option>
+                    <option value="Autre">Autre</option>
+                  </select>
+                </div>
+
+                <div className="authField" style={{ flex: 1 }}>
+                  <label className="authLabel">Style vestimentaire</label>
+                  <input
+                    className="authInput"
+                    value={styleVestimentaire}
+                    onChange={(e) => setStyleVestimentaire(e.target.value)}
+                    placeholder="Ex: Formel, Décontracté"
+                  />
+                </div>
+              </div>
+
+              <div className="authRowFields">
+                <div className="authField" style={{ flex: 1 }}>
+                  <label className="authLabel">Couleur de peau</label>
+                  <input
+                    className="authInput"
+                    value={couleurPeau}
+                    onChange={(e) => setCouleurPeau(e.target.value)}
+                    placeholder="Ex: Claire, Mate, Foncée"
+                  />
+                </div>
+                <div className="authField" style={{ flex: 1 }}>
+                  <label className="authLabel">Couleur cheveux</label>
+                  <input
+                    className="authInput"
+                    value={couleurCheveux}
+                    onChange={(e) => setCouleurCheveux(e.target.value)}
+                    placeholder="Ex: Brun, Blond, Noir"
+                  />
+                </div>
+                <div className="authField" style={{ flex: 1 }}>
+                  <label className="authLabel">Longueur cheveux</label>
+                  <input
+                    className="authInput"
+                    value={longueurCheveux}
+                    onChange={(e) => setLongueurCheveux(e.target.value)}
+                    placeholder="Ex: Courts, Mi-longs, Longs"
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          <button className="authBtn" disabled={loading} type="submit">
-            {loading ? "Création du compte…" : "Créer mon compte"}
-          </button>
-
           {error ? <div className="authError">{error}</div> : null}
+
+          <div className="authSubmitWrap">
+            <button className="btn authBtn" disabled={loading} type="submit">
+              <UserPlus size={16} />
+              <span>{loading ? "Création du compte…" : "Créer mon compte"}</span>
+            </button>
+          </div>
         </form>
 
-        <div className="authBottom">
-          Déjà un compte ?
-          <Link className="authLink" to="/login">
-            Se connecter
-          </Link>
+        <div className="authFooterLinks">
+          <div className="authBottom">
+            <span>Vous avez déjà un compte ?</span>
+            <Link className="authLink" to="/login">
+              <span>Se connecter</span>
+              <ArrowRight size={13} />
+            </Link>
+          </div>
         </div>
       </div>
 
       {photoModal ? (
-        <Modal title="Photo de profil" onClose={() => setPhotoModal(false)}>
-          <div className="field">
-            <div className="label">Importer une image locale</div>
+        <Modal title="Ajouter une photo de profil" onClose={() => setPhotoModal(false)}>
+          <div className="authModalHint">
+            Choisissez une méthode pour ajouter votre photo.
+          </div>
+
+          <div className="authField">
+            <label className="authLabel">Importer un fichier image</label>
             <input
-              className="input"
-              style={{ padding: 10 }}
               type="file"
               accept="image/*"
+              className="authInput"
               onChange={(e) => {
-                setPhotoUpload(e.target.files?.[0] || null);
-                if (e.target.files?.[0]) setPhotoUrl("");
+                const file = e.target.files && e.target.files[0];
+                if (file) {
+                  setPhotoUpload(file);
+                  setPhotoUrl("");
+                  setPhotoModal(false);
+                }
               }}
             />
           </div>
-          <div className="field">
-            <div className="label">Ou lien (URL)</div>
+
+          <div className="authField">
+            <label className="authLabel">Ou entrer une URL d'image directe</label>
             <input
-              className="input"
+              className="authInput"
               value={photoUrl}
-              onChange={(e) => {
-                setPhotoUrl(e.target.value);
-                if (e.target.value) setPhotoUpload(null);
-              }}
-              placeholder="https://images.unsplash.com/..."
+              onChange={(e) => setPhotoUrl(e.target.value)}
+              placeholder="https://example.com/avatar.jpg"
             />
           </div>
+
           <div className="rowBtns" style={{ marginTop: 16 }}>
             <button
-              className="btn btnGhost"
               type="button"
+              className="btn btnGhost"
               onClick={() => setPhotoModal(false)}
             >
-              Fermer
+              Annuler
+            </button>
+            <button
+              type="button"
+              className="btn btnPrimary"
+              onClick={() => setPhotoModal(false)}
+            >
+              Valider
             </button>
           </div>
         </Modal>
