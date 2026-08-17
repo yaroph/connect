@@ -92,8 +92,26 @@
 .tabBtn.active {
   background: linear-gradient(135deg, rgba(2, 132, 199, 0.35) 0%, rgba(0, 240, 255, 0.2) 100%);
   border-color: #00f0ff;
-  color: #38bdf8;
+  color: #00f0ff;
   box-shadow: 0 0 16px rgba(0, 240, 255, 0.25);
+}
+
+.tabIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.tabBadge {
+  background: #fbbf24;
+  color: #030712;
+  font-weight: 900;
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 99px;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+  animation: pendingPulse 1.6s ease-in-out infinite;
 }
 
 /* Modal Cyber */

@@ -2,6 +2,19 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import "../styles/admin.css";
 import LogoHeader from "../ui/LogoHeader";
 import Tabs from "../ui/Tabs";
+import CyberBackground from "../ui/CyberBackground";
+import CyberLoader from "../ui/CyberLoader";
+import {
+  Users,
+  Search,
+  FileText,
+  CreditCard,
+  BarChart3,
+  Settings,
+  Layers,
+  HelpCircle,
+  Tag,
+} from "lucide-react";
 import {
   loadDB,
   updateDB,
@@ -43,7 +56,7 @@ export default function AdminPage() {
           return;
         }
         const msg =
-          "Impossible de charger la base de données. Lance bien le serveur (npm start).";
+          "Impossible de charger la base de données. Vérifiez que le serveur est bien lancé.";
         setDbError(msg);
         notifyError(msg);
       }
@@ -71,15 +84,13 @@ export default function AdminPage() {
     };
   }, []);
 
-  const [topTab, setTopTab] = useState("Questionnaire");
+  const [topTab, setTopTab] = useState("Utilisateur");
   const [subTab, setSubTab] = useState("Questionnaire");
 
   // Refresh data when switching top-level tabs
   useEffect(() => {
-    // Clear client-side DB cache so sub-components get fresh data
     clearDBCache();
 
-    // Force-reload the questionnaire DB
     let cancelled = false;
     loadDB({ force: true })
       .then((r) => {
@@ -87,7 +98,6 @@ export default function AdminPage() {
       })
       .catch(() => {});
 
-    // Refresh payment badge count
     adminListPayments()
       .then((r) => {
         if (!cancelled) setPaymentCount((r.payments || []).length);
@@ -97,27 +107,24 @@ export default function AdminPage() {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topTab]);
 
   const topTabs = useMemo(() => {
-    const payLabel =
-      paymentCount > 0 ? `Payments (${paymentCount})` : "Payments";
     return [
-      { id: "Utilisateur", label: "Utilisateur", wip: false },
-      { id: "Recherche", label: "Recherche", wip: false },
-      { id: "Questionnaire", label: "Questionnaire", wip: false },
-      { id: "Payment", label: payLabel, wip: false },
-      { id: "Statistique", label: "Statistique", wip: false },
-      { id: "Paramètres", label: "Paramètres", wip: false },
+      { id: "Utilisateur", label: "Utilisateurs", icon: <Users size={16} />, wip: false },
+      { id: "Recherche", label: "Recherche", icon: <Search size={16} />, wip: false },
+      { id: "Questionnaire", label: "Questionnaires", icon: <FileText size={16} />, wip: false },
+      { id: "Payment", label: "Paiements", icon: <CreditCard size={16} />, badge: paymentCount, wip: false },
+      { id: "Statistique", label: "Statistiques", icon: <BarChart3 size={16} />, wip: false },
+      { id: "Paramètres", label: "Paramètres", icon: <Settings size={16} />, wip: false },
     ];
   }, [paymentCount]);
 
   const subTabs = useMemo(
     () => [
-      { id: "Questionnaire", label: "Questionnaires" },
-      { id: "Question individuel", label: "Question individuel" },
-      { id: "Tags", label: "Tags" },
+      { id: "Questionnaire", label: "Questionnaires", icon: <Layers size={14} /> },
+      { id: "Question individuel", label: "Questions individuelles", icon: <HelpCircle size={14} /> },
+      { id: "Tags", label: "Tags & Métadonnées", icon: <Tag size={14} /> },
     ],
     [],
   );
@@ -125,85 +132,56 @@ export default function AdminPage() {
   const onDBChange = (updater) => {
     if (!db) return;
 
-    // 1) Optimistic UI update (instant)
     const next = updateDB(db, updater);
     setDb(next);
 
-    // 2) Persist, then apply the PUT response as the single source of truth.
-    // This avoids the "1 seconde puis ça disparaît" caused by read-after-write
-    // returning stale data (cache / réplication Netlify).
     const seq = ++saveSeqRef.current;
     saveDB(next)
       .then((saved) => {
-        // Ignore out-of-order responses
         if (saveSeqRef.current !== seq) return;
         setDb(saved);
       })
       .catch((e) => {
         console.error(e);
-        notifyError("Échec de l'enregistrement. Recharge la page et réessaie.");
+        notifyError("Échec de l'enregistrement. Rechargez la page.");
       });
   };
 
   if (!db) {
-    return (
-      <div className="adminRoot">
-        <LogoHeader />
-        <div className="adminBody">
-          <div
-            className="glass adminPanel"
-            style={{ maxWidth: 820, margin: "0 auto" }}
-          >
-            <div className="adminContent" style={{ padding: 0 }}>
-              <div className="serverLoading" style={{ margin: 0 }}>
-                <div className="serverLoadingTop">
-                  <div className="serverLoadingTitle">Connexion au serveur</div>
-                  <div className="serverLoadingSpinner" aria-hidden="true" />
-                </div>
-
-                <div className="serverLoadingText">
-                  {dbError ? (
-                    dbError
-                  ) : (
-                    <>
-                      Chargement…
-                      <span className="loadingDots" aria-hidden="true" />
-                    </>
-                  )}
-                </div>
-
-                <div className="serverLoadingBar" aria-hidden="true">
-                  <span />
-                </div>
-                {!dbError ? (
-                  <div className="serverLoadingHint">
-                    Initialisation de l&apos;interface d&apos;administration…
-                  </div>
-                ) : null}
-
-                <div style={{ padding: 18, paddingTop: 14 }}>
-                  <button
-                    className="btn btnPrimary"
-                    type="button"
-                    onClick={() => window.location.reload()}
-                  >
-                    Réessayer
-                  </button>
-                </div>
+    if (dbError) {
+      return (
+        <div className="adminRoot">
+          <LogoHeader />
+          <div className="adminBody">
+            <div className="adminPanel cyberHudPanel" style={{ maxWidth: 640, margin: "40px auto", textAlign: "center" }}>
+              <div className="adminTitle" style={{ color: "#ef4444", marginBottom: 12 }}>
+                Erreur de chargement
               </div>
+              <div className="adminSub" style={{ marginBottom: 20 }}>
+                {dbError}
+              </div>
+              <button
+                className="btn btnPrimary"
+                type="button"
+                onClick={() => window.location.reload()}
+              >
+                Réessayer
+              </button>
             </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
+    return <CyberLoader message="INITIALISATION DU PANEL ADMINISTRATEUR BNI…" />;
   }
 
   return (
     <div className="adminRoot">
+      <CyberBackground />
       <LogoHeader />
 
       <div className="adminTop">
-        <div className="adminTopTabsWrap glass">
+        <div className="adminTopTabsWrap cyberHudNav">
           <Tabs
             items={topTabs}
             activeId={topTab}
@@ -214,65 +192,57 @@ export default function AdminPage() {
       </div>
 
       <div className="adminBody">
-        {topTab === "Utilisateur" ? (
-          <div className="glass adminPanel">
+        <div className="adminPanel cyberHudPanel">
+          <div className="hudBracket hudBracketTL" />
+          <div className="hudBracket hudBracketTR" />
+          <div className="hudBracket hudBracketBL" />
+          <div className="hudBracket hudBracketBR" />
+
+          {topTab === "Utilisateur" ? (
             <div className="adminContent">
               <AdminUsers />
             </div>
-          </div>
-        ) : topTab === "Recherche" ? (
-          <div className="glass adminPanel">
+          ) : topTab === "Recherche" ? (
             <div className="adminContent">
               <AdminSearch />
             </div>
-          </div>
-        ) : topTab === "Payment" ? (
-          <div className="glass adminPanel">
+          ) : topTab === "Payment" ? (
             <div className="adminContent">
               <AdminPayments onCountChange={setPaymentCount} />
             </div>
-          </div>
-        ) : topTab === "Statistique" ? (
-          <div className="glass adminPanel">
+          ) : topTab === "Statistique" ? (
             <div className="adminContent">
               <AdminStatistics />
             </div>
-          </div>
-        ) : topTab === "Paramètres" ? (
-          <div className="glass adminPanel">
+          ) : topTab === "Paramètres" ? (
             <div className="adminContent">
               <AdminSettings />
             </div>
-          </div>
-        ) : topTab !== "Questionnaire" ? (
-          <div className="glass adminWip">
-            <div className="adminWipTitle">{topTab}</div>
-            <p className="muted">WIP — UI only</p>
-          </div>
-        ) : (
-          <div className="glass adminPanel">
-            <div className="adminSubTabs">
-              <Tabs
-                items={subTabs}
-                activeId={subTab}
-                onChange={setSubTab}
-                variant="sub"
-              />
-            </div>
+          ) : (
+            <>
+              <div className="adminSubTabs">
+                <Tabs
+                  items={subTabs}
+                  activeId={subTab}
+                  onChange={setSubTab}
+                  variant="sub"
+                />
+              </div>
 
-            <div className="adminContent">
-              {subTab === "Questionnaire" ? (
-                <AdminQuestionnaire db={db} onDBChange={onDBChange} />
-              ) : null}
-              {subTab === "Question individuel" ? (
-                <AdminQuestions db={db} onDBChange={onDBChange} />
-              ) : null}
-              {subTab === "Tags" ? (
-                <AdminTags db={db} onDBChange={onDBChange} />
-              ) : null}
-            </div>
-          </div>
-        )}
+              <div className="adminContent">
+                {subTab === "Questionnaire" ? (
+                  <AdminQuestionnaire db={db} onDBChange={onDBChange} />
+                ) : null}
+                {subTab === "Question individuel" ? (
+                  <AdminQuestions db={db} onDBChange={onDBChange} />
+                ) : null}
+                {subTab === "Tags" ? (
+                  <AdminTags db={db} onDBChange={onDBChange} />
+                ) : null}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
