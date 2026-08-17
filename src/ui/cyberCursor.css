@@ -1,0 +1,129 @@
+/* Cyberpunk 2042 HUD Custom Cursor */
+.cyberCursorContainer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999999;
+  overflow: hidden;
+}
+
+/* Central Precision Laser Dot */
+.cyberCursorDot {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00f0ff;
+  box-shadow: 0 0 10px #00f0ff, 0 0 18px rgba(0, 240, 255, 0.7);
+  pointer-events: none;
+  will-change: transform;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
+}
+
+.cyberCursorDot.isHovered {
+  background: #ffd600;
+  box-shadow: 0 0 12px #ffd600, 0 0 24px rgba(255, 214, 0, 0.8);
+  transform: scale(1.25);
+}
+
+.cyberCursorDot.isClicking {
+  transform: scale(0.75);
+}
+
+/* Outer Holographic Reticle Ring with Smooth Lerp */
+.cyberCursorRing {
+  position: absolute;
+  top: -16px;
+  left: -16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 240, 255, 0.6);
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.25);
+  pointer-events: none;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.2s cubic-bezier(0.2, 0.9, 0.3, 1),
+              height 0.2s cubic-bezier(0.2, 0.9, 0.3, 1),
+              top 0.2s cubic-bezier(0.2, 0.9, 0.3, 1),
+              left 0.2s cubic-bezier(0.2, 0.9, 0.3, 1),
+              border-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+/* Target Lock-On Mode when Hovering Clickable Elements */
+.cyberCursorRing.isHovered {
+  top: -24px;
+  left: -24px;
+  width: 48px;
+  height: 48px;
+  border-color: #ffd600;
+  border-style: dashed;
+  box-shadow: 0 0 22px rgba(255, 214, 0, 0.45), inset 0 0 12px rgba(255, 214, 0, 0.2);
+  animation: cyberCursorSpin 7s linear infinite;
+}
+
+.cyberCursorRing.isClicking {
+  border-color: #00f0ff;
+  box-shadow: 0 0 28px rgba(0, 240, 255, 0.65);
+}
+
+/* Reticle Crosshair Ticks */
+.cyberCursorTick {
+  position: absolute;
+  background: rgba(0, 240, 255, 0.8);
+  pointer-events: none;
+  transition: background 0.2s ease;
+}
+
+.cyberCursorRing.isHovered .cyberCursorTick {
+  background: #ffd600;
+}
+
+.tickN {
+  top: -4px;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 4px;
+}
+
+.tickS {
+  bottom: -4px;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 4px;
+}
+
+.tickE {
+  right: -4px;
+  top: calc(50% - 1px);
+  width: 4px;
+  height: 2px;
+}
+
+.tickW {
+  left: -4px;
+  top: calc(50% - 1px);
+  width: 4px;
+  height: 2px;
+}
+
+@keyframes cyberCursorSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Hide native cursor on devices with a mouse for seamless immersion */
+@media (pointer: fine) {
+  body, button, a, input, select, textarea, [role="button"], .btn, .qcmBtn, .checkboxItem {
+    cursor: default;
+  }
+}

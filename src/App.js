@@ -11,6 +11,7 @@ import {
   setAuthToken,
 } from "./data/storage";
 import NoticeHost from "./ui/NoticeHost";
+import CyberCursor from "./ui/CyberCursor";
 
 function RequireAuth({ children }) {
   const location = useLocation();
@@ -119,6 +120,7 @@ function RequireAdmin({ children }) {
 export default function App() {
   return (
     <>
+      <CyberCursor />
       <NoticeHost />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
