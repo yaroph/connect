@@ -333,7 +333,7 @@ textarea {
 }
 
 /* ==========================================
-   CARTE BANCAIRE BNI CYBER HOLOGRAPHIQUE
+   CARTE BANCAIRE BNI CYBER HOLOGRAPHIQUE (3D LAYER DEPTH)
    ========================================== */
 .cyberBankCard {
   position: relative;
@@ -344,6 +344,7 @@ textarea {
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 240, 255, 0.15);
   overflow: hidden;
   margin-bottom: 16px;
+  transform-style: preserve-3d;
 }
 
 .cyberBankCard::before {
@@ -358,12 +359,25 @@ textarea {
   pointer-events: none;
 }
 
+/* Holo Foil Iridescent Layer */
+.cyberCardHoloFoil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 2;
+  mix-blend-mode: color-dodge;
+  transition: opacity 0.15s ease-out;
+}
+
 .cyberCardTop {
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: relative;
-  z-index: 1;
+  z-index: 3;
+  transform: translateZ(28px);
+  transform-style: preserve-3d;
 }
 
 .cyberCardChip {
@@ -372,8 +386,9 @@ textarea {
   border-radius: 6px;
   background: linear-gradient(135deg, #eab308 0%, #ca8a04 50%, #eab308 100%);
   border: 1px solid rgba(254, 240, 138, 0.6);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 10px rgba(234, 179, 8, 0.45);
   position: relative;
+  transform: translateZ(10px);
 }
 
 .cyberCardChip::after {
@@ -390,12 +405,15 @@ textarea {
   letter-spacing: 1.5px;
   color: #38bdf8;
   text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+  transform: translateZ(8px);
 }
 
 .cyberCardBalanceRow {
   margin: 18px 0 14px;
   position: relative;
-  z-index: 1;
+  z-index: 3;
+  transform: translateZ(24px);
+  transform-style: preserve-3d;
 }
 
 .cyberCardBalanceLabel {
@@ -413,6 +431,7 @@ textarea {
   letter-spacing: -0.5px;
   text-shadow: 0 0 16px rgba(52, 211, 153, 0.45);
   margin-top: 2px;
+  transform: translateZ(12px);
 }
 
 .cyberCardFooter {
@@ -420,9 +439,35 @@ textarea {
   align-items: center;
   justify-content: space-between;
   position: relative;
-  z-index: 1;
+  z-index: 3;
+  transform: translateZ(18px);
+  transform-style: preserve-3d;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding-top: 10px;
+}
+
+/* Cyber Shockwave Ripple on Click */
+@keyframes cyberShockwave {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(5);
+    opacity: 0;
+  }
+}
+
+.cyberShockwave {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #00f0ff;
+  box-shadow: 0 0 18px #00f0ff, inset 0 0 14px rgba(0, 240, 255, 0.6);
+  pointer-events: none;
+  animation: cyberShockwave 0.52s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+  z-index: 99;
 }
 
 .cyberCardHolder {

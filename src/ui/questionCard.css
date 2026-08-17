@@ -163,10 +163,10 @@
 }
 
 .qcmBtn {
-  padding: 13px 14px;
+  padding: 13px 15px;
   border-radius: 14px;
-  border: 1px solid rgba(56, 189, 248, 0.18);
-  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(8, 14, 28, 0.85) 100%);
   color: #f1f5f9;
   font-weight: 700;
   font-size: 13.5px;
@@ -175,20 +175,26 @@
   align-items: center;
   justify-content: space-between;
   text-align: left;
-  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+  transition: transform 0.12s cubic-bezier(0.2, 0.9, 0.3, 1), background 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .qcmBtn:hover {
-  transform: translateY(-1px);
-  background: rgba(30, 41, 59, 0.85);
-  border-color: rgba(0, 240, 255, 0.4);
-  box-shadow: 0 4px 14px rgba(0, 240, 255, 0.12);
+  transform: translateY(-2px) scale(1.012);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-color: rgba(0, 240, 255, 0.6);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4), 0 0 16px rgba(0, 240, 255, 0.25);
+}
+
+.qcmBtn:active {
+  transform: translateY(0px) scale(0.99);
 }
 
 .qcmBtn.selected {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.35));
-  border-color: rgba(16, 185, 129, 0.7);
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.3);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.28), rgba(5, 150, 105, 0.38));
+  border-color: rgba(16, 185, 129, 0.8);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
   color: #34d399;
 }
 

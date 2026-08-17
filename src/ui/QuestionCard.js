@@ -63,10 +63,22 @@ export default function QuestionCard({
   const submittedRef = useRef(false);
   const [locked, setLocked] = useState(false);
 
-  // Swipe 3D Engine State
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
+  const [shockwaves, setShockwaves] = useState([]);
+
+  const triggerShockwave = (e) => {
+    if (!e || !e.clientX) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now() + Math.random();
+    setShockwaves((prev) => [...prev, { id, x, y }]);
+    setTimeout(() => {
+      setShockwaves((prev) => prev.filter((s) => s.id !== id));
+    }, 550);
+  };
 
   const isDisabled = Boolean(interactionLocked || locked);
 
@@ -177,8 +189,9 @@ export default function QuestionCard({
     setErr("");
   };
 
-  const onChoiceClick = (id) => {
+  const onChoiceClick = (id, e) => {
     if (isDisabled) return;
+    if (e) triggerShockwave(e);
     setSelected((prev) => {
       const next = new Set(prev);
 
@@ -421,6 +434,11 @@ export default function QuestionCard({
       <div className="hudBracket hudBracketBL" />
       <div className="hudBracket hudBracketBR" />
 
+      {/* Cyber Shockwaves */}
+      {shockwaves.map((s) => (
+        <span key={s.id} className="cyberShockwave" style={{ left: s.x, top: s.y }} />
+      ))}
+
       {/* Holographic Stamps on Swipe */}
       {likeStampOpacity > 0 ? (
         <div className="swipeStamp swipeStampLike" style={{ opacity: likeStampOpacity }}>
@@ -478,7 +496,7 @@ export default function QuestionCard({
             />
             <button
               className="btn btnPrimary"
-              onClick={submitFreeText}
+              onClick={(e) => { triggerShockwave(e); submitFreeText(); }}
               type="button"
               disabled={isDisabled}
             >
@@ -491,7 +509,7 @@ export default function QuestionCard({
               <button
                 key={c.id}
                 className={`qcmBtn ${selected.has(c.id) ? "selected" : ""}`}
-                onClick={() => onChoiceClick(c.id)}
+                onClick={(e) => onChoiceClick(c.id, e)}
                 type="button"
                 disabled={isDisabled}
               >
