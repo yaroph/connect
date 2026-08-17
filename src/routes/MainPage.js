@@ -10,6 +10,7 @@ import {
   Inbox,
 } from "lucide-react";
 import CyberBackground from "../ui/CyberBackground";
+import CyberLoader from "../ui/CyberLoader";
 import { playCreditEarned, playSwipeWhoosh } from "../ui/soundEffects";
 import "../styles/main.css";
 import {
@@ -1608,41 +1609,20 @@ export default function MainPage({ authUser, authPending }) {
   };
 
   if (!db) {
-    return (
-      <div className="mainRoot">
-        <LogoHeader />
-        <div className="centerStage" style={{ padding: 24 }}>
-          <div
-            className="centerWrap glass serverLoading"
-            style={{ maxWidth: 820, margin: "0 auto" }}
-          >
-            <div className="serverLoadingTop">
-              <div className="serverLoadingTitle">Connexion au serveur</div>
-              <div className="serverLoadingSpinner" aria-hidden="true" />
-            </div>
-
-            <div className="serverLoadingText">
-              {dbError ? (
-                dbError
-              ) : (
-                <>
-                  Chargement…
-                  <span className="loadingDots" aria-hidden="true" />
-                </>
-              )}
-            </div>
-
-            <div className="serverLoadingBar" aria-hidden="true">
-              <span />
-            </div>
-            {!dbError ? (
-              <div className="serverLoadingHint">
-                Ça peut prendre quelques secondes au premier lancement.
+    if (dbError) {
+      return (
+        <div className="mainRoot">
+          <LogoHeader />
+          <div className="centerStage" style={{ padding: 24 }}>
+            <div
+              className="centerWrap glass serverLoading"
+              style={{ maxWidth: 820, margin: "0 auto" }}
+            >
+              <div className="serverLoadingTop">
+                <div className="serverLoadingTitle">Erreur de connexion</div>
               </div>
-            ) : null}
-
-            {dbError ? (
-              <div style={{ padding: 18, paddingTop: 0 }}>
+              <div className="serverLoadingText">{dbError}</div>
+              <div style={{ padding: 18, paddingTop: 12 }}>
                 <button
                   className="btn btnPrimary"
                   type="button"
@@ -1651,11 +1631,12 @@ export default function MainPage({ authUser, authPending }) {
                   Réessayer
                 </button>
               </div>
-            ) : null}
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
+    return <CyberLoader message="CHARGEMENT DU SERVICE BNI CONNECT…" />;
   }
 
   return (
@@ -1909,14 +1890,10 @@ export default function MainPage({ authUser, authPending }) {
               </div>
             ) : mode === "RANDOM" && !currentRandomQuestion ? (
               <div className="errorCard loadingCard" aria-live="polite">
-                <div className="loadingSpinnerBig" aria-hidden="true" />
-                <div className="errorTitle">
-                  Synchronisation du flux BNI…
+                <div className="cyberLoaderBar" style={{ width: 140, height: 3, margin: "20px auto" }} />
+                <div className="errorTitle" style={{ fontSize: 14, color: "#00f0ff" }}>
+                  SYNCHRONISATION DU FLUX…
                 </div>
-                <div className="errorMessage">
-                  Chargement de vos prochaines questions sécurisées.
-                </div>
-                <div className="errorHint">Merci de patienter un instant.</div>
               </div>
             ) : mode === "QUESTIONNAIRE" && !currentQuestion ? (
               qnFinalizeError && !validatingQuestionnaire ? (
@@ -2120,9 +2097,6 @@ export default function MainPage({ authUser, authPending }) {
                       ? "Réponse validée"
                       : "Question passée"}
                   </div>
-                  {!currentRandomQuestion ? (
-                    <div className="skipOverlaySub">Chargement…</div>
-                  ) : null}
                 </div>
               </div>
             ) : null}
