@@ -2,7 +2,15 @@ import React, { useState, useMemo } from "react";
 import Modal from "./Modal";
 import { resizeImage } from "../data/storage";
 import { notifyError } from "./notify";
-import { Award, TrendingUp, DollarSign } from "lucide-react";
+import {
+  Award,
+  TrendingUp,
+  DollarSign,
+  Camera,
+  Shield,
+  Crown,
+  Sparkles,
+} from "lucide-react";
 
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
@@ -89,12 +97,42 @@ export default function ProfileModal({
 
   const earned = Number(profileDraft.gagneSurBNI || user?.gagneSurBNI || 0);
 
-  // VIP / Loyalty Tier
+  // VIP / Loyalty Tier (Cyberpunk 2042 HUD Icons)
   const tierInfo = useMemo(() => {
-    if (earned >= 500) return { title: "Membre VIP Diamant", color: "#00f0ff", nextTarget: 1000, icon: "💎", badgeClass: "tierVip" };
-    if (earned >= 200) return { title: "Membre Or BNI", color: "#f59e0b", nextTarget: 500, icon: "🥇", badgeClass: "tierGold" };
-    if (earned >= 50) return { title: "Membre Argent BNI", color: "#94a3b8", nextTarget: 200, icon: "🥈", badgeClass: "tierSilver" };
-    return { title: "Citoyen BNI", color: "#38bdf8", nextTarget: 50, icon: "🥉", badgeClass: "tierBronze" };
+    if (earned >= 500) {
+      return {
+        title: "Membre VIP Diamant",
+        color: "#00f0ff",
+        nextTarget: 1000,
+        icon: <Sparkles size={14} />,
+        badgeClass: "tierVip",
+      };
+    }
+    if (earned >= 200) {
+      return {
+        title: "Membre Or BNI",
+        color: "#ffd600",
+        nextTarget: 500,
+        icon: <Crown size={14} />,
+        badgeClass: "tierGold",
+      };
+    }
+    if (earned >= 50) {
+      return {
+        title: "Membre Argent BNI",
+        color: "#94a3b8",
+        nextTarget: 200,
+        icon: <Award size={14} />,
+        badgeClass: "tierSilver",
+      };
+    }
+    return {
+      title: "Citoyen BNI",
+      color: "#38bdf8",
+      nextTarget: 50,
+      icon: <Shield size={14} />,
+      badgeClass: "tierBronze",
+    };
   }, [earned]);
 
   const tierProgress = Math.min(100, Math.round((earned / tierInfo.nextTarget) * 100));
@@ -127,8 +165,9 @@ export default function ProfileModal({
                   setPhotoModalOpen(true);
                 }}
                 title="Changer la photo de profil"
+                aria-label="Changer la photo"
               >
-                ✏️
+                <Camera size={13} />
               </button>
             </div>
             <div className="profileHeaderInfo">
@@ -165,7 +204,8 @@ export default function ProfileModal({
               className={`profileTabBtn ${activeTab === "stats" ? "active" : ""}`}
               onClick={() => setActiveTab("stats")}
             >
-              📈 Statistiques & Gains
+              <TrendingUp size={14} style={{ marginRight: 6, verticalAlign: "middle" }} />
+              Statistiques & Gains
             </button>
           </div>
 

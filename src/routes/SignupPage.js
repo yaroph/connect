@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../styles/auth.css";
 import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Camera } from "lucide-react";
 import {
   authMe,
   authRegister,
@@ -206,8 +207,9 @@ export default function SignupPage() {
                     className="passwordToggleBtn"
                     onClick={() => setShowPassword(!showPassword)}
                     title={showPassword ? "Masquer" : "Afficher"}
+                    aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                   >
-                    {showPassword ? "👁️" : "🙈"}
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
               </div>
@@ -220,10 +222,10 @@ export default function SignupPage() {
                 <button
                   className="btn btnGhost"
                   type="button"
-                  style={{ width: "100%", justifyContent: "center" }}
+                  style={{ width: "100%", justifyContent: "center", gap: 8 }}
                   onClick={() => setPhotoModal(true)}
                 >
-                  📷 {preview ? "Changer la photo" : "Choisir une photo"}
+                  <Camera size={16} /> {preview ? "Changer la photo" : "Choisir une photo"}
                 </button>
               </div>
               {preview ? (

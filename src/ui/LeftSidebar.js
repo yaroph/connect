@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Eye, Play, Lock, ShieldCheck, RotateCcw } from "lucide-react";
+import { Eye, Play, Lock, ShieldCheck, RotateCcw, Zap } from "lucide-react";
 import "./leftSidebar.css";
 
 export default function LeftSidebar({
@@ -97,7 +97,9 @@ export default function LeftSidebar({
         ) : !canWithdraw ? (
           `RÉCUPÉRER MON ARGENT DANS $ ${amountMissing.toFixed(2)}`
         ) : (
-          "⚡ ENCAISSER MA CAGNOTTE"
+          <>
+            <Zap size={16} /> ENCAISSER MA CAGNOTTE
+          </>
         )}
       </button>
 

@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import { Eye, Pencil, UserRound, Trash2, Plus } from "lucide-react";
+import { Eye, Pencil, UserRound, Trash2, Plus, AlertTriangle, Send, Check } from "lucide-react";
 import Modal from "../Modal";
 import Toggle from "../Toggle";
 import IconButton from "../IconButton";
@@ -579,7 +579,8 @@ function QuestionnaireEditorModal({ db, editing, onClose, onSave }) {
             {unreleased && editing ? (
               <div className="unreleasedWarning">
                 <div className="unreleasedWarningTitle">
-                  ⚠️ Questionnaire non publié
+                  <AlertTriangle size={16} style={{ verticalAlign: "middle", marginRight: 6 }} />
+                  Questionnaire non publié
                 </div>
                 <div className="unreleasedWarningText">
                   Ce questionnaire n'est pas visible sur le site. Les questions
@@ -589,8 +590,9 @@ function QuestionnaireEditorModal({ db, editing, onClose, onSave }) {
                   className="btn btnRelease"
                   onClick={releaseQuestionnaire}
                   type="button"
+                  style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
                 >
-                  🚀 Sortir le questionnaire
+                  <Send size={15} /> Sortir le questionnaire
                 </button>
               </div>
             ) : (
@@ -853,7 +855,7 @@ function QuestionnairePreviewModal({ db, questionnaireId, onClose }) {
               {done ? (
                 <div className="qnDoneOverlay">
                   <div className="qnDoneInner">
-                    <div className="qnDoneCheck">✔</div>
+                    <div className="qnDoneCheck"><Check size={28} /></div>
                     <div className="qnDoneText">Questionnaire terminé</div>
                   </div>
                 </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Sparkles, CheckCircle2 } from "lucide-react";
 
 export default function RewardCelebration({
   title = "Questionnaire terminé !",
@@ -23,11 +24,16 @@ export default function RewardCelebration({
           />
         ))}
       </div>
-      <div className="qnDoneInner">
-        <div className="qnDoneEmoji">🎉</div>
+      <div className="qnDoneInner glassCard cyberHudPanel">
+        <div className="qnDoneIconWrap">
+          <Sparkles size={36} className="qnDoneIconGlow" />
+        </div>
+        <div className="qnDoneStatusBadge">
+          <CheckCircle2 size={14} /> MISSION ACCOMPLIE
+        </div>
         <div className="qnDoneText">{title}</div>
         {rewardAmount !== null && Number(rewardAmount) > 0 ? (
-          <div className="qnDoneRewardBadge">+${Number(rewardAmount).toFixed(2)}</div>
+          <div className="qnDoneRewardBadge">+$ {Number(rewardAmount).toFixed(2)}</div>
         ) : null}
         <div className="qnDoneSub">{subtitle}</div>
       </div>

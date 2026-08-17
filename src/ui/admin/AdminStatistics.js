@@ -1,6 +1,15 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { notifyError } from "../notify";
 import { adminGetStatistics } from "../../data/storage";
+import {
+  Users,
+  DollarSign,
+  Wallet,
+  HelpCircle,
+  CheckCircle2,
+  UserPlus,
+  LogIn,
+} from "lucide-react";
 import "./adminStatistics.css";
 
 export default function AdminStatistics() {
@@ -376,7 +385,7 @@ export default function AdminStatistics() {
       {/* Cartes principales - 3 sur la première ligne */}
       <div className="statsMainCardsGrid">
         <div className="statsMainCard">
-          <div className="statsCardIcon">👨‍👩‍👧‍👦</div>
+          <div className="statsCardIcon"><Users size={24} /></div>
           <div className="statsCardContent">
             <div className="statsCardLabel">Total utilisateurs</div>
             <div className="statsCardValue">{stats.totalUsers || 0}</div>
@@ -384,7 +393,7 @@ export default function AdminStatistics() {
         </div>
 
         <div className="statsMainCard">
-          <div className="statsCardIcon">💰</div>
+          <div className="statsCardIcon"><Wallet size={24} /></div>
           <div className="statsCardContent">
             <div className="statsCardLabel">Total cagnottes</div>
             <div className="statsCardValue">
@@ -394,7 +403,7 @@ export default function AdminStatistics() {
         </div>
 
         <div className="statsMainCard">
-          <div className="statsCardIcon">💸</div>
+          <div className="statsCardIcon"><DollarSign size={24} /></div>
           <div className="statsCardContent">
             <div className="statsCardLabel">Gagné sur BNI</div>
             <div className="statsCardValue">
@@ -411,7 +420,7 @@ export default function AdminStatistics() {
           className={`statsTodayCard ${selectedMetric === "randomAnswers" ? "active" : ""}`}
           onClick={() => setSelectedMetric("randomAnswers")}
         >
-          <div className="statsCardIcon">🎲</div>
+          <div className="statsCardIcon"><HelpCircle size={20} /></div>
           <div className="statsCardContent">
             <div className="statsCardLabel">Réponses aléatoires</div>
             <div className="statsCardValue">{stats.today.randomAnswers}</div>
@@ -422,7 +431,7 @@ export default function AdminStatistics() {
           className={`statsTodayCard ${selectedMetric === "questionnairesCompleted" ? "active" : ""}`}
           onClick={() => setSelectedMetric("questionnairesCompleted")}
         >
-          <div className="statsCardIcon">✅</div>
+          <div className="statsCardIcon"><CheckCircle2 size={20} /></div>
           <div className="statsCardContent">
             <div className="statsCardLabel">Questionnaires complétés</div>
             <div className="statsCardValue">
@@ -435,7 +444,7 @@ export default function AdminStatistics() {
           className={`statsTodayCard ${selectedMetric === "inscriptions" ? "active" : ""}`}
           onClick={() => setSelectedMetric("inscriptions")}
         >
-          <div className="statsCardIcon">👥</div>
+          <div className="statsCardIcon"><UserPlus size={20} /></div>
           <div className="statsCardContent">
             <div className="statsCardLabel">Inscriptions</div>
             <div className="statsCardValue">{stats.today.inscriptions}</div>
@@ -446,7 +455,7 @@ export default function AdminStatistics() {
           className={`statsTodayCard ${selectedMetric === "connexions" ? "active" : ""}`}
           onClick={() => setSelectedMetric("connexions")}
         >
-          <div className="statsCardIcon">🔗</div>
+          <div className="statsCardIcon"><LogIn size={20} /></div>
           <div className="statsCardContent">
             <div className="statsCardLabel">Connexions</div>
             <div className="statsCardValue">{stats.today.connexions}</div>

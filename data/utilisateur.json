@@ -32,7 +32,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T12:39:17.895Z",
-    "updatedAt": "2026-08-17T12:49:36.388Z"
+    "updatedAt": "2026-08-17T13:12:51.822Z"
   },
   {
     "id": "admin_1786970358178",
@@ -65,7 +65,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T12:39:18.179Z",
-    "updatedAt": "2026-08-17T12:49:36.388Z"
+    "updatedAt": "2026-08-17T13:12:51.822Z"
   },
   {
     "id": "u_f38af9c35fb51eab56e1f980c18e8e7e_1786970379790",
@@ -102,7 +102,7 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T12:39:39.790Z",
-    "updatedAt": "2026-08-17T12:49:36.388Z"
+    "updatedAt": "2026-08-17T13:12:51.822Z"
   },
   {
     "id": "u_de32af2f22f6670c0ddc54c341c58e7a_1786970975426",
@@ -139,6 +139,43 @@
     "sensibleAnswersTagged": [],
     "sensibleAnswersUntagged": [],
     "createdAt": "2026-08-17T12:49:35.429Z",
-    "updatedAt": "2026-08-17T12:49:36.388Z"
+    "updatedAt": "2026-08-17T13:12:51.822Z"
+  },
+  {
+    "id": "u_e8d90944c4cec1ae6e7a1acc12399aa5_1786972371253",
+    "prenom": "TestPrenom1786972371237",
+    "nom": "TestNom1786972371237",
+    "fullName": "TestPrenom1786972371237 TestNom1786972371237",
+    "compteBancaire": "1786972371237",
+    "dateNaissance": "1998-05-15",
+    "telephone": "5550100",
+    "motDePasse": "enc:d8522d0c6cac322712bc30d7:a29aa63549f9b5ef5462962934abbe44:7908fe2d8c81df569f2b",
+    "photoProfil": "",
+    "numeroCitoyen": "",
+    "sexe": "Homme",
+    "couleurPeau": "",
+    "couleurCheveux": "",
+    "longueurCheveux": "",
+    "styleVestimentaire": "",
+    "metier": "",
+    "gagneSurBNI": 0,
+    "is_admin": false,
+    "token": "tok_85a9c702c0041a94d6ac12f2e49efe3bdef30e7aa3d22b72fa16e8e669e07df4_1786972371253",
+    "retrait": {
+      "status": "PENDING",
+      "amount": 100,
+      "requestedAt": "2026-08-17T13:12:51.469Z"
+    },
+    "lastLoginAt": "2026-08-17T13:12:51.307Z",
+    "loginByDay": {
+      "2026-08-17": 2
+    },
+    "withdrawalsByMonth": {
+      "2026-08": 1
+    },
+    "sensibleAnswersTagged": [],
+    "sensibleAnswersUntagged": [],
+    "createdAt": "2026-08-17T13:12:51.254Z",
+    "updatedAt": "2026-08-17T13:12:51.822Z"
   }
 ]

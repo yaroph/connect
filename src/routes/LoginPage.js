@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styles/auth.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import Modal from "../ui/Modal";
 import {
   authLogin,
@@ -204,8 +205,9 @@ export default function LoginPage() {
                 className="passwordToggleBtn"
                 onClick={() => setShowPassword(!showPassword)}
                 title={showPassword ? "Masquer" : "Afficher"}
+                aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
               >
-                {showPassword ? "👁️" : "🙈"}
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>

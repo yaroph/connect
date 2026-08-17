@@ -6,6 +6,7 @@ import {
   Pencil,
   Download,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import {
   adminListUsers,
@@ -771,8 +772,9 @@ export default function AdminUsers() {
               </strong>{" "}
               ?
             </p>
-            <p style={{ color: "#ff4444", fontSize: 14 }}>
-              ⚠️ Cette action est irréversible et supprimera toutes les données
+            <p style={{ color: "#ff4444", fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>
+              <AlertTriangle size={16} style={{ flexShrink: 0 }} />
+              Cette action est irréversible et supprimera toutes les données
               associées à cet utilisateur (réponses, paiements, etc.).
             </p>
           </div>

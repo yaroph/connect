@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 import "../styles/main.css";
 import {
   loadDBProgressive,
@@ -1665,7 +1666,15 @@ export default function MainPage({ authUser, authPending }) {
           className="btn btnGhost mobileSidebarToggleBtn"
           onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
         >
-          {mobileSidebarOpen ? "✕ Masquer le menu" : "📋 Questionnaires & Cagnotte"}
+          {mobileSidebarOpen ? (
+            <>
+              <X size={16} /> Masquer le menu
+            </>
+          ) : (
+            <>
+              <Menu size={16} /> Questionnaires & Cagnotte
+            </>
+          )}
         </button>
       </div>
 

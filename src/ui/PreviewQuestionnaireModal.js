@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import Modal from "./Modal";
+import { DollarSign } from "lucide-react";
 
 export default function PreviewQuestionnaireModal({ db, questionnaireId, onClose }) {
   const questionnaire = useMemo(() => {
@@ -46,7 +47,8 @@ export default function PreviewQuestionnaireModal({ db, questionnaireId, onClose
               {questions.length} question{questions.length > 1 ? "s" : ""}
             </span>
             <span className="previewRewardBadge">
-              💰 Récompense : $ {Number(questionnaire.reward || 0).toFixed(2)}
+              <DollarSign size={13} style={{ verticalAlign: "middle", marginRight: 2 }} />
+              Récompense : $ {Number(questionnaire.reward || 0).toFixed(2)}
             </span>
           </div>
         </div>
