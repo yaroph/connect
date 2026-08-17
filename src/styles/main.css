@@ -776,29 +776,38 @@
   margin-bottom: 10px;
 }
 
-/* Error cards (BSOD style) */
-/* Error & Empty State cards (Cyberpunk 2042 HUD style) */
+.qnHeaderEmpty {
+  display: none;
+}
+
+/* Error & Empty State cards (Cyberpunk 2042 Single Unified HUD style) */
 .errorCard {
-  padding: 48px 32px;
+  padding: 36px 24px;
   text-align: center;
-  background: linear-gradient(135deg, rgba(14, 23, 44, 0.92) 0%, rgba(6, 10, 24, 0.96) 100%);
-  border: 1px solid rgba(0, 240, 255, 0.28);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 28px rgba(0, 240, 255, 0.12);
-  border-radius: 24px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
   color: #f8fafc;
   min-height: 380px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   position: relative;
   overflow: hidden;
 }
 
+.centerWrap .errorCard {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
 .cyberEmptyIconWrap {
-  width: 72px;
-  height: 72px;
+  width: 68px;
+  height: 68px;
   border-radius: 20px;
   background: rgba(0, 240, 255, 0.12);
   border: 1px solid rgba(0, 240, 255, 0.35);
@@ -806,22 +815,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 6px;
-  box-shadow: 0 0 24px rgba(0, 240, 255, 0.25);
+  margin-bottom: 8px;
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.22);
 }
 
 .cyberEmptyIconWrap.success {
   background: rgba(16, 185, 129, 0.15);
   border-color: rgba(16, 185, 129, 0.45);
   color: #34d399;
-  box-shadow: 0 0 24px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.25);
 }
 
 .cyberEmptyIconWrap.danger {
   background: rgba(239, 68, 68, 0.15);
   border-color: rgba(239, 68, 68, 0.45);
   color: #f87171;
-  box-shadow: 0 0 24px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 0 24px rgba(239, 68, 68, 0.25);
 }
 
 .cyberHudBadge {
@@ -845,32 +854,31 @@
 }
 
 .errorTitle {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 900;
   color: #f8fafc;
   letter-spacing: -0.4px;
-  margin: 4px 0 2px;
+  margin: 6px 0 2px;
 }
 
 .errorMessage {
   font-size: 14.5px;
   line-height: 1.55;
-  color: #94a3b8;
-  max-width: 480px;
+  color: var(--muted);
+  max-width: 460px;
   margin: 0 auto;
 }
 
 .errorHint {
-  margin-top: 8px;
-  padding: 12px 20px;
-  background: rgba(0, 240, 255, 0.06);
-  border: 1px solid rgba(0, 240, 255, 0.18);
-  border-radius: 12px;
-  font-size: 13px;
+  margin-top: 6px;
+  font-size: 13.5px;
   font-weight: 600;
   color: #7dd3fc;
-  max-width: 460px;
-  line-height: 1.45;
+  max-width: 440px;
+  line-height: 1.5;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 /* Success card (daily/weekly limit reached) */
