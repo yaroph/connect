@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import { Eye, Pencil, UserRound, Trash2, Plus, AlertTriangle, Send, Check, Tag, HelpCircle, FileText } from "lucide-react";
+import { Eye, Pencil, UserRound, Trash2, Plus, AlertTriangle, Send, Check, Tag, HelpCircle, FileText, Save } from "lucide-react";
 import Modal from "../Modal";
 import Toggle from "../Toggle";
 import IconButton from "../IconButton";
@@ -664,6 +664,21 @@ function QuestionnaireEditorModal({ db, editing, onClose, onSave }) {
       wide
       noClickOutside
     >
+      {/* Top Sticky Action Bar */}
+      <div className="editorTopActionBar">
+        <div className="editorTopTitle">
+          {editing ? `Édition : ${name || "Questionnaire"}` : "Nouveau questionnaire"}
+        </div>
+        <div className="editorTopActions">
+          <button className="btn btnGhost" onClick={onClose} type="button">
+            Annuler
+          </button>
+          <button className="btn btnPrimary" onClick={submit} type="button">
+            <Save size={15} /> Enregistrer
+          </button>
+        </div>
+      </div>
+
       <div className="editorFormTwoCols">
         {/* Colonne de gauche - Paramètres */}
         <div className="editorLeftCol">

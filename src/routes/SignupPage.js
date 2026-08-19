@@ -173,7 +173,7 @@ export default function SignupPage() {
 
               <div className="authField">
                 <label className="authLabel">
-                  <CreditCard size={13} className="authFieldIcon" /> Numéro de compte BNI
+                  <CreditCard size={13} className="authFieldIcon" /> Numéro de compte bancaire
                 </label>
                 <input
                   className="authInput"

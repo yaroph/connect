@@ -351,7 +351,7 @@ export default function AdminUsers() {
                     {/* Section 1: Identité & Coordonnées */}
                     <div className="dossierSectionTitle">
                       <CreditCard size={15} />
-                      <span>Identité & Compte BNI</span>
+                      <span>Identité & Compte Bancaire</span>
                     </div>
                     <div className="adminTwoCols">
                       <ReadOnlyText
@@ -364,7 +364,7 @@ export default function AdminUsers() {
                         right={<CopyBtn value={selected.numeroCitoyen} />}
                       />
                       <ReadOnlyText
-                        label="Numéro de compte BNI"
+                        label="Numéro de compte bancaire"
                         value={selected.compteBancaire}
                         right={<CopyBtn value={selected.compteBancaire} />}
                       />

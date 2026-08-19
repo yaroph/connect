@@ -292,7 +292,7 @@ export default function LoginPage() {
                 />
               </div>
               <div className="authField">
-                <div className="authLabel">Numéro de compte BNI</div>
+                <div className="authLabel">Numéro de compte bancaire</div>
                 <input
                   className="authInput"
                   value={fpCompte}

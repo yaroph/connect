@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Modal from "../Modal";
 import Toggle from "../Toggle";
+import { Save, Tag as TagIcon } from "lucide-react";
 import { newId } from "../../data/storage";
 import { USER_VARIABLE_TAGS } from "../../data/userVariableTags";
 import "./questionEditor.css";
@@ -292,10 +293,25 @@ export default function QuestionEditorModal({
       onClose={onClose}
       wide
     >
+      {/* Top Sticky Action Bar */}
+      <div className="editorTopActionBar">
+        <div className="editorTopTitle">
+          {isEdit ? `Édition : ${title || "Question"}` : "Nouvelle question"}
+        </div>
+        <div className="editorTopActions">
+          <button className="btn btnGhost" onClick={onClose} type="button">
+            Annuler
+          </button>
+          <button className="btn btnPrimary" onClick={save} type="button">
+            <Save size={15} /> Enregistrer
+          </button>
+        </div>
+      </div>
+
       <div className="qeGrid">
         <div className="qeLeft">
           <div className="field">
-            <div className="label">Titre</div>
+            <div className="label">Titre de la question</div>
             <textarea
               className="input qeTitleTextarea"
               value={title}
@@ -576,55 +592,61 @@ export default function QuestionEditorModal({
 
             <hr className="sep" />
 
-            <Toggle
-              checked={tagEnabled}
-              onChange={setTagEnabled}
-              label="Ajouter un tag"
-            />
+            <div className="tagSectionWrap">
+              <Toggle
+                checked={tagEnabled}
+                onChange={setTagEnabled}
+                label="Associer un tag"
+              />
 
-            {tagEnabled ? (
-              <>
-                <div className="field">
-                  <div className="label">Choisir un tag existant</div>
-                  <input
-                    className="input"
-                    value={tagSearch}
-                    onChange={(e) => setTagSearch(e.target.value)}
-                    placeholder="Rechercher..."
-                  />
-                  <select
-                    className="select"
-                    value={selectedTagId}
-                    onChange={(e) => setSelectedTagId(e.target.value)}
-                  >
-                    {filteredTags.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              {tagEnabled ? (
+                <div className="tagFieldsBlock">
+                  <div className="field">
+                    <div className="label">
+                      <TagIcon size={12} style={{ marginRight: 5, verticalAlign: "middle" }} />
+                      Choisir un tag existant
+                    </div>
+                    <input
+                      className="input"
+                      value={tagSearch}
+                      onChange={(e) => setTagSearch(e.target.value)}
+                      placeholder="Rechercher un tag..."
+                      style={{ marginBottom: 6 }}
+                    />
+                    <select
+                      className="select"
+                      value={selectedTagId}
+                      onChange={(e) => setSelectedTagId(e.target.value)}
+                    >
+                      {filteredTags.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                <div className="field">
-                  <div className="label">Ou créer un nouveau tag</div>
-                  <input
-                    className="input"
-                    value={newTagName}
-                    onChange={(e) => setNewTagName(e.target.value)}
-                    placeholder="Nom du nouveau tag..."
-                  />
+                  <div className="field">
+                    <div className="label">Ou créer un nouveau tag</div>
+                    <input
+                      className="input"
+                      value={newTagName}
+                      onChange={(e) => setNewTagName(e.target.value)}
+                      placeholder="Nom du nouveau tag..."
+                    />
+                  </div>
                 </div>
-              </>
-            ) : null}
+              ) : null}
+            </div>
 
             {err ? <div className="errorText">{err}</div> : null}
 
-            <div className="rowBtns">
+            <div className="rowBtns" style={{ marginTop: 18 }}>
               <button className="btn btnGhost" onClick={onClose} type="button">
                 Annuler
               </button>
               <button className="btn btnPrimary" onClick={save} type="button">
-                Enregistrer
+                <Save size={15} /> Enregistrer
               </button>
             </div>
           </div>

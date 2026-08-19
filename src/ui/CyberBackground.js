@@ -6,10 +6,11 @@ export default function CyberBackground() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    let animId;
+    let animId = null;
+    let isRunning = true;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
@@ -18,10 +19,10 @@ export default function CyberBackground() {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
     };
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", onResize, { passive: true });
 
-    // Generate Cyber Particles
-    const PARTICLE_COUNT = Math.min(35, Math.floor(width / 40));
+    // Lightweight particles
+    const PARTICLE_COUNT = Math.min(18, Math.max(10, Math.floor(width / 90)));
     const particles = [];
     const colors = ["#00f0ff", "#38bdf8", "#ffd600", "#10b981"];
 
@@ -29,37 +30,40 @@ export default function CyberBackground() {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        radius: Math.random() * 1.5 + 0.5,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        alpha: Math.random() * 0.4 + 0.1,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        radius: Math.random() * 1.4 + 0.6,
+        color: colors[i % colors.length],
+        alpha: Math.random() * 0.35 + 0.15,
       });
     }
 
     const render = () => {
+      if (!isRunning) return;
+
       ctx.clearRect(0, 0, width, height);
 
-      // Connect near particles with cyber circuit lines
+      // Connect near particles with lightweight lines
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+          const distSq = dx * dx + dy * dy;
 
-          if (dist < 130) {
-            const lineAlpha = (1 - dist / 130) * 0.12;
+          if (distSq < 14400) { // 120 * 120
+            const dist = Math.sqrt(distSq);
+            const lineAlpha = (1 - dist / 120) * 0.1;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
             ctx.strokeStyle = `rgba(0, 240, 255, ${lineAlpha})`;
-            ctx.lineWidth = 0.75;
+            ctx.lineWidth = 0.6;
             ctx.stroke();
           }
         }
       }
 
-      // Draw and update particles
+      // Draw particles without expensive shadowBlur
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.x += p.vx;
@@ -74,21 +78,33 @@ export default function CyberBackground() {
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.alpha;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = p.color;
         ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.globalAlpha = 1;
       }
+      ctx.globalAlpha = 1;
 
       animId = requestAnimationFrame(render);
     };
 
-    render();
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        isRunning = false;
+        if (animId) cancelAnimationFrame(animId);
+      } else {
+        if (!isRunning) {
+          isRunning = true;
+          animId = requestAnimationFrame(render);
+        }
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    animId = requestAnimationFrame(render);
 
     return () => {
+      isRunning = false;
       window.removeEventListener("resize", onResize);
-      cancelAnimationFrame(animId);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      if (animId) cancelAnimationFrame(animId);
     };
   }, []);
 
@@ -103,7 +119,7 @@ export default function CyberBackground() {
         height: "100%",
         pointerEvents: "none",
         zIndex: 0,
-        opacity: 0.85,
+        opacity: 0.8,
       }}
       aria-hidden="true"
     />

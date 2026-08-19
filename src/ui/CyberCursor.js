@@ -9,13 +9,32 @@ export default function CyberCursor() {
 
   const mousePos = useRef({ x: -200, y: -200 });
   const ringPos = useRef({ x: -200, y: -200 });
+  const isMoving = useRef(false);
   const animFrameId = useRef(null);
+  const hoverThrottleTimer = useRef(null);
 
   useEffect(() => {
     // Only activate on devices with a mouse
     if (window.matchMedia("(pointer: coarse)").matches) {
       return;
     }
+
+    const checkHover = (target) => {
+      if (!target || !dotRef.current || !ringRef.current) return;
+      const isClickable = Boolean(
+        target.closest(
+          'button, a, input, select, textarea, [role="button"], .btn, .qcmBtn, .checkboxItem, .cyberBankCard, .navItem, [onclick], label, .toggleSwitch',
+        ),
+      );
+
+      if (isClickable) {
+        dotRef.current.classList.add("isHovered");
+        ringRef.current.classList.add("isHovered");
+      } else {
+        dotRef.current.classList.remove("isHovered");
+        ringRef.current.classList.remove("isHovered");
+      }
+    };
 
     const onMouseMove = (e) => {
       mousePos.current.x = e.clientX;
@@ -27,22 +46,14 @@ export default function CyberCursor() {
         setVisible(true);
       }
 
-      // Detect hover on interactive elements
-      const target = e.target;
-      if (target && dotRef.current && ringRef.current) {
-        const isClickable = Boolean(
-          target.closest(
-            'button, a, input, select, textarea, [role="button"], .btn, .qcmBtn, .checkboxItem, .cyberBankCard, .navItem, [onclick], label, .toggleSwitch',
-          ),
-        );
+      isMoving.current = true;
 
-        if (isClickable) {
-          dotRef.current.classList.add("isHovered");
-          ringRef.current.classList.add("isHovered");
-        } else {
-          dotRef.current.classList.remove("isHovered");
-          ringRef.current.classList.remove("isHovered");
-        }
+      // Throttle hover detection to avoid layout thrashing
+      if (!hoverThrottleTimer.current) {
+        hoverThrottleTimer.current = setTimeout(() => {
+          checkHover(e.target);
+          hoverThrottleTimer.current = null;
+        }, 32);
       }
     };
 
@@ -67,23 +78,23 @@ export default function CyberCursor() {
     };
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
-    window.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mouseup", onMouseUp);
+    window.addEventListener("mousedown", onMouseDown, { passive: true });
+    window.addEventListener("mouseup", onMouseUp, { passive: true });
     document.addEventListener("mouseleave", onMouseLeave);
     document.addEventListener("mouseenter", onMouseEnter);
 
-    // 60-120 FPS RAF loop for buttery smooth position tracking
     const render = () => {
       if (dotRef.current && ringRef.current) {
-        // Direct follow for central laser dot
         dotRef.current.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0)`;
 
-        // Smooth spring follow for outer reticle wrapper
-        const lerpFactor = 0.3;
-        ringPos.current.x += (mousePos.current.x - ringPos.current.x) * lerpFactor;
-        ringPos.current.y += (mousePos.current.y - ringPos.current.y) * lerpFactor;
+        const dx = mousePos.current.x - ringPos.current.x;
+        const dy = mousePos.current.y - ringPos.current.y;
 
-        ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`;
+        if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
+          ringPos.current.x += dx * 0.35;
+          ringPos.current.y += dy * 0.35;
+          ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`;
+        }
       }
 
       animFrameId.current = requestAnimationFrame(render);
@@ -91,31 +102,54 @@ export default function CyberCursor() {
 
     animFrameId.current = requestAnimationFrame(render);
 
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
+      } else {
+        animFrameId.current = requestAnimationFrame(render);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mouseleave", onMouseLeave);
       document.removeEventListener("mouseenter", onMouseEnter);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
+      if (hoverThrottleTimer.current) clearTimeout(hoverThrottleTimer.current);
     };
   }, [visible]);
 
   return (
     <div className="cyberCursorContainer" aria-hidden="true">
-      {/* Central Laser Dot */}
-      <div ref={dotRef} className="cyberCursorDotWrapper">
-        <div className="cyberCursorDot" />
+      {/* Reticle Outer Circle with Rotation */}
+      <div
+        ref={ringRef}
+        className="cyberCursorRingWrapper"
+        style={{ opacity: visible ? 1 : 0 }}
+      >
+        <div className="cyberCursorRing">
+          <div className="cyberCursorTick tickTop" />
+          <div className="cyberCursorTick tickRight" />
+          <div className="cyberCursorTick tickBottom" />
+          <div className="cyberCursorTick tickLeft" />
+          <div className="cyberCursorCorner cornerTL" />
+          <div className="cyberCursorCorner cornerTR" />
+          <div className="cyberCursorCorner cornerBL" />
+          <div className="cyberCursorCorner cornerBR" />
+        </div>
       </div>
 
-      {/* Outer Holographic HUD Ring */}
-      <div ref={ringRef} className="cyberCursorRingWrapper">
-        <div className="cyberCursorRing">
-          <span className="cyberCursorTick tickN" />
-          <span className="cyberCursorTick tickS" />
-          <span className="cyberCursorTick tickE" />
-          <span className="cyberCursorTick tickW" />
-        </div>
+      {/* Central Laser Dot with Direct Follow */}
+      <div
+        ref={dotRef}
+        className="cyberCursorDotWrapper"
+        style={{ opacity: visible ? 1 : 0 }}
+      >
+        <div className="cyberCursorDot" />
       </div>
     </div>
   );

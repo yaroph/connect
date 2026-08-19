@@ -139,7 +139,7 @@ export default function ProfileModal({
 
   return (
     <>
-      <Modal title="Mon Profil Citoyen & Compte BNI" onClose={onClose}>
+      <Modal title="Mon Profil Citoyen & Compte Bancaire" onClose={onClose}>
         <div className="profileModal">
           {/* Top Profile Header Preview */}
           <div className="profileHeaderCard">

@@ -333,3 +333,39 @@
   color: #cbd5e1;
   line-height: 1.4;
 }
+
+/* Sticky Top Action Bar for Quick Saving */
+.editorTopActionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  margin: -10px -10px 18px -10px;
+  background: rgba(10, 20, 42, 0.92);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(12px);
+}
+
+.editorTopTitle {
+  font-size: 15px;
+  font-weight: 800;
+  color: #00f0ff;
+  letter-spacing: -0.2px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 60%;
+}
+
+.editorTopActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
