@@ -1,15 +1,13 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import Modal from "./Modal";
 import { resizeImage } from "../data/storage";
 import { notifyError } from "./notify";
 import {
-  Award,
   TrendingUp,
   DollarSign,
   Camera,
-  Shield,
-  Crown,
-  Sparkles,
+  CheckCircle2,
+  Activity,
 } from "lucide-react";
 
 function fileToDataUrl(file) {
@@ -97,46 +95,6 @@ export default function ProfileModal({
 
   const earned = Number(profileDraft.gagneSurBNI || user?.gagneSurBNI || 0);
 
-  // VIP / Loyalty Tier (Cyberpunk 2042 HUD Icons)
-  const tierInfo = useMemo(() => {
-    if (earned >= 500) {
-      return {
-        title: "Membre VIP Diamant",
-        color: "#00f0ff",
-        nextTarget: 1000,
-        icon: <Sparkles size={14} />,
-        badgeClass: "tierVip",
-      };
-    }
-    if (earned >= 200) {
-      return {
-        title: "Membre Or BNI",
-        color: "#ffd600",
-        nextTarget: 500,
-        icon: <Crown size={14} />,
-        badgeClass: "tierGold",
-      };
-    }
-    if (earned >= 50) {
-      return {
-        title: "Membre Argent BNI",
-        color: "#94a3b8",
-        nextTarget: 200,
-        icon: <Award size={14} />,
-        badgeClass: "tierSilver",
-      };
-    }
-    return {
-      title: "Citoyen BNI",
-      color: "#38bdf8",
-      nextTarget: 50,
-      icon: <Shield size={14} />,
-      badgeClass: "tierBronze",
-    };
-  }, [earned]);
-
-  const tierProgress = Math.min(100, Math.round((earned / tierInfo.nextTarget) * 100));
-
   return (
     <>
       <Modal title="Mon Profil Citoyen & Compte Bancaire" onClose={onClose}>
@@ -177,8 +135,8 @@ export default function ProfileModal({
               <div className="profileHeaderSubtitle">
                 {profileDraft.metier || "Citoyen"} • {profileDraft.telephone || "Sans numéro"}
               </div>
-              <div className={`profileTierBadge ${tierInfo.badgeClass}`}>
-                {tierInfo.icon} {tierInfo.title}
+              <div className="profileTierBadge tierBronze">
+                <CheckCircle2 size={13} /> Profil Citoyen Actif
               </div>
             </div>
           </div>
@@ -369,37 +327,26 @@ export default function ProfileModal({
                 <div className="statsGrowthCard glassCard">
                   <div className="statsGrowthHeader">
                     <DollarSign size={18} className="statsIcon" />
-                    <span>Total Gagné sur BNI</span>
+                    <span>Total Rémunéré</span>
                   </div>
                   <div className="statsGrowthValue">$ {earned.toFixed(2)}</div>
                 </div>
 
                 <div className="statsGrowthCard glassCard">
                   <div className="statsGrowthHeader">
-                    <Award size={18} className="statsIcon" />
-                    <span>Niveau de Fidélité</span>
+                    <Activity size={18} className="statsIcon" />
+                    <span>Indexation Données</span>
                   </div>
-                  <div className="statsGrowthValue" style={{ color: tierInfo.color, fontSize: 18 }}>
-                    {tierInfo.title}
+                  <div className="statsGrowthValue" style={{ color: "#34d399", fontSize: 16 }}>
+                    Vérifié & Actif
                   </div>
-                </div>
-              </div>
-
-              {/* Barre de progression vers palier suivant */}
-              <div className="tierProgressionWrap glassCard">
-                <div className="tierProgressionHeader">
-                  <span>Progression vers palier suivant ($ {tierInfo.nextTarget})</span>
-                  <span className="tierProgressionPercent">{tierProgress}%</span>
-                </div>
-                <div className="tierProgressBar">
-                  <div className="tierProgressBarFill" style={{ width: `${tierProgress}%` }} />
                 </div>
               </div>
 
               {/* Graphique SVG d'évolution visuelle */}
               <div className="growthChartWrap glassCard">
                 <div className="growthChartTitle">
-                  <TrendingUp size={16} /> Courbe de croissance financière
+                  <TrendingUp size={16} /> Évolution des Récompenses
                 </div>
                 <svg className="growthSvgChart" viewBox="0 0 400 120">
                   <defs>
@@ -424,7 +371,7 @@ export default function ProfileModal({
                 <div className="growthChartLegend">
                   <span>Inscription</span>
                   <span>Premiers Sondages</span>
-                  <span>Palier Actuel</span>
+                  <span>Récompenses Validées</span>
                 </div>
               </div>
             </div>
