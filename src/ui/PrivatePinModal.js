@@ -23,7 +23,7 @@ export default function PrivatePinModal({ onClose, onValidate, error }) {
             className="input"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="Ex: CORPO-77"
+            placeholder="Ex: BNI"
             autoFocus
           />
           {error ? <div className="errorText" style={{ marginTop: 8 }}>{error}</div> : null}
