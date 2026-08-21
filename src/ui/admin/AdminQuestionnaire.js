@@ -9,6 +9,7 @@ import QuestionEditorModal from "./QuestionEditorModal";
 import ResponsesModal from "./ResponsesModal";
 import QuestionCard from "../QuestionCard";
 import { confirmAction, notifySuccess } from "../notify";
+import { USER_VARIABLE_TAGS } from "../../data/userVariableTags";
 import "./adminShared.css";
 
 function getTypeLabel(q) {
@@ -402,10 +403,16 @@ export default function AdminQuestionnaire({ db, onDBChange }) {
           question={null}
           db={db}
           onClose={() => setCreateQuestionOpen(false)}
-          onSave={(newQ) => {
+          onSave={(newQ, createdTag) => {
             onDBChange((draft) => {
               const now = new Date().toISOString();
               draft.questions = draft.questions || [];
+              if (createdTag) {
+                draft.tags = draft.tags || [];
+                if (!draft.tags.some((t) => t.id === createdTag.id || t.name.toLowerCase() === createdTag.name.toLowerCase())) {
+                  draft.tags.unshift(createdTag);
+                }
+              }
               draft.questions.unshift({ ...newQ, createdAt: now, updatedAt: now });
               return draft;
             });
@@ -512,6 +519,7 @@ function QuestionnaireEditorModal({ db, editing, onClose, onSave }) {
   const tagById = useMemo(() => {
     const m = new Map();
     (safeDb.tags || []).forEach((t) => m.set(t.id, t));
+    USER_VARIABLE_TAGS.forEach((t) => m.set(t.id, t));
     (createdTags || []).forEach((t) => {
       if (t?.id) m.set(t.id, t);
     });

@@ -13,6 +13,7 @@ import {
   formatPriorityUntil,
 } from "../../data/selectors";
 import { confirmAction, notifySuccess } from "../notify";
+import { USER_VARIABLE_TAGS } from "../../data/userVariableTags";
 import "./adminShared.css";
 import "./questionsTab.css";
 
@@ -50,7 +51,7 @@ export default function AdminQuestions({ db, onDBChange }) {
     [db],
   );
   const tagById = useMemo(
-    () => new Map((db.tags || []).map((t) => [t.id, t])),
+    () => new Map([...(db.tags || []), ...USER_VARIABLE_TAGS].map((t) => [t.id, t])),
     [db],
   );
 

@@ -151,20 +151,69 @@
 /* Tag Association Section */
 .tagSectionWrap {
   margin-top: 10px;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border-radius: 14px;
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.25);
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.tagFieldsBlock {
+.tagSectionHeader {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  align-items: center;
+  justify-content: space-between;
 }
+
+.tagRemoveBtn {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 3px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tagRemoveBtn:hover {
+  background: rgba(239, 68, 68, 0.3);
+  color: #fff;
+  border-color: #ef4444;
+}
+
+.activeTagDisplayRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.activeTagChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  color: #00f0ff;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.noTagChip {
+  color: #64748b;
+  font-size: 12px;
+  font-style: italic;
+}
+
 

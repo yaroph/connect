@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Modal from "../Modal";
-import Toggle from "../Toggle";
-import { Save, Tag as TagIcon } from "lucide-react";
+import { Save, Tag as TagIcon, Plus, X, Check } from "lucide-react";
 import { newId } from "../../data/storage";
 import { USER_VARIABLE_TAGS } from "../../data/userVariableTags";
 import "./questionEditor.css";
@@ -103,27 +102,25 @@ export default function QuestionEditorModal({
     const raw = question?.priorityUntil;
     if (!raw) return "";
     const s = String(raw);
-    // accept ISO datetime or YYYY-MM-DD
     return s.includes("T") ? s.slice(0, 10) : s.slice(0, 10);
   });
 
   // Image
   const [imageMode, setImageMode] = useState(
     question?.imageUrl ? "URL" : "NONE",
-  ); // NONE | URL | UPLOAD
+  );
   const [imageUrl, setImageUrl] = useState(question?.imageUrl || "");
 
-  // Tag optionnel, activable via toggle
-  const [tagEnabled, setTagEnabled] = useState(Boolean(question?.tagId));
-  const [tagSearch, setTagSearch] = useState("");
+  // Tag management
   const [selectedTagId, setSelectedTagId] = useState(question?.tagId || "");
+  const [customTags, setCustomTags] = useState([]);
+  const [tagSearch, setTagSearch] = useState("");
   const [newTagName, setNewTagName] = useState("");
 
   const [choices, setChoices] = useState(() => {
     if (["QCM", "DROPDOWN", "CHECKBOX"].includes(question?.type)) {
       return (question.choices || []).map((c) => ({ ...c }));
     }
-    // base par défaut (sera ajusté selon le type)
     return [
       { id: newId("c"), text: "Choix A", isCorrect: false },
       { id: newId("c"), text: "Choix B", isCorrect: false },
@@ -135,19 +132,54 @@ export default function QuestionEditorModal({
   const choicesMin = type === "CHECKBOX" ? 1 : 2;
   const choicesMax = type === "CHECKBOX" ? 8 : 999;
 
-  const tags = useMemo(
-    () => [...(safeDb.tags || []), ...USER_VARIABLE_TAGS],
-    [safeDb],
-  );
-  const filteredTags = useMemo(() => {
-    const q = norm(tagSearch).toLowerCase();
-    if (!q) return tags;
-    return tags.filter((t) => (t.name || "").toLowerCase().includes(q));
-  }, [tags, tagSearch]);
+  // Combine standard tags, user variable tags, and any tags created locally in this session
+  const allTags = useMemo(() => {
+    const list = [...(safeDb.tags || []), ...customTags];
+    return [...list, ...USER_VARIABLE_TAGS];
+  }, [safeDb, customTags]);
 
-  useEffect(() => {
-    if (!selectedTagId && tags.length) setSelectedTagId(tags[0].id);
-  }, [tags, selectedTagId]);
+  const standardTags = useMemo(() => {
+    return [...(safeDb.tags || []), ...customTags];
+  }, [safeDb, customTags]);
+
+  const activeTag = useMemo(() => {
+    if (!selectedTagId) return null;
+    return allTags.find((t) => t.id === selectedTagId) || null;
+  }, [allTags, selectedTagId]);
+
+  const filteredStandardTags = useMemo(() => {
+    const q = norm(tagSearch).toLowerCase();
+    if (!q) return standardTags;
+    return standardTags.filter((t) => (t.name || "").toLowerCase().includes(q));
+  }, [standardTags, tagSearch]);
+
+  const filteredVariableTags = useMemo(() => {
+    const q = norm(tagSearch).toLowerCase();
+    if (!q) return USER_VARIABLE_TAGS;
+    return USER_VARIABLE_TAGS.filter((t) => (t.name || "").toLowerCase().includes(q));
+  }, [tagSearch]);
+
+  const handleCreateAndSelectTag = (nameToCreate) => {
+    const name = norm(nameToCreate);
+    if (!name) return;
+
+    // Check if already exists in allTags
+    const existing = allTags.find((t) => (t.name || "").toLowerCase() === name.toLowerCase());
+    if (existing) {
+      setSelectedTagId(existing.id);
+      setNewTagName("");
+      return;
+    }
+
+    const newTag = {
+      id: newId("t"),
+      name,
+      createdAt: new Date().toISOString(),
+    };
+    setCustomTags((prev) => [...prev, newTag]);
+    setSelectedTagId(newTag.id);
+    setNewTagName("");
+  };
 
   const onUpload = (file) => {
     if (!file) return;
@@ -219,20 +251,17 @@ export default function QuestionEditorModal({
     }
     setErr("");
 
-    // Gestion tag
-    let finalTagId = tagEnabled ? selectedTagId || null : null;
+    // Tag resolution
+    let finalTagId = selectedTagId || null;
     let createdTag = null;
 
-    if (
-      tagEnabled &&
-      norm(newTagName) &&
-      !norm(newTagName).toLowerCase().startsWith("variable.user.")
-    ) {
-      const existing = (safeDb.tags || []).find(
+    if (norm(newTagName)) {
+      const existing = allTags.find(
         (t) => (t.name || "").toLowerCase() === norm(newTagName).toLowerCase(),
       );
-      if (existing) finalTagId = existing.id;
-      else {
+      if (existing) {
+        finalTagId = existing.id;
+      } else {
         createdTag = {
           id: newId("t"),
           name: norm(newTagName),
@@ -242,12 +271,17 @@ export default function QuestionEditorModal({
       }
     }
 
+    // Check if selected tag was in customTags
+    if (!createdTag && selectedTagId) {
+      const customMatch = customTags.find((t) => t.id === selectedTagId);
+      if (customMatch) createdTag = customMatch;
+    }
+
     const payload = {
       id: question?.id,
       title: norm(title),
       type,
-      importance, // "SENSIBLE" | "CAPTCHA"
-      // Prioritaire (individuel uniquement)
+      importance,
       priority: isIndividual ? Boolean(priority) : false,
       priorityUntil:
         isIndividual && priority
@@ -255,17 +289,13 @@ export default function QuestionEditorModal({
           : null,
       imageUrl: imageMode === "NONE" ? null : norm(imageUrl) || null,
       tagId: finalTagId,
-      // Bonne réponse (optionnelle) : uniquement pour "Texte libre"
       correctAnswer:
         type === "FREE_TEXT" && norm(correctAnswer)
           ? digitsOnly
             ? String(norm(correctAnswer)).replace(/\D+/g, "")
             : norm(correctAnswer)
           : null,
-      // FREE_TEXT only
       digitsOnly: type === "FREE_TEXT" ? Boolean(digitsOnly) : false,
-
-      // New type-specific fields
       checkboxMode: type === "CHECKBOX" ? checkboxMode : null,
       sliderMin:
         type === "SLIDER"
@@ -275,7 +305,6 @@ export default function QuestionEditorModal({
         type === "SLIDER"
           ? Math.max(Number(sliderMin), Number(sliderMax))
           : null,
-
       choices: typeHasChoices
         ? choices.map((c) => ({ ...c, text: norm(c.text) }))
         : [],
@@ -329,34 +358,31 @@ export default function QuestionEditorModal({
               onChange={(e) => setType(e.target.value)}
             >
               <option value="FREE_TEXT">Texte libre</option>
-              <option value="QCM">QCM</option>
-              <option value="DROPDOWN">Déroulant</option>
-              <option value="CHECKBOX">Checkbox</option>
-              <option value="SLIDER">Slider</option>
-              <option value="PHOTO">Photo</option>
+              <option value="QCM">QCM (Choix unique)</option>
+              <option value="CHECKBOX">Cases à cocher (Checkbox)</option>
+              <option value="DROPDOWN">Menu déroulant</option>
+              <option value="SLIDER">Curseur numérique (Slider)</option>
+              <option value="PHOTO">Photo (Upload / URL)</option>
             </select>
           </div>
 
           {type === "CHECKBOX" ? (
             <div className="field">
-              <div className="label">Checkbox : choix multiple ou unique</div>
+              <div className="label">Mode de sélection</div>
               <select
                 className="select"
                 value={checkboxMode}
                 onChange={(e) => setCheckboxMode(e.target.value)}
               >
-                <option value="MULTI">Choix multiple</option>
-                <option value="SINGLE">Choix unique</option>
+                <option value="MULTI">Choix multiple (plusieurs cases cochables)</option>
+                <option value="SINGLE">Choix unique (1 seule case cochable max)</option>
               </select>
-              <div className="muted" style={{ fontSize: 12 }}>
-                Min. 1 réponse — Max. 8
-              </div>
             </div>
           ) : null}
 
           {type === "SLIDER" ? (
             <div className="field">
-              <div className="label">Slider : début et fin</div>
+              <div className="label">Plage de valeurs (Début - Fin)</div>
               <div
                 style={{
                   display: "grid",
@@ -421,18 +447,13 @@ export default function QuestionEditorModal({
                 />
                 Chiffre seulement
               </label>
-
-              <div className="muted" style={{ fontSize: 12 }}>
-                Pour l&apos;instant, la validation côté utilisateur n&apos;en
-                dépend pas (MVP).
-              </div>
             </div>
           ) : null}
 
           {typeHasChoices ? (
             <div className="qeChoices glass">
               <div className="qeChoicesHeader">
-                <div className="adminTitle">Choix</div>
+                <div className="adminTitle">Choix ({choices.length})</div>
                 <div className="pill">Min. {choicesMin}</div>
                 {type === "CHECKBOX" ? (
                   <div className="pill">Max. 8</div>
@@ -474,15 +495,11 @@ export default function QuestionEditorModal({
                 className="btn btnPrimary"
                 onClick={addChoice}
                 type="button"
+                style={{ marginTop: 10 }}
                 disabled={choices.length >= choicesMax}
               >
                 + Ajouter un choix
               </button>
-
-              <div className="muted" style={{ fontSize: 12, marginTop: 8 }}>
-                Le rond à droite définit la/les bonne(s) réponse(s) — optionnel
-                pour l&apos;instant.
-              </div>
             </div>
           ) : null}
 
@@ -558,7 +575,7 @@ export default function QuestionEditorModal({
 
             {imageMode === "URL" ? (
               <div className="field">
-                <div className="label">URL</div>
+                <div className="label">URL de l'image</div>
                 <input
                   className="input"
                   value={imageUrl}
@@ -570,7 +587,7 @@ export default function QuestionEditorModal({
 
             {imageMode === "UPLOAD" ? (
               <div className="field">
-                <div className="label">Fichier</div>
+                <div className="label">Fichier image</div>
                 <input
                   className="input"
                   type="file"
@@ -592,54 +609,105 @@ export default function QuestionEditorModal({
 
             <hr className="sep" />
 
+            {/* TAG ASSOCIATION SECTION - ULTRA RELIABLE */}
             <div className="tagSectionWrap">
-              <Toggle
-                checked={tagEnabled}
-                onChange={setTagEnabled}
-                label="Associer un tag"
-              />
+              <div className="tagSectionHeader">
+                <div className="label" style={{ margin: 0, display: "flex", alignItems: "center", gap: 6 }}>
+                  <TagIcon size={14} color="#00f0ff" />
+                  <span>Associer un tag à la question</span>
+                </div>
+                {activeTag ? (
+                  <button
+                    type="button"
+                    className="tagRemoveBtn"
+                    onClick={() => setSelectedTagId("")}
+                    title="Retirer le tag"
+                  >
+                    <X size={12} /> Retirer
+                  </button>
+                ) : null}
+              </div>
 
-              {tagEnabled ? (
-                <div className="tagFieldsBlock">
-                  <div className="field">
-                    <div className="label">
-                      <TagIcon size={12} style={{ marginRight: 5, verticalAlign: "middle" }} />
-                      Choisir un tag existant
-                    </div>
-                    <input
-                      className="input"
-                      value={tagSearch}
-                      onChange={(e) => setTagSearch(e.target.value)}
-                      placeholder="Rechercher un tag..."
-                      style={{ marginBottom: 6 }}
-                    />
-                    <select
-                      className="select"
-                      value={selectedTagId}
-                      onChange={(e) => setSelectedTagId(e.target.value)}
-                    >
-                      {filteredTags.map((t) => (
+              {/* Active Tag Display Badge */}
+              <div className="activeTagDisplayRow">
+                <span className="muted" style={{ fontSize: 12 }}>Tag actif :</span>
+                {activeTag ? (
+                  <span className="activeTagChip">
+                    <Check size={12} color="#34d399" />
+                    <b>{activeTag.name}</b>
+                  </span>
+                ) : (
+                  <span className="noTagChip">Aucun tag associé</span>
+                )}
+              </div>
+
+              {/* Tag Quick Selector Dropdown */}
+              <div className="field" style={{ marginTop: 8 }}>
+                <div className="label" style={{ fontSize: 11.5 }}>Choisir parmi les tags existants</div>
+                <input
+                  className="input"
+                  value={tagSearch}
+                  onChange={(e) => setTagSearch(e.target.value)}
+                  placeholder="🔍 Filtrer les tags..."
+                  style={{ marginBottom: 6, fontSize: 12 }}
+                />
+                <select
+                  className="select"
+                  value={selectedTagId}
+                  onChange={(e) => setSelectedTagId(e.target.value)}
+                >
+                  <option value="">-- Sans tag (Aucun tag) --</option>
+                  {filteredStandardTags.length > 0 ? (
+                    <optgroup label="Tags de sondages">
+                      {filteredStandardTags.map((t) => (
                         <option key={t.id} value={t.id}>
-                          {t.name}
+                          🏷️ {t.name}
                         </option>
                       ))}
-                    </select>
-                  </div>
+                    </optgroup>
+                  ) : null}
+                  {filteredVariableTags.length > 0 ? (
+                    <optgroup label="Variables Citoyen (Profil RP)">
+                      {filteredVariableTags.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          👤 {t.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ) : null}
+                </select>
+              </div>
 
-                  <div className="field">
-                    <div className="label">Ou créer un nouveau tag</div>
-                    <input
-                      className="input"
-                      value={newTagName}
-                      onChange={(e) => setNewTagName(e.target.value)}
-                      placeholder="Nom du nouveau tag..."
-                    />
-                  </div>
+              {/* Create new tag inline */}
+              <div className="field" style={{ marginTop: 8 }}>
+                <div className="label" style={{ fontSize: 11.5 }}>Ou créer un nouveau tag</div>
+                <div style={{ display: "flex", gap: 6 }}>
+                  <input
+                    className="input"
+                    value={newTagName}
+                    onChange={(e) => setNewTagName(e.target.value)}
+                    placeholder="Ex: Véhicule, Emploi, Santé..."
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && newTagName.trim()) {
+                        e.preventDefault();
+                        handleCreateAndSelectTag(newTagName);
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="btn btnGhost"
+                    onClick={() => handleCreateAndSelectTag(newTagName)}
+                    disabled={!newTagName.trim()}
+                    style={{ whiteSpace: "nowrap", padding: "6px 12px", fontSize: 12, gap: 4 }}
+                  >
+                    <Plus size={14} /> Créer
+                  </button>
                 </div>
-              ) : null}
+              </div>
             </div>
 
-            {err ? <div className="errorText">{err}</div> : null}
+            {err ? <div className="errorText" style={{ marginTop: 12 }}>{err}</div> : null}
 
             <div className="rowBtns" style={{ marginTop: 18 }}>
               <button className="btn btnGhost" onClick={onClose} type="button">
